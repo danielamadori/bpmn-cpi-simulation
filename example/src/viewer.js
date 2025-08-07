@@ -9,7 +9,7 @@ import fileOpen from 'file-open';
 import exampleXML from '../resources/example.bpmn';
 import minimapModule from 'diagram-js-minimap';
 
-import DiagramTheme from '@bpmn-io/diagram-js-theme';
+import gridModule from 'diagram-js-grid';
 
 
 const url = new URL(window.location.href);
@@ -82,7 +82,7 @@ const viewer = new BpmnViewer({
   additionalModules: [
     ExampleModule,
     TokenSimulationModule,
-    DiagramTheme,
+    gridModule,
     minimapModule
   ]
 });
