@@ -20,6 +20,7 @@ html, body, #canvas {
   background-color: var(--token-simulation-white, #FFFFFF);
 }
 
+html.dark-mode,
 body.dark-mode {
   --token-simulation-grey-darken-30: #f1f1f1;
   --token-simulation-silver-darken-94: #555555;
