@@ -33,7 +33,7 @@
     }
 
     body {
-      color: #555;
+      color: var(--token-simulation-grey-darken-30);
     }
 
     .link {
@@ -43,6 +43,10 @@
   </style>
 </head>
 <body>
+  <div class="links top-links">
+    <button class="link" id="theme-toggle">🌙</button>
+  </div>
+
   <h1>bpmn-js-token-simulation</h1>
 
   <p>
@@ -52,5 +56,7 @@
   <p style="margin-top: 3em">
     <a class="link" href="viewer.html">Open Viewer</a> or <a class="link" href="modeler.html">Open Modeler</a>
   </p>
+
+  <script src="./theme-toggle.js"></script>
 </body>
 </html>
