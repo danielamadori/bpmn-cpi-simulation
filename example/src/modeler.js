@@ -17,11 +17,9 @@ import fileDrop from 'file-drops';
 import fileOpen from 'file-open';
 
 import download from 'downloadjs';
-
+import DiagramTheme from '@bpmn-io/diagram-js-theme';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import SketchyModule from 'bpmn-js-sketchy';
-
-import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 import exampleXML from '../resources/example.bpmn';
@@ -104,6 +102,7 @@ const modeler = new BpmnModeler({
     AddExporter,
     ColorPickerModule,
     SketchyModule,
+    DiagramTheme,
     ExampleModule,
     minimapModule,
     BpmnLintModule
@@ -271,3 +270,6 @@ if (remoteDiagram) {
 }
 
 toggleProperties(url.searchParams.has('pp'));
+
+// expose for theming
+window.bpmnjs = modeler;
