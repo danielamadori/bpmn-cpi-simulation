@@ -17,7 +17,7 @@ import fileDrop from 'file-drops';
 import fileOpen from 'file-open';
 
 import download from 'downloadjs';
-import DiagramTheme from '@bpmn-io/diagram-js-theme';
+import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import SketchyModule from 'bpmn-js-sketchy';
 import minimapModule from 'diagram-js-minimap';
@@ -102,7 +102,7 @@ const modeler = new BpmnModeler({
     AddExporter,
     ColorPickerModule,
     SketchyModule,
-    DiagramTheme,
+    gridModule,
     ExampleModule,
     minimapModule,
     BpmnLintModule
