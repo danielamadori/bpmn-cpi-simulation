@@ -5,6 +5,7 @@
   --token-simulation-silver-darken-94: #EFEFEF;
   --token-simulation-white: #FFFFFF;
   --token-simulation-green-base-44: #10D070;
+  --bpmn-sketchy-font: 'Comic Sans MS', cursive;
 }
 
 html, body, #canvas {
@@ -18,6 +19,13 @@ html, body, #canvas {
 
   color: var(--token-simulation-grey-darken-30, #212121);
   background-color: var(--token-simulation-white, #FFFFFF);
+}
+
+/* sketchy theme font */
+.djs-container,
+.djs-container .djs-element text,
+.djs-direct-editing-content {
+  font-family: var(--bpmn-sketchy-font, 'Comic Sans MS', cursive);
 }
 
 html.dark-mode,
