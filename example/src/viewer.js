@@ -11,7 +11,7 @@ import minimapModule from 'diagram-js-minimap';
 
 import gridModule from 'diagram-js-grid';
 import download from 'downloadjs';
-import { toPNG, toSVG } from 'bpmn-to-image';
+import { svgToPng } from './utils';
 
 
 const url = new URL(window.location.href);
@@ -130,7 +130,7 @@ function openFile(files) {
 
 function exportPNG() {
   viewer.saveSVG().then(({ svg }) => {
-    toPNG(svg).then(png => {
+    svgToPng(svg).then(png => {
       download(png, fileName.replace(/\.bpmn$/i, '.png'), 'image/png');
     });
   });
@@ -138,9 +138,7 @@ function exportPNG() {
 
 function exportSVG() {
   viewer.saveSVG().then(({ svg }) => {
-    toSVG(svg).then(svgData => {
-      download(svgData, fileName.replace(/\.bpmn$/i, '.svg'), 'image/svg+xml');
-    });
+    download(svg, fileName.replace(/\.bpmn$/i, '.svg'), 'image/svg+xml');
   });
 }
 
