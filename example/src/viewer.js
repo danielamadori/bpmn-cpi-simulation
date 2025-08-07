@@ -8,6 +8,8 @@ import fileOpen from 'file-open';
 
 import exampleXML from '../resources/example.bpmn';
 
+import DiagramTheme from '@bpmn-io/diagram-js-theme';
+
 
 const url = new URL(window.location.href);
 
@@ -78,7 +80,8 @@ const viewer = new BpmnViewer({
   container: '#canvas',
   additionalModules: [
     ExampleModule,
-    TokenSimulationModule
+    TokenSimulationModule,
+    DiagramTheme
   ]
 });
 
@@ -151,3 +154,7 @@ if (remoteDiagram) {
 } else {
   openDiagram(initialDiagram);
 }
+
+// expose for theming
+window.bpmnjs = viewer;
+

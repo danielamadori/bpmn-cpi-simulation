@@ -18,6 +18,7 @@ import fileOpen from 'file-open';
 import download from 'downloadjs';
 
 import ColorPickerModule from 'bpmn-js-color-picker';
+import DiagramTheme from '@bpmn-io/diagram-js-theme';
 
 import exampleXML from '../resources/example.bpmn';
 
@@ -98,6 +99,7 @@ const modeler = new BpmnModeler({
     TokenSimulationModule,
     AddExporter,
     ColorPickerModule,
+    DiagramTheme,
     ExampleModule
   ],
   propertiesPanel: {
@@ -247,3 +249,6 @@ if (remoteDiagram) {
 }
 
 toggleProperties(url.searchParams.has('pp'));
+
+// expose for theming
+window.bpmnjs = modeler;
