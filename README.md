@@ -80,6 +80,9 @@ npm run dev
 
 # spin up the example
 npm run start:example
+
+# start the basic token simulation example
+npm run start:basic
 ```
 
 

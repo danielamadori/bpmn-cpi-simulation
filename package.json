@@ -11,6 +11,7 @@
     "bundle:watch": "webpack -w",
     "start": "cross-env SINGLE_START=modeler npm run dev",
     "start:example": "webpack serve --static ./example --open",
+    "start:basic": "webpack serve --static ./example --open /basic/",
     "lint": "eslint .",
     "test": "karma start",
     "dev": "npm test -- --auto-watch --no-single-run"
