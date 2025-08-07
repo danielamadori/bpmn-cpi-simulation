@@ -17,6 +17,8 @@ import fileOpen from 'file-open';
 
 import download from 'downloadjs';
 
+import ColorPickerModule from 'bpmn-js-color-picker';
+
 import exampleXML from '../resources/example.bpmn';
 
 const url = new URL(window.location.href);
@@ -95,6 +97,7 @@ const modeler = new BpmnModeler({
     BpmnPropertiesProviderModule,
     TokenSimulationModule,
     AddExporter,
+    ColorPickerModule,
     ExampleModule
   ],
   propertiesPanel: {
