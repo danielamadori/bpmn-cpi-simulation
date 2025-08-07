@@ -18,6 +18,7 @@ import fileOpen from 'file-open';
 import download from 'downloadjs';
 
 import ColorPickerModule from 'bpmn-js-color-picker';
+import BpmnLintModule from 'bpmn-js-bpmnlint';
 
 import exampleXML from '../resources/example.bpmn';
 
@@ -98,15 +99,32 @@ const modeler = new BpmnModeler({
     TokenSimulationModule,
     AddExporter,
     ColorPickerModule,
-    ExampleModule
+    ExampleModule,
+    BpmnLintModule
   ],
   propertiesPanel: {
     parent: '#properties-panel'
+  },
+  linting: {
+    active: true
   },
   exporter: {
     name: 'bpmn-js-token-simulation',
     version: process.env.TOKEN_SIMULATION_VERSION
   }
+});
+
+const lintingMessagesEl = document.querySelector('#linting-messages');
+
+modeler.get('eventBus').on('linting.messages', ({ issues }) => {
+  const messages = Object.keys(issues).reduce((all, id) => {
+    issues[id].forEach(issue => all.push(`${issue.id}: ${issue.message}`));
+    return all;
+  }, []);
+
+  lintingMessagesEl.innerHTML = messages.length
+    ? `<ul>${messages.map(m => `<li>${m}</li>`).join('')}</ul>`
+    : 'No linting issues';
 });
 
 function openDiagram(diagram) {

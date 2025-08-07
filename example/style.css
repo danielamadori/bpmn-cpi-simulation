@@ -76,6 +76,28 @@ body:not(.presentation-mode) .bts-notifications {
   margin-left: 20px;
 }
 
+.linting-messages {
+  position: absolute;
+  top: 60px;
+  right: 24px;
+  z-index: 1;
+  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  border-radius: 2px;
+  padding: 6px 12px;
+  max-width: 240px;
+  font-size: 12px;
+  color: var(--token-simulation-grey-darken-30, #212121);
+}
+
+.linting-messages ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.linting-messages li {
+  margin-bottom: 4px;
+}
+
 .presentation-mode .drop-message,
 .presentation-mode .links {
   display: none;
