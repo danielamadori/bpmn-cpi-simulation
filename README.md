@@ -92,6 +92,20 @@ npm run start:basic
 ```
 
 
+To run the project inside a Docker container use:
+
+```sh
+./run-container.sh [port]
+```
+
+The script binds the application to port `8081` by default and checks whether the port is free.
+If the port is already in use, specify a different one:
+
+```sh
+./run-container.sh 9090
+```
+
+
 ## BPMN Linting
 
 The example modeler ships with [bpmnlint](https://github.com/bpmn-io/bpmnlint) support.
