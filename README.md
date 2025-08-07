@@ -30,12 +30,15 @@ import TokenSimulationModule from 'bpmn-js-token-simulation';
 
 // optional color picker support
 import ColorPickerModule from 'bpmn-js-color-picker';
+// optional sketchy theme
+import SketchyModule from 'bpmn-js-sketchy';
 
 const modeler = new BpmnModeler({
   container: '#canvas',
   additionalModules: [
     TokenSimulationModule,
-    ColorPickerModule
+    ColorPickerModule,
+    SketchyModule
   ]
 });
 ```
@@ -45,6 +48,9 @@ Include the color picker stylesheet in your page:
 ```html
 <link rel="stylesheet" href="node_modules/bpmn-js-color-picker/colors/color-picker.css" />
 ```
+
+To customize the sketchy appearance, override the `--bpmn-sketchy-font` CSS variable in your stylesheet. Remove
+`SketchyModule` from `additionalModules` to switch back to the default renderer.
 
 ### Viewer
 
@@ -80,7 +86,19 @@ npm run dev
 
 # spin up the example
 npm run start:example
+
+# start the basic token simulation example
+npm run start:basic
 ```
+
+
+## BPMN Linting
+
+The example modeler ships with [bpmnlint](https://github.com/bpmn-io/bpmnlint) support.
+Run `npm run start:example` and edit a diagram to see linting messages listed
+in the top right corner. Customize the active rules inside `.bpmnlint.js`.
+You may also consume linting results programmatically by listening to the
+`linting.messages` event on the `eventBus`.
 
 
 ## Additional Resources
