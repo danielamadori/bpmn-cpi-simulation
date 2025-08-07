@@ -7,8 +7,8 @@ All notable changes to the [bpmn-js-token-simulation](https://github.com/bpmn-io
 ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: make simulation log a resizable left sidebar
-* `CHORE`: add BPMN linting via `npm run lint:bpmn` and include it in `npm test`
-* `CHORE`: bundle BPMN lint plugin assets during build
+* `CHORE`: lint all BPMN diagrams via `npm run lint:bpmn` and run it with `npm test`
+* `CHORE`: bundle BPMN lint plugin assets and configuration during build
 
 ## 0.38.1
 

@@ -6,13 +6,14 @@ export default {
   input: 'src/icons/index.js',
   output: {
     file: 'lib/icons/index.js',
-    format: 'esm'
+    format: 'esm',
+    sourcemap: true
   },
   plugins: [
     string({
       include: '**/*.svg'
     }),
-    nodeResolve(),
+    nodeResolve({ browser: true }),
     commonjs()
   ]
 };
