@@ -4,6 +4,11 @@
   <meta charset="utf-8">
 
   <title>Viewer | BPMN Token Simulation Demo</title>
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+  </script>
 
   <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/diagram-js.css" />
   <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/bpmn-js.css" />
