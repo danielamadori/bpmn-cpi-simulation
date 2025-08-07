@@ -1,3 +1,4 @@
+
 /* global process */
 
 import TokenSimulationModule from '../..';
@@ -18,6 +19,7 @@ import fileOpen from 'file-open';
 import download from 'downloadjs';
 
 import ColorPickerModule from 'bpmn-js-color-picker';
+import SketchyModule from 'bpmn-js-sketchy';
 
 import exampleXML from '../resources/example.bpmn';
 
@@ -98,6 +100,7 @@ const modeler = new BpmnModeler({
     TokenSimulationModule,
     AddExporter,
     ColorPickerModule,
+    SketchyModule,
     ExampleModule
   ],
   propertiesPanel: {
