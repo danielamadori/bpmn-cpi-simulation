@@ -86,7 +86,19 @@ npm run dev
 
 # spin up the example
 npm run start:example
+
+# start the basic token simulation example
+npm run start:basic
 ```
+
+
+## BPMN Linting
+
+The example modeler ships with [bpmnlint](https://github.com/bpmn-io/bpmnlint) support.
+Run `npm run start:example` and edit a diagram to see linting messages listed
+in the top right corner. Customize the active rules inside `.bpmnlint.js`.
+You may also consume linting results programmatically by listening to the
+`linting.messages` event on the `eventBus`.
 
 
 ## Additional Resources

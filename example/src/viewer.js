@@ -7,6 +7,7 @@ import fileDrop from 'file-drops';
 import fileOpen from 'file-open';
 
 import exampleXML from '../resources/example.bpmn';
+import minimapModule from 'diagram-js-minimap';
 
 
 const url = new URL(window.location.href);
@@ -78,7 +79,8 @@ const viewer = new BpmnViewer({
   container: '#canvas',
   additionalModules: [
     ExampleModule,
-    TokenSimulationModule
+    TokenSimulationModule,
+    minimapModule
   ]
 });
 
