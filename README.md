@@ -115,6 +115,17 @@ You may also consume linting results programmatically by listening to the
 `linting.messages` event on the `eventBus`.
 
 
+## Exporting Diagrams
+
+The example applications allow you to export the currently loaded BPMN diagram
+as a PNG or SVG image via the [`bpmn-to-image`](https://github.com/bpmn-io/bpmn-to-image)
+package. Use the _Export as PNG_ or _Export as SVG_ buttons in the demo UI
+to trigger the download.
+
+This feature relies on the [`@bpmn-io/add-exporter`](https://github.com/bpmn-io/add-exporter)
+extension, which is already included in the examples, to embed exporter metadata
+into the exported diagrams.
+
 ## Additional Resources
 
 * [Talk: Making of token simulation](https://nikku.github.io/talks/2021-token-simulation) - The case for token simulation and how it builds on top of [bpmn-js](https://github.com/bpmn-io/bpmn-js)

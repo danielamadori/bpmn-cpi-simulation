@@ -17,6 +17,7 @@ import fileDrop from 'file-drops';
 import fileOpen from 'file-open';
 
 import download from 'downloadjs';
+import { toPNG, toSVG } from 'bpmn-to-image';
 import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import SketchyModule from 'bpmn-js-sketchy';
@@ -177,6 +178,22 @@ function downloadDiagram() {
   });
 }
 
+function exportPNG() {
+  modeler.saveSVG().then(({ svg }) => {
+    toPNG(svg).then(png => {
+      download(png, fileName.replace(/\.bpmn$/i, '.png'), 'image/png');
+    });
+  });
+}
+
+function exportSVG() {
+  modeler.saveSVG().then(({ svg }) => {
+    toSVG(svg).then(svgData => {
+      download(svgData, fileName.replace(/\.bpmn$/i, '.svg'), 'image/svg+xml');
+    });
+  });
+}
+
 document.body.addEventListener('keydown', function(event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
@@ -193,6 +210,14 @@ document.body.addEventListener('keydown', function(event) {
 
 document.querySelector('#download-button').addEventListener('click', function(event) {
   downloadDiagram();
+});
+
+document.querySelector('#export-png').addEventListener('click', function(event) {
+  exportPNG();
+});
+
+document.querySelector('#export-svg').addEventListener('click', function(event) {
+  exportSVG();
 });
 
 
