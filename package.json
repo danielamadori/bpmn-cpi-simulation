@@ -15,7 +15,7 @@
     "lint": "run-s lint:js lint:bpmn",
     "lint:js": "eslint .",
     "lint:bpmn": "bpmnlint \"example/**/*.bpmn\"",
-    "test": "run-s lint test:unit",
+    "test": "run-s lint:js lint:bpmn test:unit",
     "test:unit": "karma start",
     "dev": "npm test -- --auto-watch --no-single-run"
   },
