@@ -28,12 +28,22 @@ Add as additional module to [bpmn-js](https://github.com/bpmn-io/bpmn-js).
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import TokenSimulationModule from 'bpmn-js-token-simulation';
 
+// optional color picker support
+import ColorPickerModule from 'bpmn-js-color-picker';
+
 const modeler = new BpmnModeler({
   container: '#canvas',
   additionalModules: [
-    TokenSimulationModule
+    TokenSimulationModule,
+    ColorPickerModule
   ]
 });
+```
+
+Include the color picker stylesheet in your page:
+
+```html
+<link rel="stylesheet" href="node_modules/bpmn-js-color-picker/colors/color-picker.css" />
 ```
 
 ### Viewer
