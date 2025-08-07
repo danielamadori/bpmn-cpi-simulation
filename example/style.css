@@ -26,6 +26,15 @@ body.dark-mode {
   --token-simulation-white: #2e2e2e;
 }
 
+.dark-mode .djs-container {
+  background-color: var(--token-simulation-white, #FFFFFF);
+}
+
+.dark-mode .djs-container .djs-element {
+  fill: var(--token-simulation-silver-darken-94, #EFEFEF);
+  stroke: var(--token-simulation-grey-darken-30, #212121);
+}
+
 body:not(.presentation-mode) .bts-notifications {
   bottom: 60px;
 }
