@@ -10,6 +10,8 @@ import exampleXML from '../resources/example.bpmn';
 import minimapModule from 'diagram-js-minimap';
 
 import gridModule from 'diagram-js-grid';
+import download from 'downloadjs';
+import { toPNG, toSVG } from 'bpmn-to-image';
 
 
 const url = new URL(window.location.href);
@@ -17,6 +19,8 @@ const url = new URL(window.location.href);
 const persistent = url.searchParams.has('p');
 const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
+
+let fileName = 'diagram.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -119,10 +123,36 @@ function openFile(files) {
 
   hideMessage();
 
+  fileName = files[0].name;
+
   openDiagram(files[0].contents);
 }
 
+function exportPNG() {
+  viewer.saveSVG().then(({ svg }) => {
+    toPNG(svg).then(png => {
+      download(png, fileName.replace(/\.bpmn$/i, '.png'), 'image/png');
+    });
+  });
+}
+
+function exportSVG() {
+  viewer.saveSVG().then(({ svg }) => {
+    toSVG(svg).then(svgData => {
+      download(svgData, fileName.replace(/\.bpmn$/i, '.svg'), 'image/svg+xml');
+    });
+  });
+}
+
 document.body.addEventListener('dragover', fileDrop('Open BPMN diagram', openFile), false);
+
+document.querySelector('#export-png').addEventListener('click', function(event) {
+  exportPNG();
+});
+
+document.querySelector('#export-svg').addEventListener('click', function(event) {
+  exportSVG();
+});
 
 document.body.addEventListener('keydown', function(event) {
   if (event.code === 'KeyO' && (event.metaKey || event.ctrlKey)) {
