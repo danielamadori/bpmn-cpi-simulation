@@ -32,7 +32,8 @@ module.exports = (env, argv) => {
           { from: './assets', to: 'dist/vendor/bpmn-js-token-simulation/assets' },
           { from: 'bpmn-js/dist/assets', context: 'node_modules', to: 'dist/vendor/bpmn-js/assets' },
           { from: '@bpmn-io/properties-panel/dist/assets', context: 'node_modules', to: 'dist/vendor/bpmn-js-properties-panel/assets' },
-          { from: 'bpmn-js-color-picker/colors/color-picker.css', context: 'node_modules', to: 'dist/vendor/bpmn-js-color-picker/colors/color-picker.css' }
+          { from: 'bpmn-js-color-picker/colors/color-picker.css', context: 'node_modules', to: 'dist/vendor/bpmn-js-color-picker/colors/color-picker.css' },
+          { from: 'diagram-js-minimap/assets/diagram-js-minimap.css', context: 'node_modules', to: 'dist/vendor/diagram-js-minimap/assets/diagram-js-minimap.css' }
         ]
       }),
       new DefinePlugin({

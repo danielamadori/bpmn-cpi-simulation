@@ -18,6 +18,7 @@ import fileOpen from 'file-open';
 import download from 'downloadjs';
 
 import ColorPickerModule from 'bpmn-js-color-picker';
+import minimapModule from 'diagram-js-minimap';
 
 import exampleXML from '../resources/example.bpmn';
 
@@ -98,6 +99,7 @@ const modeler = new BpmnModeler({
     TokenSimulationModule,
     AddExporter,
     ColorPickerModule,
+    minimapModule,
     ExampleModule
   ],
   propertiesPanel: {
