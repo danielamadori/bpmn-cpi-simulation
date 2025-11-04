@@ -5,6 +5,12 @@
 
   <title>BPMN Token Simulation Demo</title>
 
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+  </script>
+
   <link rel="stylesheet" href="./style.css" />
 
   <link rel="icon" type="image/png" href="favicon.png" />
@@ -33,7 +39,7 @@
     }
 
     body {
-      color: #555;
+      color: var(--token-simulation-grey-darken-30);
     }
 
     .link {
@@ -43,14 +49,20 @@
   </style>
 </head>
 <body>
+  <div class="links top-links">
+    <button class="link" id="theme-toggle">🌙</button>
+  </div>
+
   <h1>bpmn-js-token-simulation</h1>
 
   <p>
-    A token simulation extension for <a href="https://github.com/bpmn-io/bpmn-js">bpmn-js</a>. Check out the project <a href="https://github.com/bpmn-io/bpmn-js-token-simulation">on GitHub</a>.
+    A token simulation extension for bpmn-js.
   </p>
 
   <p style="margin-top: 3em">
     <a class="link" href="viewer.html">Open Viewer</a> or <a class="link" href="modeler.html">Open Modeler</a>
   </p>
+
+  <script src="./theme-toggle.js"></script>
 </body>
 </html>

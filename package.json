@@ -5,14 +5,18 @@
   "module": "lib/index.js",
   "main": "lib/index.js",
   "scripts": {
-    "all": "run-s bundle:src lint test bundle",
+    "all": "run-s bundle:src test bundle",
     "bundle:src": "rollup -c --bundleConfigAsCjs",
     "bundle": "webpack --mode production",
     "bundle:watch": "webpack -w",
     "start": "cross-env SINGLE_START=modeler npm run dev",
     "start:example": "webpack serve --static ./example --open",
-    "lint": "eslint .",
-    "test": "karma start",
+    "start:basic": "webpack serve --static ./example --open /basic/",
+    "lint": "run-s lint:js lint:bpmn",
+    "lint:js": "eslint .",
+    "lint:bpmn": "bpmnlint \"example/**/*.bpmn\"",
+    "test": "run-s lint:js lint:bpmn test:unit",
+    "test:unit": "karma start",
     "dev": "npm test -- --auto-watch --no-single-run"
   },
   "repository": {
@@ -54,6 +58,7 @@
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/properties-panel": "^3.33.0",
     "babel-loader": "^10.0.0",
+<<<<<<< HEAD
     "babel-plugin-istanbul": "^7.0.1",
     "bpmn-js": "^18.7.0",
     "bpmn-js-properties-panel": "^5.42.1",
@@ -65,6 +70,22 @@
     "eslint-plugin-bpmn-io": "^2.2.0",
     "file-drops": "^0.6.1",
     "file-open": "^0.2.0",
+=======
+    "babel-plugin-istanbul": "^7.0.0",
+    "bpmn-js": "^18.2.0",
+    "bpmn-js-bpmnlint": "^0.23.0",
+    "bpmn-js-properties-panel": "^5.31.1",
+    "bpmnlint": "^11.6.0",
+    "chai": "^4.5.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "cross-env": "^10.0.0",
+    "downloadjs": "^1.4.7",
+    "eslint": "^9.20.0",
+    "eslint-plugin-bpmn-io": "^2.1.0",
+    "file-drops": "^0.5.0",
+    "file-open": "^0.1.1",
+    "bpmn-to-image": "^0.9.0",
+>>>>>>> origin/main
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-coverage": "^2.2.1",
@@ -79,13 +100,25 @@
     "puppeteer": "^24.23.1",
     "rollup": "^4.32.0",
     "rollup-plugin-string": "^3.0.0",
+<<<<<<< HEAD
     "sinon": "^21.0.0",
     "sinon-chai": "^4.0.1",
     "webpack": "^5.102.1",
+=======
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "sinon": "^17.0.1",
+    "sinon-chai": "^3.7.0",
+    "webpack": "^5.97.1",
+>>>>>>> origin/main
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
+    "bpmn-js-color-picker": "^0.7.2",
+    "bpmn-js-sketchy": "^0.7.2",
+    "diagram-js-grid": "^1.1.0",
+    "diagram-js-minimap": "^5.2.0",
     "inherits-browser": "^0.1.0",
     "min-dash": "^4.2.2",
     "min-dom": "^4.2.1",

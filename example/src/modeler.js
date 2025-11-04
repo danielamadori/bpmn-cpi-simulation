@@ -1,3 +1,4 @@
+
 /* global process */
 
 import TokenSimulationModule from '../..';
@@ -16,7 +17,12 @@ import fileDrop from 'file-drops';
 import fileOpen from 'file-open';
 
 import download from 'downloadjs';
-
+import { svgToPng } from './utils';
+import gridModule from 'diagram-js-grid';
+import ColorPickerModule from 'bpmn-js-color-picker';
+import SketchyModule from 'bpmn-js-sketchy';
+import minimapModule from 'diagram-js-minimap';
+import BpmnLintModule from 'bpmn-js-bpmnlint';
 import exampleXML from '../resources/example.bpmn';
 
 const url = new URL(window.location.href);
@@ -95,15 +101,36 @@ const modeler = new BpmnModeler({
     BpmnPropertiesProviderModule,
     TokenSimulationModule,
     AddExporter,
-    ExampleModule
+    ColorPickerModule,
+    SketchyModule,
+    gridModule,
+    ExampleModule,
+    minimapModule,
+    BpmnLintModule
   ],
   propertiesPanel: {
     parent: '#properties-panel'
+  },
+  linting: {
+    active: true
   },
   exporter: {
     name: 'bpmn-js-token-simulation',
     version: process.env.TOKEN_SIMULATION_VERSION
   }
+});
+
+const lintingMessagesEl = document.querySelector('#linting-messages');
+
+modeler.get('eventBus').on('linting.messages', ({ issues }) => {
+  const messages = Object.keys(issues).reduce((all, id) => {
+    issues[id].forEach(issue => all.push(`${issue.id}: ${issue.message}`));
+    return all;
+  }, []);
+
+  lintingMessagesEl.innerHTML = messages.length
+    ? `<ul>${messages.map(m => `<li>${m}</li>`).join('')}</ul>`
+    : 'No linting issues';
 });
 
 function openDiagram(diagram) {
@@ -151,6 +178,20 @@ function downloadDiagram() {
   });
 }
 
+function exportPNG() {
+  modeler.saveSVG().then(({ svg }) => {
+    svgToPng(svg).then(png => {
+      download(png, fileName.replace(/\.bpmn$/i, '.png'), 'image/png');
+    });
+  });
+}
+
+function exportSVG() {
+  modeler.saveSVG().then(({ svg }) => {
+    download(svg, fileName.replace(/\.bpmn$/i, '.svg'), 'image/svg+xml');
+  });
+}
+
 document.body.addEventListener('keydown', function(event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
@@ -167,6 +208,14 @@ document.body.addEventListener('keydown', function(event) {
 
 document.querySelector('#download-button').addEventListener('click', function(event) {
   downloadDiagram();
+});
+
+document.querySelector('#export-png').addEventListener('click', function(event) {
+  exportPNG();
+});
+
+document.querySelector('#export-svg').addEventListener('click', function(event) {
+  exportSVG();
 });
 
 
@@ -244,3 +293,6 @@ if (remoteDiagram) {
 }
 
 toggleProperties(url.searchParams.has('pp'));
+
+// expose for theming
+window.bpmnjs = modeler;

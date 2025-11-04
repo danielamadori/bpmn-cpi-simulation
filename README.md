@@ -28,13 +28,29 @@ Add as additional module to [bpmn-js](https://github.com/bpmn-io/bpmn-js).
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import TokenSimulationModule from 'bpmn-js-token-simulation';
 
+// optional color picker support
+import ColorPickerModule from 'bpmn-js-color-picker';
+// optional sketchy theme
+import SketchyModule from 'bpmn-js-sketchy';
+
 const modeler = new BpmnModeler({
   container: '#canvas',
   additionalModules: [
-    TokenSimulationModule
+    TokenSimulationModule,
+    ColorPickerModule,
+    SketchyModule
   ]
 });
 ```
+
+Include the color picker stylesheet in your page:
+
+```html
+<link rel="stylesheet" href="node_modules/bpmn-js-color-picker/colors/color-picker.css" />
+```
+
+To customize the sketchy appearance, override the `--bpmn-sketchy-font` CSS variable in your stylesheet. Remove
+`SketchyModule` from `additionalModules` to switch back to the default renderer.
 
 ### Viewer
 
@@ -70,8 +86,45 @@ npm run dev
 
 # spin up the example
 npm run start:example
+
+# start the basic token simulation example
+npm run start:basic
 ```
 
+
+To run the project inside a Docker container use:
+
+```sh
+./run-container.sh [port]
+```
+
+The script binds the application to port `8081` by default and checks whether the port is free.
+If the port is already in use, specify a different one:
+
+```sh
+./run-container.sh 9090
+```
+
+
+## BPMN Linting
+
+The example modeler ships with [bpmnlint](https://github.com/bpmn-io/bpmnlint) support.
+Run `npm run start:example` and edit a diagram to see linting messages listed
+in the top right corner. Customize the active rules inside `.bpmnlint.js`.
+You may also consume linting results programmatically by listening to the
+`linting.messages` event on the `eventBus`.
+
+
+## Exporting Diagrams
+
+The example applications allow you to export the currently loaded BPMN diagram
+as a PNG or SVG image via the [`bpmn-to-image`](https://github.com/bpmn-io/bpmn-to-image)
+package. Use the _Export as PNG_ or _Export as SVG_ buttons in the demo UI
+to trigger the download.
+
+This feature relies on the [`@bpmn-io/add-exporter`](https://github.com/bpmn-io/add-exporter)
+extension, which is already included in the examples, to embed exporter metadata
+into the exported diagrams.
 
 ## Additional Resources
 
