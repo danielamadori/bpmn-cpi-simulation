@@ -22,7 +22,6 @@ import download from 'downloadjs';
 import { svgToPng } from './utils';
 import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
-import SketchyModule from 'bpmn-js-sketchy';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 import exampleXML from '../resources/example.bpmn';
@@ -96,21 +95,22 @@ const ExampleModule = {
   ]
 };
 
+const additionalModules = [
+  BpmnPropertiesPanelModule,
+  BpmnPropertiesProviderModule,
+  TokenSimulationModule,
+  AddExporter,
+  ColorPickerModule,
+  gridModule,
+  SimulationSupportModule,
+  ExampleModule,
+  minimapModule,
+  BpmnLintModule
+];
+
 const modeler = new BpmnModeler({
   container: '#canvas',
-  additionalModules: [
-    BpmnPropertiesPanelModule,
-    BpmnPropertiesProviderModule,
-    TokenSimulationModule,
-    AddExporter,
-    ColorPickerModule,
-    SketchyModule,
-    gridModule,
-    SimulationSupportModule,
-    ExampleModule,
-    minimapModule,
-    BpmnLintModule
-  ],
+  additionalModules,
   propertiesPanel: {
     parent: '#properties-panel'
   },
