@@ -12,6 +12,8 @@ import {
   BpmnPropertiesProviderModule
 } from 'bpmn-js-properties-panel';
 
+import SimulationSupportModule from '../../lib/simulation-support';
+
 import fileDrop from 'file-drops';
 
 import fileOpen from 'file-open';
@@ -104,6 +106,7 @@ const modeler = new BpmnModeler({
     ColorPickerModule,
     SketchyModule,
     gridModule,
+    SimulationSupportModule,
     ExampleModule,
     minimapModule,
     BpmnLintModule
@@ -216,6 +219,79 @@ document.querySelector('#export-png').addEventListener('click', function(event) 
 
 document.querySelector('#export-svg').addEventListener('click', function(event) {
   exportSVG();
+});
+
+// move simulation UI controls (toggle + animation speed) into a dedicated left gutter stack
+const controlStack = document.getElementById('simulation-control-stack');
+const animWrapper = document.getElementById('control-anim-wrapper');
+
+function moveSimulationControls() {
+  const toggle = document.querySelector('.bts-toggle-mode');
+  const speed = document.querySelector('.bts-set-animation-speed');
+
+  if (toggle && toggle.parentNode !== controlStack) {
+    // keep original styling, only move into stack at the top
+    controlStack.prepend(toggle);
+  }
+
+  if (speed && animWrapper && speed.parentNode !== animWrapper) {
+    // keep original styling, place inside limited-height wrapper
+    animWrapper.appendChild(speed);
+  }
+}
+
+const controlsObserver = new MutationObserver(() => moveSimulationControls());
+controlsObserver.observe(document.body, { childList: true, subtree: true });
+
+// --- state sequence playback (drives tokens from JSON snapshots) ---
+
+const playStatesBtn = document.getElementById('play-state-sequence');
+
+// load all JSON state snapshots from /states in lexicographic order
+const statesContext = require.context('../../states', false, /\.json$/);
+const stateSequence = statesContext.keys().sort().map(key => ({
+  name: key.replace('./', '').replace('.json', ''),
+  state: statesContext(key)
+}));
+
+function diffCompletions(prev, next) {
+  return Object.keys(next).filter(id => prev[id] === 'active' && next[id] === 'completed');
+}
+
+async function waitForTokenDrain(simulationSupport, ids) {
+  for (const id of ids) {
+    simulationSupport.triggerElement(id);
+    await simulationSupport.elementExit(id);
+  }
+}
+
+async function playStates() {
+  const simulationSupport = modeler.get('simulationSupport');
+
+  // ensure simulation is active
+  simulationSupport.toggleSimulation(true);
+
+  if (!stateSequence.length) {
+    console.warn('No state snapshots found in /states');
+    return;
+  }
+
+  // kick things off by triggering the main start event
+  simulationSupport.triggerElement('StartEvent_0offpno');
+
+  for (let i = 1; i < stateSequence.length; i++) {
+    const prev = stateSequence[i - 1].state;
+    const next = stateSequence[i].state;
+    const completions = diffCompletions(prev, next);
+
+    if (completions.length) {
+      await waitForTokenDrain(simulationSupport, completions);
+    }
+  }
+}
+
+playStatesBtn.addEventListener('click', () => {
+  playStates().catch(err => console.error('State playback failed', err));
 });
 
 

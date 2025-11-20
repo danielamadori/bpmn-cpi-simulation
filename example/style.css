@@ -70,9 +70,12 @@ body:not(.presentation-mode) .bts-notifications {
 }
 
 .bottom-links {
-  position: absolute;
-  bottom: 24px;
-  left: 24px;
+  position: static;
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .link {
@@ -95,6 +98,29 @@ body:not(.presentation-mode) .bts-notifications {
   margin-left: 20px;
 }
 
+.links.bottom-links .link + .link {
+  margin-left: 0;
+  margin-top: 0;
+}
+
+#simulation-control-stack {
+  position: fixed;
+  top: 60px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 3;
+}
+
+#control-anim-wrapper {
+  max-height: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .linting-messages {
   position: absolute;
   top: 60px;
@@ -124,12 +150,17 @@ body:not(.presentation-mode) .bts-notifications {
 
 .canvas-parent {
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-
+  bottom: 24px;
+  right: 24px;
+  width: 82vw;
+  height: 82vh;
   display: flex;
+
+  /* scale down the whole simulation surface so we keep free gutters for controls */
+  transform: scale(0.9);
+  transform-origin: bottom right;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
 }
 
 .canvas, .properties-panel {
@@ -250,4 +281,12 @@ body:not(.presentation-mode) .bts-notifications {
 
   display: table-cell;
   vertical-align: middle;
+}
+
+/* position token-simulation toggle into side gutter */
+.bts-toggle-mode {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  z-index: 2;
 }
