@@ -1,0 +1,48 @@
+
+> bpmn-js-token-simulation@0.38.1 prestart:example
+> npm run bundle:src
+
+
+> bpmn-js-token-simulation@0.38.1 bundle:src
+> rollup -c --bundleConfigAsCjs
+
+
+src/icons/index.js → lib/icons/index.js...
+created lib/icons/index.js in 64ms
+
+> bpmn-js-token-simulation@0.38.1 start:example
+> webpack serve --static ./example --open
+
+<i> [webpack-dev-server] Project is running at:
+<i> [webpack-dev-server] Loopback: http://localhost:8080/, http://[::1]:8080/
+<i> [webpack-dev-server] On Your Network (IPv4): http://172.17.0.2:8080/
+<i> [webpack-dev-server] Content not from webpack is served from './example' directory
+assets by path dist/vendor/ 441 KiB
+  assets by path dist/vendor/bpmn-js/assets/ 385 KiB
+    assets by path dist/vendor/bpmn-js/assets/bpmn-font/ 361 KiB 8 assets
+    assets by path dist/vendor/bpmn-js/assets/*.css 23.8 KiB 2 assets
+  asset dist/vendor/bpmn-js-properties-panel/assets/properties-panel.css 39.1 KiB [emitted] [from: node_modules/@bpmn-io/properties-panel/dist/assets/properties-panel.css] [copied]
+  asset dist/vendor/bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css 12 KiB [emitted] [from: assets/css/bpmn-js-token-simulation.css] [copied]
+  asset dist/vendor/bpmn-js-bpmnlint/assets/css/bpmn-js-bpmnlint.css 4 KiB [emitted] [from: node_modules/bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css] [copied]
+  asset dist/vendor/diagram-js-minimap/assets/diagram-js-minimap.css 1.4 KiB [emitted] [from: node_modules/diagram-js-minimap/assets/diagram-js-minimap.css] [copied]
+  asset dist/vendor/bpmn-js-color-picker/colors/color-picker.css 165 bytes [emitted] [from: node_modules/bpmn-js-color-picker/colors/color-picker.css] [copied]
+assets by path dist/*.js 20 MiB
+  asset dist/modeler.js 14.2 MiB [emitted] (name: modeler)
+  asset dist/viewer.js 2.96 MiB [emitted] (name: viewer)
+  asset dist/basic.js 2.82 MiB [emitted] (name: basic)
+asset .bpmnlintrc/.bpmnlintrc 237 bytes [emitted] [from: .bpmnlintrc] [copied]
+runtime modules 84.2 KiB 39 modules
+orphan modules 472 bytes [orphan] 5 modules
+modules by path ./node_modules/ 4.56 MiB 477 modules
+modules by path ./lib/ 184 KiB 89 modules
+modules by path ./example/ 64.4 KiB
+  javascript modules 12.3 KiB
+    ./example/src/viewer.js 4.16 KiB [built] [code generated]
+    + 3 modules
+  asset modules 52.1 KiB
+    ./example/resources/example.bpmn 29.8 KiB [built] [code generated]
+    ./example/basic/resources/diagram.bpmn 22.3 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 2413 ms
+assets by status 20.4 MiB [cached] 19 assets
+cached modules 4.8 MiB (javascript) 84.2 KiB (runtime) [cached] 616 modules
+webpack 5.103.0 compiled successfully in 111 ms

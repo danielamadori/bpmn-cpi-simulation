@@ -1,8 +1,9 @@
-FROM node:18
+FROM node:20
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
+COPY tasks ./tasks
 RUN npm ci
 
 COPY . .
@@ -10,4 +11,8 @@ COPY . .
 RUN npm run bundle:src
 
 EXPOSE 8080
-CMD ["npm", "run", "start:example"]
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+CMD ["/docker-entrypoint.sh"]
