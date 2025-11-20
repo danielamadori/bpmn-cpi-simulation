@@ -502,10 +502,6 @@
   overflow: hidden;
 }
 
-.bts-set-animation-speed.hidden {
-  display: none;
-}
-
 .bts-set-animation-speed .bts-animation-speed-buttons {
   display: flex;
   flex-direction: row;
@@ -525,6 +521,19 @@
 .bts-set-animation-speed .bts-animation-speed-button:hover {
   background-color: var(--token-simulation-green-base-44, #10D070);
   color: var(--token-simulation-white, #FFFFFF);
+}
+
+/* allow embedding the speed control in external stacks */
+#simulation-control-stack .bts-set-animation-speed {
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
+  z-index: auto;
+  margin: 0;
+}
+#simulation-control-stack .bts-set-animation-speed .bts-animation-speed-buttons {
+  margin-left: 0;
 }
 
 .bts-icon {
