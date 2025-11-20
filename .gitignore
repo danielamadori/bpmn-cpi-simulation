@@ -4,3 +4,4 @@ lib/icons/index.js
 node_modules
 tmp
 .idea/
+logs/

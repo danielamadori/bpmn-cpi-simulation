@@ -4,7 +4,7 @@ set -e
 PORT="${1:-8081}"
 CONTAINER_NAME="${CONTAINER_NAME:-bpmn-cpi-simulation}"
 
-# check if port is available
+# check if port is available (nc present in most dev setups)
 if command -v nc >/dev/null; then
   if nc -z localhost "$PORT" 2>/dev/null; then
     echo "Port $PORT is already in use."
