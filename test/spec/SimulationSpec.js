@@ -1748,10 +1748,16 @@ function expectScopeTrigger(scope) {
 }
 
 function expectHistory(expectedHistory) {
-
   const history = getSimulationSupport().getHistory();
 
-  expect(history, 'history equals').to.eql(expectedHistory);
+  try {
+    expect(history, 'history equals').to.eql(expectedHistory);
+  } catch (err) {
+
+    // helpful diagnostic when expectations diverge
+    console.error('History mismatch:\nactual:', history, '\nexpected:', expectedHistory);
+    throw err;
+  }
 }
 
 function triggerElement(...args) {

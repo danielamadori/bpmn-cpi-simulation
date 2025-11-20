@@ -34,7 +34,7 @@ describe('simulator', function() {
       expect(scope).to.exist;
       expect(scope.element).to.equal(element('Process_1'));
 
-      expect(createSpy).to.have.been.calledOnce;
+      expect(createSpy.calledOnce).to.be.true;
 
       // but when
       simulator.off('createScope');
@@ -44,7 +44,7 @@ describe('simulator', function() {
       });
 
       // then
-      expect(createSpy).to.have.been.calledOnce;
+      expect(createSpy.calledOnce).to.be.true;
     });
 
 
@@ -58,7 +58,7 @@ describe('simulator', function() {
       simulator.waitAtElement(element('SUB'));
 
       // then
-      expect(tickSpy).to.have.been.calledOnce;
+      expect(tickSpy.calledOnce).to.be.true;
     });
 
 
@@ -264,13 +264,13 @@ describe('simulator', function() {
         simulator.destroyScope(otherScopes[0]);
 
         // then
-        expect(subscribeSpy).not.to.have.been.called;
+        expect(subscribeSpy.called).to.be.false;
 
         // but when
         simulator.destroyScope(otherScopes[1]);
 
         // then
-        expect(subscribeSpy).to.have.been.calledOnce;
+        expect(subscribeSpy.calledOnce).to.be.true;
       });
 
     });

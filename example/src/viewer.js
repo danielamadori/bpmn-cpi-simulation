@@ -91,12 +91,57 @@ const viewer = new BpmnViewer({
   ]
 });
 
+function sanitizeDiagram(viewerInstance, { persist = false } = {}) {
+  const elementRegistry = viewerInstance.get('elementRegistry');
+  const seenNames = new Map();
+
+  function nextName(base) {
+    let suffix = 2;
+    let candidate = base;
+
+    while (seenNames.has(candidate)) {
+      candidate = `${base} (${suffix++})`;
+    }
+
+    seenNames.set(candidate, true);
+    return candidate;
+  }
+
+  elementRegistry.getAll().forEach(element => {
+    const bo = element.businessObject;
+
+    if (!bo || !bo.$instanceOf || !bo.$instanceOf('bpmn:FlowNode')) {
+      return;
+    }
+
+
+    const rawName = bo.name && bo.name.trim();
+    const baseName = rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`;
+    const uniqueName = nextName(baseName);
+
+    if (bo.name !== uniqueName) {
+      bo.name = uniqueName;
+    }
+  });
+
+  if (persist) {
+    viewerInstance.saveXML({ format: true }).then(({ xml }) => {
+      localStorage['diagram-xml'] = xml;
+    }).catch(() => {
+
+      // non-fatal
+    });
+  }
+}
+
 function openDiagram(diagram) {
   return viewer.importXML(diagram)
     .then(({ warnings }) => {
       if (warnings.length) {
         console.warn(warnings);
       }
+
+      sanitizeDiagram(viewer, { persist: persistent });
 
       if (persistent) {
         localStorage['diagram-xml'] = diagram;

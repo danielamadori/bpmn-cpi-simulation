@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/* eslint-env node */
+/* global require, __dirname, process */
+/* eslint-disable lines-around-comment */
 
 /**
  * Ensure the platform-specific Rollup binary is installed.

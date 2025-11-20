@@ -125,6 +125,53 @@ const modeler = new BpmnModeler({
 
 const lintingMessagesEl = document.querySelector('#linting-messages');
 
+function sanitizeDiagram(modeler, { persist = false } = {}) {
+  const elementRegistry = modeler.get('elementRegistry');
+  const seenNames = new Map();
+
+  function nextName(base) {
+    let suffix = 2;
+    let candidate = base;
+
+    while (seenNames.has(candidate)) {
+      candidate = `${base} (${suffix++})`;
+    }
+
+    seenNames.set(candidate, true);
+    return candidate;
+  }
+
+  elementRegistry.getAll().forEach(element => {
+    const bo = element.businessObject;
+
+    // only normalize BPMN flow nodes (events, tasks, gateways, subprocesses, etc.)
+    if (!bo || !bo.$instanceOf || !bo.$instanceOf('bpmn:FlowNode')) {
+      return;
+    }
+
+
+    const rawName = bo.name && bo.name.trim();
+
+    const baseName = rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`;
+    const uniqueName = nextName(baseName);
+
+    if (bo.name !== uniqueName) {
+      bo.name = uniqueName;
+    }
+  });
+
+  if (persist) {
+
+    // keep sanitized XML in local storage so the next load stays valid
+    modeler.saveXML({ format: true }).then(({ xml }) => {
+      localStorage['diagram-xml'] = xml;
+    }).catch(() => {
+
+      // non-fatal if persistence fails
+    });
+  }
+}
+
 modeler.get('eventBus').on('linting.messages', ({ issues }) => {
   const messages = Object.keys(issues).reduce((all, id) => {
     issues[id].forEach(issue => all.push(`${issue.id}: ${issue.message}`));
@@ -142,6 +189,8 @@ function openDiagram(diagram) {
       if (warnings.length) {
         console.warn(warnings);
       }
+
+      sanitizeDiagram(modeler, { persist: persistent });
 
       if (persistent) {
         localStorage['diagram-xml'] = diagram;
@@ -230,11 +279,13 @@ function moveSimulationControls() {
   const speed = document.querySelector('.bts-set-animation-speed');
 
   if (toggle && toggle.parentNode !== controlStack) {
+
     // keep original styling, only move into stack at the top
     controlStack.prepend(toggle);
   }
 
   if (speed && animWrapper && speed.parentNode !== animWrapper) {
+
     // keep original styling, place inside limited-height wrapper
     animWrapper.appendChild(speed);
   }
@@ -248,6 +299,8 @@ controlsObserver.observe(document.body, { childList: true, subtree: true });
 const playStatesBtn = document.getElementById('play-state-sequence');
 
 // load all JSON state snapshots from /states in lexicographic order
+// webpack injects require.context; lint as a known global.
+// eslint-disable-next-line no-undef
 const statesContext = require.context('../../states', false, /\.json$/);
 const stateSequence = statesContext.keys().sort().map(key => ({
   name: key.replace('./', '').replace('.json', ''),

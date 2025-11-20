@@ -42,7 +42,7 @@ body.dark-mode {
 
 .dark-mode .djs-container .djs-element {
   fill: var(--diagram-js-secondary-color);
-  stroke: var(--diagram-js-primary-color);
+  /* stroke: var(--diagram-js-primary-color); */
 }
 
 body:not(.presentation-mode) .bts-notifications {
