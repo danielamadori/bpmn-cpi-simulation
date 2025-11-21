@@ -197,6 +197,13 @@ document.querySelector('#export-svg').addEventListener('click', function(event) 
   exportSVG();
 });
 
+document.querySelector('#open-button').addEventListener('click', () => {
+  fileOpen({
+    extensions: [ '.bpmn' ],
+    description: 'BPMN diagrams'
+  }).then(openFile);
+});
+
 document.body.addEventListener('keydown', function(event) {
   if (event.code === 'KeyO' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();

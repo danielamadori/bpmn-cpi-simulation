@@ -270,6 +270,13 @@ document.querySelector('#export-svg').addEventListener('click', function(event) 
   exportSVG();
 });
 
+document.querySelector('#open-button').addEventListener('click', () => {
+  fileOpen({
+    extensions: [ '.bpmn' ],
+    description: 'BPMN diagrams'
+  }).then(openFile);
+});
+
 // move simulation UI controls (toggle + animation speed) into a dedicated left gutter stack
 const controlStack = document.getElementById('simulation-control-stack');
 const animWrapper = document.getElementById('control-anim-wrapper');
