@@ -59,6 +59,10 @@ body:not(.presentation-mode) .bts-notifications {
   right: 24px;
 }
 
+#simulation-control-stack .link {
+  display: block;
+}
+
 .bottom-links {
   position: static;
   transform: none;
@@ -112,9 +116,9 @@ body:not(.presentation-mode) .bts-notifications {
   gap: 8px;
 }
 .linting-messages {
-  position: absolute;
-  top: 60px;
-  right: 24px;
+  position: relative;
+  top: 0;
+  right: 0;
   z-index: 1;
   background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
   border-radius: 2px;
@@ -377,11 +381,25 @@ body:not(.presentation-mode) .bts-notifications {
   display: none !important;
 }
 
+
 /* position token-simulation toggle into side gutter */
 .bts-toggle-mode {
-  position: fixed !important;
-  top: 24px !important;
-  left: 24px !important;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
   z-index: 2;
+}
+
+.bts-palette {
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bts-palette.hidden {
+  display: none;
 }
 

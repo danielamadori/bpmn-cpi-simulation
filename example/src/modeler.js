@@ -72,10 +72,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
+    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function() {
+        eventBus.on('commandStack.changed', function () {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -100,7 +100,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    } ]
+    }]
   ]
 };
 
@@ -253,7 +253,7 @@ function exportSVG() {
   });
 }
 
-document.body.addEventListener('keydown', function(event) {
+document.body.addEventListener('keydown', function (event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
 
@@ -267,21 +267,21 @@ document.body.addEventListener('keydown', function(event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function(event) {
+document.querySelector('#download-button').addEventListener('click', function (event) {
   downloadDiagram();
 });
 
-document.querySelector('#export-png').addEventListener('click', function(event) {
+document.querySelector('#export-png').addEventListener('click', function (event) {
   exportPNG();
 });
 
-document.querySelector('#export-svg').addEventListener('click', function(event) {
+document.querySelector('#export-svg').addEventListener('click', function (event) {
   exportSVG();
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
   fileOpen({
-    extensions: [ '.bpmn' ],
+    extensions: ['.bpmn'],
     description: 'BPMN diagrams'
   }).then(openFile);
 });
@@ -291,19 +291,35 @@ const controlStack = document.getElementById('simulation-control-stack');
 const animWrapper = document.getElementById('control-anim-wrapper');
 
 function moveSimulationControls() {
+  console.log('Moving simulation controls to bottom');
   const toggle = document.querySelector('.bts-toggle-mode');
   const speed = document.querySelector('.bts-set-animation-speed');
 
   if (toggle && toggle.parentNode !== controlStack) {
 
     // keep original styling, only move into stack at the top
-    controlStack.prepend(toggle);
+    controlStack.appendChild(toggle);
   }
 
   if (speed && animWrapper && speed.parentNode !== animWrapper) {
 
     // keep original styling, place inside limited-height wrapper
     animWrapper.appendChild(speed);
+  }
+
+  const palette = document.querySelector('.bts-palette');
+  if (palette && palette.parentNode !== controlStack) {
+    controlStack.appendChild(palette);
+  }
+
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle && themeToggle.parentNode !== controlStack) {
+    controlStack.appendChild(themeToggle);
+  }
+
+  const lintingMessages = document.getElementById('linting-messages');
+  if (lintingMessages && lintingMessages.parentNode !== controlStack) {
+    controlStack.appendChild(lintingMessages);
   }
 }
 
@@ -467,11 +483,11 @@ function toggleProperties(open) {
   propertiesPanel.classList.toggle('open', open);
 }
 
-propertiesPanelResizer.addEventListener('click', function(event) {
+propertiesPanelResizer.addEventListener('click', function (event) {
   toggleProperties(!propertiesPanel.classList.contains('open'));
 });
 
-propertiesPanelResizer.addEventListener('dragstart', function(event) {
+propertiesPanelResizer.addEventListener('dragstart', function (event) {
   const img = new Image();
   img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   event.dataTransfer.setDragImage(img, 1, 1);
@@ -480,7 +496,7 @@ propertiesPanelResizer.addEventListener('dragstart', function(event) {
   startWidth = propertiesPanel.getBoundingClientRect().width;
 });
 
-propertiesPanelResizer.addEventListener('drag', function(event) {
+propertiesPanelResizer.addEventListener('drag', function (event) {
 
   if (!event.screenX) {
     return;
