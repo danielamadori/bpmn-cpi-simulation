@@ -33,11 +33,20 @@ const initialDiagram = (() => {
 function hideMessage() {
   const dropMessage = document.querySelector('.drop-message');
 
+  if (!dropMessage) {
+    return;
+  }
+
   dropMessage.style.display = 'none';
 }
 
 function showMessage(cls, message) {
   const messageEl = document.querySelector('.drop-message');
+
+  if (!messageEl) {
+    console.error(message);
+    return;
+  }
 
   messageEl.textContent = message;
   messageEl.className = `drop-message ${cls || ''}`;
