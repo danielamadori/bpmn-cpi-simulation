@@ -22,7 +22,6 @@ import download from 'downloadjs';
 import { svgToPng } from './utils';
 import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
-import SketchyModule from 'bpmn-js-sketchy';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 import exampleXML from '../resources/example.bpmn';
@@ -105,21 +104,22 @@ const ExampleModule = {
   ]
 };
 
+const additionalModules = [
+  BpmnPropertiesPanelModule,
+  BpmnPropertiesProviderModule,
+  TokenSimulationModule,
+  AddExporter,
+  ColorPickerModule,
+  gridModule,
+  SimulationSupportModule,
+  ExampleModule,
+  minimapModule,
+  BpmnLintModule
+];
+
 const modeler = new BpmnModeler({
   container: '#canvas',
-  additionalModules: [
-    BpmnPropertiesPanelModule,
-    BpmnPropertiesProviderModule,
-    TokenSimulationModule,
-    AddExporter,
-    ColorPickerModule,
-    SketchyModule,
-    gridModule,
-    SimulationSupportModule,
-    ExampleModule,
-    minimapModule,
-    BpmnLintModule
-  ],
+  additionalModules,
   propertiesPanel: {
     parent: '#properties-panel'
   },
@@ -133,6 +133,53 @@ const modeler = new BpmnModeler({
 });
 
 const lintingMessagesEl = document.querySelector('#linting-messages');
+
+function sanitizeDiagram(modeler, { persist = false } = {}) {
+  const elementRegistry = modeler.get('elementRegistry');
+  const seenNames = new Map();
+
+  function nextName(base) {
+    let suffix = 2;
+    let candidate = base;
+
+    while (seenNames.has(candidate)) {
+      candidate = `${base} (${suffix++})`;
+    }
+
+    seenNames.set(candidate, true);
+    return candidate;
+  }
+
+  elementRegistry.getAll().forEach(element => {
+    const bo = element.businessObject;
+
+    // only normalize BPMN flow nodes (events, tasks, gateways, subprocesses, etc.)
+    if (!bo || !bo.$instanceOf || !bo.$instanceOf('bpmn:FlowNode')) {
+      return;
+    }
+
+
+    const rawName = bo.name && bo.name.trim();
+
+    const baseName = rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`;
+    const uniqueName = nextName(baseName);
+
+    if (bo.name !== uniqueName) {
+      bo.name = uniqueName;
+    }
+  });
+
+  if (persist) {
+
+    // keep sanitized XML in local storage so the next load stays valid
+    modeler.saveXML({ format: true }).then(({ xml }) => {
+      localStorage['diagram-xml'] = xml;
+    }).catch(() => {
+
+      // non-fatal if persistence fails
+    });
+  }
+}
 
 modeler.get('eventBus').on('linting.messages', ({ issues }) => {
   const messages = Object.keys(issues).reduce((all, id) => {
@@ -151,6 +198,8 @@ function openDiagram(diagram) {
       if (warnings.length) {
         console.warn(warnings);
       }
+
+      sanitizeDiagram(modeler, { persist: persistent });
 
       if (persistent) {
         localStorage['diagram-xml'] = diagram;
@@ -230,6 +279,13 @@ document.querySelector('#export-svg').addEventListener('click', function(event) 
   exportSVG();
 });
 
+document.querySelector('#open-button').addEventListener('click', () => {
+  fileOpen({
+    extensions: [ '.bpmn' ],
+    description: 'BPMN diagrams'
+  }).then(openFile);
+});
+
 // move simulation UI controls (toggle + animation speed) into a dedicated left gutter stack
 const controlStack = document.getElementById('simulation-control-stack');
 const animWrapper = document.getElementById('control-anim-wrapper');
@@ -239,11 +295,13 @@ function moveSimulationControls() {
   const speed = document.querySelector('.bts-set-animation-speed');
 
   if (toggle && toggle.parentNode !== controlStack) {
+
     // keep original styling, only move into stack at the top
     controlStack.prepend(toggle);
   }
 
   if (speed && animWrapper && speed.parentNode !== animWrapper) {
+
     // keep original styling, place inside limited-height wrapper
     animWrapper.appendChild(speed);
   }
@@ -261,6 +319,8 @@ const statePanelBody = document.getElementById('state-panel-body');
 const elementRegistry = () => modeler.get('elementRegistry');
 
 // load all JSON state snapshots from /states in lexicographic order
+// webpack injects require.context; lint as a known global.
+// eslint-disable-next-line no-undef
 const statesContext = require.context('../../states', false, /\.json$/);
 const stateSequence = statesContext.keys().sort().map(key => ({
   name: key.replace('./', '').replace('.json', ''),

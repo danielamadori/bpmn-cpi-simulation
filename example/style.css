@@ -9,9 +9,6 @@
   --diagram-js-primary-color: var(--token-simulation-grey-darken-30);
   --diagram-js-secondary-color: var(--token-simulation-silver-darken-94);
   --diagram-js-background-color: var(--token-simulation-white);
-  
-  --bpmn-sketchy-font: 'Comic Sans MS', cursive;
-
 }
 
 html, body, #canvas {
@@ -25,13 +22,6 @@ html, body, #canvas {
 
   color: var(--token-simulation-grey-darken-30, #212121);
   background-color: var(--token-simulation-white, #FFFFFF);
-}
-
-/* sketchy theme font */
-.djs-container,
-.djs-container .djs-element text,
-.djs-direct-editing-content {
-  font-family: var(--bpmn-sketchy-font, 'Comic Sans MS', cursive);
 }
 
 html.dark-mode,
@@ -52,7 +42,7 @@ body.dark-mode {
 
 .dark-mode .djs-container .djs-element {
   fill: var(--diagram-js-secondary-color);
-  stroke: var(--diagram-js-primary-color);
+  /* stroke: var(--diagram-js-primary-color); */
 }
 
 body:not(.presentation-mode) .bts-notifications {
@@ -274,6 +264,7 @@ body:not(.presentation-mode) .bts-notifications {
   display: table;
 }
 
+
 .drop-overlay .label {
   font-size: 26px;
   color: #888;
@@ -393,3 +384,4 @@ body:not(.presentation-mode) .bts-notifications {
   left: 24px !important;
   z-index: 2;
 }
+

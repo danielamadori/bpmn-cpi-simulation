@@ -125,7 +125,7 @@ describe('modeler extension', function() {
       // when
       await bpmnjs.saveXML({ format: true });
 
-      expect(saveXMLSpy).to.have.been.calledOnce;
+      expect(saveXMLSpy.calledOnce).to.be.true;
     }));
 
 
@@ -153,7 +153,7 @@ describe('modeler extension', function() {
       // when
       await bpmnjs.saveXML({ format: true });
 
-      expect(saveXMLSpy).to.have.been.calledOnce;
+      expect(saveXMLSpy.calledOnce).to.be.true;
 
       // then
       expectColors('SequenceFlow_2', { fill: undefined, stroke: '#212121' });
