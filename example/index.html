@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
 
-  <title>BPMN Token Simulation Demo</title>
-
+  <title>Modeler | BPMN Token Simulation Demo</title>
   <script>
     if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark-mode');
     }
   </script>
 
+  <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/diagram-js.css" />
+  <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/bpmn-js.css" />
+  <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" />
+  <link rel="stylesheet" href="./dist/vendor/bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css" />
+  <link rel="stylesheet" href="./dist/vendor/bpmn-js-properties-panel/assets/properties-panel.css" />
+  <link rel="stylesheet" href="./dist/vendor/bpmn-js-color-picker/colors/color-picker.css" />
+  <link rel="stylesheet" href="./dist/vendor/diagram-js-minimap/assets/diagram-js-minimap.css" />
   <link rel="stylesheet" href="./style.css" />
 
   <link rel="icon" type="image/png" href="favicon.png" />
@@ -18,51 +25,71 @@
   <meta property="og:locale" content="en_US" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="bpmn-js-token-simulation demo" />
-  <meta property="og:title" content="BPMN Token Simulation Demo" />
-  <meta property="og:url" content="https://bpmn-io.github.io/bpmn-js-token-simulation/index.html" />
-  <meta property="og:description" content="Simulate your BPMN diagrams with bpmn-js-token-simulation. Understand and learn BPMN execution semantics one token at a time." />
+  <meta property="og:title" content="Modeler | BPMN Token Simulation Demo" />
+  <meta property="og:url" content="https://bpmn-io.github.io/bpmn-js-token-simulation/modeler.html" />
+  <meta property="og:description"
+    content="Simulate your BPMN diagrams with bpmn-js-token-simulation. Understand and learn BPMN execution semantics one token at a time." />
   <meta property="og:image" content="https://bpmn-io.github.io/bpmn-js-token-simulation/screenshot.png" />
-
-  <style>
-    html,
-    body {
-      height: 100%;
-      overflow: hidden;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Arial', sans-serif;
-    }
-
-    body {
-      color: var(--token-simulation-grey-darken-30);
-    }
-
-    .link {
-      display: inline-block;
-      margin: 10px;
-    }
-  </style>
 </head>
+
 <body>
+
   <div class="links top-links">
     <button class="link" id="theme-toggle">🌙</button>
   </div>
 
-  <h1>bpmn-js-token-simulation</h1>
+  <div id="simulation-control-stack">
+    <div class="links bottom-links">
+      <button class="link" id="open-button">Open Diagram</button>
+      <button class="link" id="download-button">Download Diagram</button>
+      <button class="link" id="export-png">Export as PNG</button>
+      <button class="link" id="export-svg">Export as SVG</button>
+      <button class="link" id="play-state-sequence">Play state sequence</button>
+    </div>
+    <div id="control-anim-wrapper"></div>
+  </div>
 
-  <p>
-    A token simulation extension for bpmn-js.
-  </p>
+  <div class="linting-messages" id="linting-messages"></div>
 
-  <p style="margin-top: 3em">
-    <a class="link" href="viewer.html">Open Viewer</a> or <a class="link" href="modeler.html">Open Modeler</a>
-  </p>
+  <div class="canvas-parent">
+    <div class="canvas" id="canvas">
 
+      <div class="djs-minimap"></div>
+
+    </div>
+
+    <div class="properties-panel" id="properties-panel">
+      <div class="properties-panel-resizer" id="properties-panel-resizer" title="Toggle properties panel"
+        draggable="true">
+        <div class="properties-panel-resize-handle"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="state-panel" class="state-panel" aria-live="polite">
+    <div class="state-panel-header">
+      <span id="state-panel-title">State sequence</span>
+    </div>
+    <div class="state-panel-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Attivit&agrave;</th>
+            <th>Stato</th>
+          </tr>
+        </thead>
+        <tbody id="state-panel-body">
+          <tr>
+            <td class="state-panel-empty" colspan="2">Premi "Play state sequence" per vedere gli stati</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="./dist/modeler.js"></script>
   <script src="./theme-toggle.js"></script>
 </body>
+<!-- debug -->
+
 </html>
