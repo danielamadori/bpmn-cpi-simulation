@@ -321,6 +321,11 @@ function moveSimulationControls() {
   if (lintingMessages && lintingMessages.parentNode !== controlStack) {
     controlStack.appendChild(lintingMessages);
   }
+
+  const log = document.querySelector('.bts-log');
+  if (log && log.parentNode !== controlStack) {
+    controlStack.appendChild(log);
+  }
 }
 
 const controlsObserver = new MutationObserver(() => moveSimulationControls());
