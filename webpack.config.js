@@ -11,7 +11,6 @@ module.exports = (env, argv) => {
   return {
     mode,
     entry: {
-      viewer: './example/src/viewer.js',
       modeler: './example/src/modeler.js',
       basic: './example/basic/src/app.js'
     },

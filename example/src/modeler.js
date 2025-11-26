@@ -72,10 +72,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
+    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function() {
+        eventBus.on('commandStack.changed', function () {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -100,7 +100,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    } ]
+    }]
   ]
 };
 
@@ -253,7 +253,7 @@ function exportSVG() {
   });
 }
 
-document.body.addEventListener('keydown', function(event) {
+document.body.addEventListener('keydown', function (event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
 
@@ -267,21 +267,21 @@ document.body.addEventListener('keydown', function(event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function(event) {
+document.querySelector('#download-button').addEventListener('click', function (event) {
   downloadDiagram();
 });
 
-document.querySelector('#export-png').addEventListener('click', function(event) {
+document.querySelector('#export-png').addEventListener('click', function (event) {
   exportPNG();
 });
 
-document.querySelector('#export-svg').addEventListener('click', function(event) {
+document.querySelector('#export-svg').addEventListener('click', function (event) {
   exportSVG();
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
   fileOpen({
-    extensions: [ '.bpmn' ],
+    extensions: ['.bpmn'],
     description: 'BPMN diagrams'
   }).then(openFile);
 });
@@ -291,19 +291,40 @@ const controlStack = document.getElementById('simulation-control-stack');
 const animWrapper = document.getElementById('control-anim-wrapper');
 
 function moveSimulationControls() {
-  const toggle = document.querySelector('.bts-toggle-mode');
-  const speed = document.querySelector('.bts-set-animation-speed');
+  console.log('Moving simulation controls to groups');
 
-  if (toggle && toggle.parentNode !== controlStack) {
+  const controlGroup = document.getElementById('control-group');
+  const monitorGroup = document.getElementById('monitor-group');
+  const ioGroup = document.getElementById('io-group');
 
-    // keep original styling, only move into stack at the top
-    controlStack.prepend(toggle);
+  // Move token simulation toggle to control group
+  const toggleMode = document.querySelector('.bts-toggle-mode');
+  if (toggleMode && controlGroup && toggleMode.parentNode !== controlGroup) {
+    controlGroup.appendChild(toggleMode);
   }
 
-  if (speed && animWrapper && speed.parentNode !== animWrapper) {
+  // Move token simulation palette to control group
+  const paletteEntries = document.querySelector('.bts-palette');
+  if (paletteEntries && controlGroup && paletteEntries.parentNode !== controlGroup) {
+    controlGroup.appendChild(paletteEntries);
+  }
 
-    // keep original styling, place inside limited-height wrapper
-    animWrapper.appendChild(speed);
+  // Move animation speed control to I/O group (under theme toggle)
+  const speedControl = document.querySelector('.bts-set-animation-speed');
+  if (speedControl && ioGroup && speedControl.parentNode !== ioGroup) {
+    ioGroup.appendChild(speedControl);
+  }
+
+  // Move linting messages to monitor group
+  const lintingMessages = document.getElementById('linting-messages');
+  if (lintingMessages && monitorGroup && lintingMessages.parentNode !== monitorGroup) {
+    monitorGroup.appendChild(lintingMessages);
+  }
+
+  // Move simulation log to monitor group
+  const log = document.querySelector('.bts-log');
+  if (log && monitorGroup && log.parentNode !== monitorGroup) {
+    monitorGroup.appendChild(log);
   }
 }
 
@@ -467,11 +488,11 @@ function toggleProperties(open) {
   propertiesPanel.classList.toggle('open', open);
 }
 
-propertiesPanelResizer.addEventListener('click', function(event) {
+propertiesPanelResizer.addEventListener('click', function (event) {
   toggleProperties(!propertiesPanel.classList.contains('open'));
 });
 
-propertiesPanelResizer.addEventListener('dragstart', function(event) {
+propertiesPanelResizer.addEventListener('dragstart', function (event) {
   const img = new Image();
   img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   event.dataTransfer.setDragImage(img, 1, 1);
@@ -480,7 +501,7 @@ propertiesPanelResizer.addEventListener('dragstart', function(event) {
   startWidth = propertiesPanel.getBoundingClientRect().width;
 });
 
-propertiesPanelResizer.addEventListener('drag', function(event) {
+propertiesPanelResizer.addEventListener('drag', function (event) {
 
   if (!event.screenX) {
     return;
