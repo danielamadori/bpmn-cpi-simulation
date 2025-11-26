@@ -291,40 +291,40 @@ const controlStack = document.getElementById('simulation-control-stack');
 const animWrapper = document.getElementById('control-anim-wrapper');
 
 function moveSimulationControls() {
-  console.log('Moving simulation controls to bottom');
-  const toggle = document.querySelector('.bts-toggle-mode');
-  const speed = document.querySelector('.bts-set-animation-speed');
+  console.log('Moving simulation controls to groups');
 
-  if (toggle && toggle.parentNode !== controlStack) {
+  const controlGroup = document.getElementById('control-group');
+  const monitorGroup = document.getElementById('monitor-group');
+  const ioGroup = document.getElementById('io-group');
 
-    // keep original styling, only move into stack at the top
-    controlStack.appendChild(toggle);
+  // Move token simulation toggle to control group
+  const toggleMode = document.querySelector('.bts-toggle-mode');
+  if (toggleMode && controlGroup && toggleMode.parentNode !== controlGroup) {
+    controlGroup.appendChild(toggleMode);
   }
 
-  if (speed && animWrapper && speed.parentNode !== animWrapper) {
-
-    // keep original styling, place inside limited-height wrapper
-    animWrapper.appendChild(speed);
+  // Move token simulation palette to control group
+  const paletteEntries = document.querySelector('.bts-palette');
+  if (paletteEntries && controlGroup && paletteEntries.parentNode !== controlGroup) {
+    controlGroup.appendChild(paletteEntries);
   }
 
-  const palette = document.querySelector('.bts-palette');
-  if (palette && palette.parentNode !== controlStack) {
-    controlStack.appendChild(palette);
+  // Move animation speed control to I/O group (under theme toggle)
+  const speedControl = document.querySelector('.bts-set-animation-speed');
+  if (speedControl && ioGroup && speedControl.parentNode !== ioGroup) {
+    ioGroup.appendChild(speedControl);
   }
 
-  const themeToggle = document.getElementById('theme-toggle');
-  if (themeToggle && themeToggle.parentNode !== controlStack) {
-    controlStack.appendChild(themeToggle);
-  }
-
+  // Move linting messages to monitor group
   const lintingMessages = document.getElementById('linting-messages');
-  if (lintingMessages && lintingMessages.parentNode !== controlStack) {
-    controlStack.appendChild(lintingMessages);
+  if (lintingMessages && monitorGroup && lintingMessages.parentNode !== monitorGroup) {
+    monitorGroup.appendChild(lintingMessages);
   }
 
+  // Move simulation log to monitor group
   const log = document.querySelector('.bts-log');
-  if (log && log.parentNode !== controlStack) {
-    controlStack.appendChild(log);
+  if (log && monitorGroup && log.parentNode !== monitorGroup) {
+    monitorGroup.appendChild(log);
   }
 }
 
