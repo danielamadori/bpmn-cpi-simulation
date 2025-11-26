@@ -50,7 +50,6 @@
 
   <div class="canvas-parent">
     <div class="canvas" id="canvas">
-      <div class="drop-message"><strong>Hint:</strong> Drop a diagram to open</div>
 
       <div class="djs-minimap"></div>
 
@@ -60,6 +59,27 @@
       <div class="properties-panel-resizer" id="properties-panel-resizer" title="Toggle properties panel" draggable="true">
          <div class="properties-panel-resize-handle"></div>
       </div>
+    </div>
+  </div>
+
+  <div id="state-panel" class="state-panel" aria-live="polite">
+    <div class="state-panel-header">
+      <span id="state-panel-title">State sequence</span>
+    </div>
+    <div class="state-panel-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Attivit&agrave;</th>
+            <th>Stato</th>
+          </tr>
+        </thead>
+        <tbody id="state-panel-body">
+          <tr>
+            <td class="state-panel-empty" colspan="2">Premi "Play state sequence" per vedere gli stati</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 

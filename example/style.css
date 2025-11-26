@@ -264,6 +264,7 @@ body:not(.presentation-mode) .bts-notifications {
   display: table;
 }
 
+
 .drop-overlay .label {
   font-size: 26px;
   color: #888;
@@ -273,6 +274,109 @@ body:not(.presentation-mode) .bts-notifications {
   vertical-align: middle;
 }
 
+.state-panel {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  width: 300px;
+  max-width: 32vw;
+  max-height: 40vh;
+  background: var(--token-simulation-white, #FFFFFF);
+  color: var(--token-simulation-grey-darken-30, #212121);
+  border: 1px solid var(--token-simulation-silver-darken-94, #EFEFEF);
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  z-index: 10;
+}
+
+.state-panel.visible {
+  display: flex;
+}
+
+.state-panel-header {
+  padding: 10px 12px 4px;
+  display: flex;
+  align-items: center;
+}
+
+.state-panel-title {
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--token-simulation-silver-darken-94, #EFEFEF);
+  border-radius: 12px;
+  background: rgba(16, 208, 112, 0.08);
+}
+
+.state-panel-table-wrapper {
+  overflow-y: auto;
+  max-height: 34vh;
+  padding: 0 8px 8px;
+}
+
+.state-panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  border: 1px solid var(--token-simulation-silver-darken-94, #EFEFEF);
+}
+
+.state-panel th,
+.state-panel td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--token-simulation-silver-darken-94, #EFEFEF);
+  border-right: 1px solid var(--token-simulation-silver-darken-94, #EFEFEF);
+  text-align: left;
+}
+
+.state-panel th:last-child,
+.state-panel td:last-child {
+  border-right: none;
+}
+
+.state-panel thead th {
+  position: sticky;
+  top: 0;
+  background: var(--token-simulation-white, #FFFFFF);
+  z-index: 1;
+}
+
+.state-panel tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.state-panel-empty {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+.state-status-active {
+  color: #0c9f55;
+  font-weight: 600;
+}
+
+.state-status-waiting {
+  color: #666;
+}
+
+.state-status-completed {
+  color: #0a5bd8;
+  font-weight: 600;
+}
+
+.state-status-will-not-be-executed {
+  color: #b45f06;
+}
+
+/* hide vendor badge */
+.bjs-powered-by {
+  display: none !important;
+}
+
 /* position token-simulation toggle into side gutter */
 .bts-toggle-mode {
   position: fixed !important;
@@ -280,3 +384,4 @@ body:not(.presentation-mode) .bts-notifications {
   left: 24px !important;
   z-index: 2;
 }
+

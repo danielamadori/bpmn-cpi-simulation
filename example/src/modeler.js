@@ -45,6 +45,11 @@ const initialDiagram = (() => {
 function showMessage(cls, message) {
   const messageEl = document.querySelector('.drop-message');
 
+  if (!messageEl) {
+    console.error(message);
+    return;
+  }
+
   messageEl.textContent = message;
   messageEl.className = `drop-message ${cls || ''}`;
 
@@ -53,6 +58,10 @@ function showMessage(cls, message) {
 
 function hideMessage() {
   const messageEl = document.querySelector('.drop-message');
+
+  if (!messageEl) {
+    return;
+  }
 
   messageEl.style.display = 'none';
 }
@@ -304,6 +313,10 @@ controlsObserver.observe(document.body, { childList: true, subtree: true });
 // --- state sequence playback (drives tokens from JSON snapshots) ---
 
 const playStatesBtn = document.getElementById('play-state-sequence');
+const statePanel = document.getElementById('state-panel');
+const statePanelTitle = document.getElementById('state-panel-title');
+const statePanelBody = document.getElementById('state-panel-body');
+const elementRegistry = () => modeler.get('elementRegistry');
 
 // load all JSON state snapshots from /states in lexicographic order
 // webpack injects require.context; lint as a known global.
@@ -313,6 +326,80 @@ const stateSequence = statesContext.keys().sort().map(key => ({
   name: key.replace('./', '').replace('.json', ''),
   state: statesContext(key)
 }));
+
+function showStatePanelMessage(message) {
+  if (!statePanel || !statePanelBody) {
+    return;
+  }
+
+  statePanel.classList.add('visible');
+
+  if (statePanelTitle) {
+    statePanelTitle.textContent = 'State sequence';
+  }
+
+  statePanelBody.innerHTML = '';
+
+  const row = document.createElement('tr');
+  const cell = document.createElement('td');
+  cell.colSpan = 2;
+  cell.className = 'state-panel-empty';
+  cell.textContent = message;
+
+  row.appendChild(cell);
+  statePanelBody.appendChild(row);
+}
+
+function normalizeStatusClass(status) {
+  return `state-status-${status.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+}
+
+function renderStateSnapshot(snapshot) {
+  if (!snapshot || !statePanel || !statePanelBody) {
+    return;
+  }
+
+  statePanel.classList.add('visible');
+
+  if (statePanelTitle) {
+    statePanelTitle.textContent = `State: ${snapshot.name}`;
+  }
+
+  statePanelBody.innerHTML = '';
+
+  const entries = Object.entries(snapshot.state).sort(([a], [b]) => a.localeCompare(b));
+
+  if (!entries.length) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 2;
+    cell.className = 'state-panel-empty';
+    cell.textContent = 'Nessuna attivita\u0300 nello snapshot';
+    row.appendChild(cell);
+    statePanelBody.appendChild(row);
+    return;
+  }
+
+  entries.forEach(([taskId, status]) => {
+    const row = document.createElement('tr');
+    const taskCell = document.createElement('td');
+    const statusCell = document.createElement('td');
+
+    const element = elementRegistry().get(taskId);
+    const displayName = element && element.businessObject && element.businessObject.name
+      ? element.businessObject.name
+      : taskId;
+
+    taskCell.textContent = displayName;
+    statusCell.textContent = status;
+    statusCell.classList.add(normalizeStatusClass(status));
+
+    row.appendChild(taskCell);
+    row.appendChild(statusCell);
+
+    statePanelBody.appendChild(row);
+  });
+}
 
 function diffCompletions(prev, next) {
   return Object.keys(next).filter(id => prev[id] === 'active' && next[id] === 'completed');
@@ -333,20 +420,26 @@ async function playStates() {
 
   if (!stateSequence.length) {
     console.warn('No state snapshots found in /states');
+    showStatePanelMessage('Nessuno snapshot trovato in /states');
     return;
   }
 
   // kick things off by triggering the main start event
   simulationSupport.triggerElement('StartEvent_0offpno');
 
+  renderStateSnapshot(stateSequence[0]);
+
   for (let i = 1; i < stateSequence.length; i++) {
     const prev = stateSequence[i - 1].state;
-    const next = stateSequence[i].state;
+    const nextSnapshot = stateSequence[i];
+    const next = nextSnapshot.state;
     const completions = diffCompletions(prev, next);
 
     if (completions.length) {
       await waitForTokenDrain(simulationSupport, completions);
     }
+
+    renderStateSnapshot(nextSnapshot);
   }
 }
 
