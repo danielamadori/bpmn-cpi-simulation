@@ -10,6 +10,10 @@ ___Note:__ Yet to be released changes appear here._
 * `CHORE`: lint all BPMN diagrams via `npm run lint:bpmn` and run it with `npm test`
 * `CHORE`: bundle BPMN lint plugin assets and configuration during build
 
+## 0.38.2
+
+* `FIX`: correct resetting of flow colors changed by inclusive gateway toggling ([#242](https://github.com/bpmn-io/bpmn-js-token-simulation/issues/242), [#243](https://github.com/bpmn-io/bpmn-js-token-simulation/pull/243))
+
 ## 0.38.1
 
 * `FIX`: don't show context pad overlays on sub-process plane ([#228](https://github.com/bpmn-io/bpmn-js-token-simulation/pull/228))
