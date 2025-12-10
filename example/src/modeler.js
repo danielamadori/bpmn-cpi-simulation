@@ -348,6 +348,76 @@ const stateSequence = statesContext.keys().sort().map(key => ({
   state: statesContext(key)
 }));
 
+let executionOrderMap = null;
+
+function getExecutionOrderMap() {
+  if (executionOrderMap) {
+    return executionOrderMap;
+  }
+
+  const executionOrder = [];
+  const seenTasks = new Set();
+
+  stateSequence.forEach(snapshot => {
+    const newTasks = [];
+    Object.entries(snapshot.state).forEach(([taskId, status]) => {
+      if (!seenTasks.has(taskId) && status !== 'waiting' && status !== 'will not be executed') {
+        newTasks.push(taskId);
+        seenTasks.add(taskId);
+      }
+    });
+
+    // Sort newly active tasks by Name (if available) or ID to ensure deterministic order
+    newTasks.sort((a, b) => {
+      const elementA = elementRegistry().get(a);
+      const elementB = elementRegistry().get(b);
+      const nameA = elementA && elementA.businessObject.name ? elementA.businessObject.name : a;
+      const nameB = elementB && elementB.businessObject.name ? elementB.businessObject.name : b;
+      return nameA.localeCompare(nameB);
+    });
+
+    newTasks.forEach(taskId => executionOrder.push(taskId));
+  });
+
+  // Manual ordering for skipped tasks (requested by user)
+  // "Account Balance Information" and "Display Balance" after "Select Interaction"
+  const selectInteractionIdx = executionOrder.indexOf('Task_0po6mda');
+  if (selectInteractionIdx !== -1) {
+    const tasksToInsert = ['Task_1ept7kl', 'Task_180wh31'];
+    tasksToInsert.forEach(id => {
+      if (!executionOrder.includes(id)) {
+        executionOrder.splice(selectInteractionIdx + 1, 0, id);
+      }
+    });
+  }
+
+  // "Timeout" after "Issue Money"
+  const issueMoneyIdx = executionOrder.indexOf('Task_16oagb5');
+  if (issueMoneyIdx !== -1) {
+    const tasksToInsert = ['Task_1u7pqoy'];
+    tasksToInsert.forEach(id => {
+      if (!executionOrder.includes(id)) {
+        executionOrder.splice(issueMoneyIdx + 1, 0, id);
+      }
+    });
+  }
+
+  // Add any remaining tasks that never left "waiting" and weren't manually inserted
+  const remainingTasks = [];
+  stateSequence.forEach(snapshot => {
+    Object.keys(snapshot.state).forEach(taskId => {
+      if (!seenTasks.has(taskId) && !executionOrder.includes(taskId)) {
+        remainingTasks.push(taskId);
+        seenTasks.add(taskId);
+      }
+    });
+  });
+  remainingTasks.sort().forEach(taskId => executionOrder.push(taskId));
+
+  executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
+  return executionOrderMap;
+}
+
 function showStatePanelMessage(message) {
   if (!statePanel || !statePanelBody) {
     return;
@@ -388,7 +458,12 @@ function renderStateSnapshot(snapshot) {
 
   statePanelBody.innerHTML = '';
 
-  const entries = Object.entries(snapshot.state).sort(([a], [b]) => a.localeCompare(b));
+  const orderMap = getExecutionOrderMap();
+  const entries = Object.entries(snapshot.state).sort(([a], [b]) => {
+    const orderA = orderMap.has(a) ? orderMap.get(a) : Infinity;
+    const orderB = orderMap.has(b) ? orderMap.get(b) : Infinity;
+    return orderA - orderB;
+  });
 
   if (!entries.length) {
     const row = document.createElement('tr');
@@ -466,6 +541,12 @@ async function playStates() {
 
 playStatesBtn.addEventListener('click', () => {
   playStates().catch(err => console.error('State playback failed', err));
+});
+
+modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
+  if (stateSequence.length) {
+    renderStateSnapshot(stateSequence[0]);
+  }
 });
 
 
