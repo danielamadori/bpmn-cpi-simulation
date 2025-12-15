@@ -245,10 +245,6 @@
   color: var(--token-simulation-white, #FFFFFF);
 }
 
-.bjs-container .djs-palette {
-  top: 60px;
-}
-
 .bjs-container.simulation .djs-bendpoint,
 .bjs-container.simulation .djs-context-pad,
 .bjs-container.simulation .djs-outline,
