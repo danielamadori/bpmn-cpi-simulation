@@ -72,10 +72,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
+    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function () {
+        eventBus.on('commandStack.changed', function() {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -100,7 +100,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    }]
+    } ]
   ]
 };
 
@@ -287,7 +287,7 @@ function exportSVG() {
   });
 }
 
-document.body.addEventListener('keydown', function (event) {
+document.body.addEventListener('keydown', function(event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
 
@@ -301,29 +301,26 @@ document.body.addEventListener('keydown', function (event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function (event) {
+document.querySelector('#download-button').addEventListener('click', function(event) {
   downloadDiagram();
 });
 
-document.querySelector('#export-png').addEventListener('click', function (event) {
+document.querySelector('#export-png').addEventListener('click', function(event) {
   exportPNG();
 });
 
-document.querySelector('#export-svg').addEventListener('click', function (event) {
+document.querySelector('#export-svg').addEventListener('click', function(event) {
   exportSVG();
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
   fileOpen({
-    extensions: ['.bpmn'],
+    extensions: [ '.bpmn' ],
     description: 'BPMN diagrams'
   }).then(openFile);
 });
 
 // move simulation UI controls (toggle + animation speed) into a dedicated left gutter stack
-const controlStack = document.getElementById('simulation-control-stack');
-const animWrapper = document.getElementById('control-anim-wrapper');
-
 function moveSimulationControls() {
   console.log('Moving simulation controls to groups');
 
@@ -407,7 +404,7 @@ function getExecutionOrderMap() {
     });
   });
 
-  executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
+  executionOrderMap = new Map(executionOrder.map((id, index) => [ id, index ]));
   return executionOrderMap;
 }
 
@@ -454,7 +451,7 @@ function renderStateSnapshot(snapshot) {
   statePanelBody.innerHTML = '';
 
   const orderMap = getExecutionOrderMap();
-  const entries = Object.entries(snapshot.state).sort(([a], [b]) => {
+  const entries = Object.entries(snapshot.state).sort(([ a ], [ b ]) => {
     const orderA = orderMap.has(a) ? orderMap.get(a) : Infinity;
     const orderB = orderMap.has(b) ? orderMap.get(b) : Infinity;
     return orderA - orderB;
@@ -471,7 +468,7 @@ function renderStateSnapshot(snapshot) {
     return;
   }
 
-  entries.forEach(([taskId, status]) => {
+  entries.forEach(([ taskId, status ]) => {
     const row = document.createElement('tr');
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
@@ -519,6 +516,7 @@ async function waitForTokenDrain(simulationSupport, ids) {
 
     while (attempts < maxAttempts) {
       try {
+
         // Try to trigger
         simulationSupport.triggerElement(id);
         console.log(`Triggered ${id} successfully.`);
@@ -528,9 +526,11 @@ async function waitForTokenDrain(simulationSupport, ids) {
         attempts++;
         if (attempts >= maxAttempts) {
           console.error(`Failed to trigger ${id} after ${maxAttempts} attempts. Moving on.`);
+
           // Optional: throw or alert final failure, or just continue to next element
           // For now we continue, assuming user might click manually if needed.
         } else {
+
           // Wait for animation/token arrival
           await new Promise(resolve => setTimeout(resolve, 300));
         }
@@ -550,6 +550,7 @@ function initializeSimulationToStart() {
   if (!stateSequence.length) return;
 
   const simulationSupport = modeler.get('simulationSupport');
+
   // Ensure token simulation is active
   simulationSupport.toggleSimulation(true);
 
@@ -562,6 +563,7 @@ function initializeSimulationToStart() {
   const simulator = modeler.get('simulator');
 
   elementRegistry.getAll().forEach(element => {
+
     // Force pause on all elements EXCEPT EndEvents (they auto-consume) and Processes
     if (element.type !== 'bpmn:Process' && element.type !== 'bpmn:EndEvent') {
       simulator.setConfig(element, { wait: true });
@@ -613,10 +615,12 @@ async function playStates() {
       logInfo(`STEP ${currentStateIndex} -> ${nextIndex}: ${nextSnapshot.name} - transition in progress.`);
 
       if (currentStateIndex === 0) {
+
         // ... t0 -> t1
         console.log('Triggering Start Event to transition t0 -> t1');
         simulationSupport.triggerElement('StartEvent_0offpno');
       } else {
+
         // Normal Case: tN -> tN+1
         const prev = stateSequence[currentStateIndex].state;
         const next = nextSnapshot.state;
@@ -629,9 +633,11 @@ async function playStates() {
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
-        const allActions = [...activations, ...completions].filter(id => {
+        const allActions = [ ...activations, ...completions ].filter(id => {
+
           // Do NOT try to trigger EndEvents, they don't support it.
           const el = registry.get(id);
+
           // Also skip EventBasedGateway triggering if we are triggering the Event instead.
           // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
           // Best to skip triggering the Gateway itself if it's EventBased.
@@ -657,6 +663,7 @@ async function playStates() {
     console.error('State playback failed', err);
     logError('Error while playing the step: ' + err.message);
   } finally {
+
     // ALWAYS re-enable the button
     isStepping = false;
     playStatesBtn.disabled = false;
@@ -668,6 +675,7 @@ playStatesBtn.onclick = () => {
 };
 
 modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
+
   // Restart from t0 (no tokens)
   initializeSimulationToStart();
 });

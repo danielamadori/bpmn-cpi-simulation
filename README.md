@@ -114,6 +114,106 @@ You may also consume linting results programmatically by listening to the
 `linting.messages` event on the `eventBus`.
 
 
+## Selection API
+
+The library provides a `SelectionAPI` module that allows wrapper applications to monitor and interact with element selection in the BPMN diagram, similar to how the properties panel works.
+
+### Getting Selected Elements
+
+```javascript
+// Get the SelectionAPI instance
+const selectionAPI = modeler.get('selectionAPI');
+
+// Get currently selected elements
+const selectedElements = selectionAPI.getSelectedElements();
+console.log('Selected:', selectedElements);
+
+// Get single selected element (returns null if none or multiple selected)
+const element = selectionAPI.getSelectedElement();
+
+// Check if a specific element is selected
+if (selectionAPI.isSelected('Task_1')) {
+  console.log('Task_1 is currently selected');
+}
+
+// Get detailed selection information
+const info = selectionAPI.getSelectionInfo();
+// Returns: { count, elements, types, ids, businessObjects }
+```
+
+### Listening to Selection Changes
+
+```javascript
+// Register a listener for selection changes
+const unsubscribe = selectionAPI.onSelectionChanged((newSelection, oldSelection) => {
+  console.log('New selection:', newSelection.map(e => e.id));
+  console.log('Previous selection:', oldSelection.map(e => e.id));
+  
+  // Update your wrapper application UI here
+  updateMyUI(newSelection);
+});
+
+// Alias (same behavior):
+// const unsubscribe = selectionAPI.subscribe((newSelection, oldSelection) => { ... });
+
+// Later, to stop listening
+unsubscribe();
+
+// Alternative: Listen via eventBus
+modeler.get('eventBus').on('tokenSimulation.selectionChanged', event => {
+  console.log('Selection changed:', event.elements);
+  console.log('Has selection:', event.hasSelection);
+});
+```
+
+### Programmatically Selecting Elements
+
+```javascript
+// Select element by ID
+selectionAPI.select('Task_1');
+
+// Select multiple elements
+selectionAPI.select(['Task_1', 'Task_2']);
+
+// Select using element objects
+const element = modeler.get('elementRegistry').get('Task_1');
+selectionAPI.select(element);
+
+// Clear selection
+selectionAPI.clearSelection();
+```
+
+### Use Case: Integration with Wrapper Applications
+
+The Selection API is designed for wrapper applications that need to:
+- Display selected element details in custom panels
+- Synchronize selection with external systems
+- Track user interactions with the diagram
+- Provide custom selection-based features
+
+Example integration:
+
+```javascript
+// Initialize your wrapper application
+modeler.on('import.done', () => {
+  const selectionAPI = modeler.get('selectionAPI');
+  
+  // Expose to your wrapper application
+  window.myApp = {
+    getSelection: () => selectionAPI.getSelectedElements(),
+    selectElement: (id) => selectionAPI.select(id),
+    onSelectionChange: (callback) => selectionAPI.onSelectionChanged(callback)
+  };
+  
+  // Listen to changes
+  selectionAPI.onSelectionChanged((elements) => {
+    // Update your custom properties panel
+    myCustomPropertiesPanel.update(elements);
+  });
+});
+```
+
+
 ## Exporting Diagrams
 
 The example applications allow you to export the currently loaded BPMN diagram
