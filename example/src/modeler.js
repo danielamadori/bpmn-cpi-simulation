@@ -132,6 +132,37 @@ const modeler = new BpmnModeler({
   }
 });
 
+const simulationLog = () => modeler.get('log');
+
+function logMessage(level, message) {
+  const log = simulationLog();
+
+  const consoleMethod = level === 'error' ? 'error' : level === 'warning' ? 'warn' : 'log';
+
+  if (console[consoleMethod]) {
+    console[consoleMethod](message);
+  }
+
+  if (log && typeof log.log === 'function') {
+    log.log({
+      text: message,
+      type: level === 'error' ? 'error' : level === 'warning' ? 'warning' : 'info'
+    });
+  }
+}
+
+function logInfo(message) {
+  logMessage('info', message);
+}
+
+function logWarning(message) {
+  logMessage('warning', message);
+}
+
+function logError(message) {
+  logMessage('error', message);
+}
+
 const lintingMessagesEl = document.querySelector('#linting-messages');
 
 function sanitizeDiagram(modeler, { persist = false } = {}) {
@@ -366,7 +397,7 @@ function getExecutionOrderMap() {
     Object.keys(snapshot.state).forEach(taskId => {
 
       if (!registry.get(taskId)) {
-        throw new Error(`Elemento '${taskId}' presente nello snapshot '${snapshot.name}' non trovato nel modello BPMN.`);
+        throw new Error(`Element '${taskId}' in snapshot '${snapshot.name}' not found in the BPMN model.`);
       }
 
       if (!seenTasks.has(taskId)) {
@@ -434,7 +465,7 @@ function renderStateSnapshot(snapshot) {
     const cell = document.createElement('td');
     cell.colSpan = 2;
     cell.className = 'state-panel-empty';
-    cell.textContent = 'Nessuna attivita\u0300 nello snapshot';
+    cell.textContent = 'No activities in this snapshot';
     row.appendChild(cell);
     statePanelBody.appendChild(row);
     return;
@@ -515,7 +546,7 @@ let currentStateIndex = 0;
 let isStepping = false;
 
 function initializeSimulationToStart() {
-  alert("DEBUG: NUOVA VERSIONE CARICATA (Manual Mode)\nSe vedi questo messaggio, il codice è aggiornato.");
+  logInfo('DEBUG: NEW VERSION LOADED (Manual Mode). If you see this message, the code is up to date.');
   if (!stateSequence.length) return;
 
   const simulationSupport = modeler.get('simulationSupport');
@@ -568,7 +599,7 @@ async function playStates() {
 
     if (!stateSequence.length) {
       console.warn('No state snapshots found in /states');
-      showStatePanelMessage('Nessuno snapshot trovato in /states');
+      showStatePanelMessage('No snapshots found in /states');
       return;
     }
 
@@ -579,8 +610,7 @@ async function playStates() {
       const nextSnapshot = stateSequence[nextIndex];
       console.log(`Advancing from ${currentStateIndex} to ${nextIndex}: ${nextSnapshot.name}`);
 
-      // CONFIRMATION ALERT
-      alert(`STEP ${currentStateIndex} -> ${nextIndex}: ${nextSnapshot.name}\n\nClicca OK per effettuare la transizione.`);
+      logInfo(`STEP ${currentStateIndex} -> ${nextIndex}: ${nextSnapshot.name} - transition in progress.`);
 
       if (currentStateIndex === 0) {
         // ... t0 -> t1
@@ -609,8 +639,8 @@ async function playStates() {
         });
 
         if (allActions.length) {
-          alert(`AZIONI AUTOMATICHE RILEVATE:\nIl sistema completerà/avvierà ora i seguenti elementi (ordinati per posizione):\n` +
-            `${getSortedTriggers(allActions).join(', ')}\n\nClicca OK per procedere.`);
+          logWarning('AUTOMATIC ACTIONS DETECTED: the system will complete/start the following elements (sorted by position): ' +
+            `${getSortedTriggers(allActions).join(', ')}`);
 
           await waitForTokenDrain(simulationSupport, allActions);
         }
@@ -621,11 +651,11 @@ async function playStates() {
       currentStateIndex = nextIndex;
     } else {
       console.log('State sequence completed');
-      showStatePanelMessage('Sequenza di stati completata.');
+      showStatePanelMessage('State sequence completed.');
     }
   } catch (err) {
     console.error('State playback failed', err);
-    alert('Errore durante la riproduzione dello step: ' + err.message);
+    logError('Error while playing the step: ' + err.message);
   } finally {
     // ALWAYS re-enable the button
     isStepping = false;
