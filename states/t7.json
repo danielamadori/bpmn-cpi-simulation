@@ -15,8 +15,8 @@
   "IntermediateCatchEvent_12qf66u": "waiting",
   "IntermediateThrowEvent_10vhtou": "waiting",
   "Task_1xu25p5": "completed",
-  "Task_0e0mu6c": "active",
-  "ExclusiveGateway_12ylcgi": "waiting",
+  "Task_0e0mu6c": "waiting",
+  "ExclusiveGateway_12ylcgi": "active",
   "Task_1ept7kl": "will not be executed",
   "Task_180wh31": "will not be executed",
   "Task_1u7pqoy": "will not be executed"

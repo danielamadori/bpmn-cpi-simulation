@@ -593,16 +593,19 @@ async function playStates() {
 
         const completions = diffCompletions(prev, next);
 
-        // Detect SubProcesses becoming active (entering)
+        // Detect SubProcesses becoming active (entering) OR Catch Events becoming active (pulling from Gateway)
         const activations = diffActivations(prev, next).filter(id => {
           const el = registry.get(id);
-          return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction');
+          return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
         const allActions = [...activations, ...completions].filter(id => {
           // Do NOT try to trigger EndEvents, they don't support it.
           const el = registry.get(id);
-          return el && el.type !== 'bpmn:EndEvent';
+          // Also skip EventBasedGateway triggering if we are triggering the Event instead.
+          // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
+          // Best to skip triggering the Gateway itself if it's EventBased.
+          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway';
         });
 
         if (allActions.length) {
