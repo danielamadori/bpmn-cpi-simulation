@@ -550,54 +550,7 @@ modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
 });
 
 
-const propertiesPanel = document.querySelector('#properties-panel');
-
-const propertiesPanelResizer = document.querySelector('#properties-panel-resizer');
-
-let startX, startWidth;
-
-function toggleProperties(open) {
-
-  if (open) {
-    url.searchParams.set('pp', '1');
-  } else {
-    url.searchParams.delete('pp');
-  }
-
-  history.replaceState({}, document.title, url.toString());
-
-  propertiesPanel.classList.toggle('open', open);
-}
-
-propertiesPanelResizer.addEventListener('click', function (event) {
-  toggleProperties(!propertiesPanel.classList.contains('open'));
-});
-
-propertiesPanelResizer.addEventListener('dragstart', function (event) {
-  const img = new Image();
-  img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-  event.dataTransfer.setDragImage(img, 1, 1);
-
-  startX = event.screenX;
-  startWidth = propertiesPanel.getBoundingClientRect().width;
-});
-
-propertiesPanelResizer.addEventListener('drag', function (event) {
-
-  if (!event.screenX) {
-    return;
-  }
-
-  const delta = event.screenX - startX;
-
-  const width = startWidth - delta;
-
-  const open = width > 200;
-
-  propertiesPanel.style.width = open ? `${width}px` : null;
-
-  toggleProperties(open);
-});
+// Properties panel is now always visible in the left sidebar
 
 const remoteDiagram = url.searchParams.get('diagram');
 
@@ -622,8 +575,6 @@ if (remoteDiagram) {
 } else {
   openDiagram(initialDiagram);
 }
-
-toggleProperties(url.searchParams.has('pp'));
 
 // expose for theming
 window.bpmnjs = modeler;
