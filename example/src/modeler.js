@@ -206,6 +206,9 @@ function openDiagram(diagram) {
       }
 
       modeler.get('canvas').zoom('fit-viewport');
+
+      // Auto-start simulation at t0
+      initializeSimulationToStart();
     })
     .catch(err => {
       console.error(err);
@@ -357,62 +360,21 @@ function getExecutionOrderMap() {
 
   const executionOrder = [];
   const seenTasks = new Set();
+  const registry = elementRegistry();
 
-  stateSequence.forEach(snapshot => {
-    const newTasks = [];
-    Object.entries(snapshot.state).forEach(([taskId, status]) => {
-      if (!seenTasks.has(taskId) && status !== 'waiting' && status !== 'will not be executed') {
-        newTasks.push(taskId);
-        seenTasks.add(taskId);
-      }
-    });
-
-    // Sort newly active tasks by Name (if available) or ID to ensure deterministic order
-    newTasks.sort((a, b) => {
-      const elementA = elementRegistry().get(a);
-      const elementB = elementRegistry().get(b);
-      const nameA = elementA && elementA.businessObject.name ? elementA.businessObject.name : a;
-      const nameB = elementB && elementB.businessObject.name ? elementB.businessObject.name : b;
-      return nameA.localeCompare(nameB);
-    });
-
-    newTasks.forEach(taskId => executionOrder.push(taskId));
-  });
-
-  // Manual ordering for skipped tasks (requested by user)
-  // "Account Balance Information" and "Display Balance" after "Select Interaction"
-  const selectInteractionIdx = executionOrder.indexOf('Task_0po6mda');
-  if (selectInteractionIdx !== -1) {
-    const tasksToInsert = ['Task_1ept7kl', 'Task_180wh31'];
-    tasksToInsert.forEach(id => {
-      if (!executionOrder.includes(id)) {
-        executionOrder.splice(selectInteractionIdx + 1, 0, id);
-      }
-    });
-  }
-
-  // "Timeout" after "Issue Money"
-  const issueMoneyIdx = executionOrder.indexOf('Task_16oagb5');
-  if (issueMoneyIdx !== -1) {
-    const tasksToInsert = ['Task_1u7pqoy'];
-    tasksToInsert.forEach(id => {
-      if (!executionOrder.includes(id)) {
-        executionOrder.splice(issueMoneyIdx + 1, 0, id);
-      }
-    });
-  }
-
-  // Add any remaining tasks that never left "waiting" and weren't manually inserted
-  const remainingTasks = [];
   stateSequence.forEach(snapshot => {
     Object.keys(snapshot.state).forEach(taskId => {
-      if (!seenTasks.has(taskId) && !executionOrder.includes(taskId)) {
-        remainingTasks.push(taskId);
+
+      if (!registry.get(taskId)) {
+        throw new Error(`Elemento '${taskId}' presente nello snapshot '${snapshot.name}' non trovato nel modello BPMN.`);
+      }
+
+      if (!seenTasks.has(taskId)) {
+        executionOrder.push(taskId);
         seenTasks.add(taskId);
       }
     });
   });
-  remainingTasks.sort().forEach(taskId => executionOrder.push(taskId));
 
   executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
   return executionOrderMap;
@@ -453,8 +415,10 @@ function renderStateSnapshot(snapshot) {
   statePanel.classList.add('visible');
 
   if (statePanelTitle) {
-    statePanelTitle.textContent = `State: ${snapshot.name}`;
+    statePanelTitle.textContent = `State: ${snapshot.name} (Step Mode)`;
   }
+
+  console.log(`[${new Date().toLocaleTimeString()}] Loading State JSON: ${snapshot.name}`, snapshot.state);
 
   statePanelBody.innerHTML = '';
 
@@ -503,50 +467,126 @@ function diffCompletions(prev, next) {
 
 async function waitForTokenDrain(simulationSupport, ids) {
   for (const id of ids) {
+    // Trigger the element to move the token
     simulationSupport.triggerElement(id);
-    await simulationSupport.elementExit(id);
+
+    // We do NOT await elementExit here because it can hang if the simulator
+    // pauses at the very next element (which we forced with wait: true).
+    // Instead, we trust the trigger and let the animation proceed.
+    // A small delay helps visual pacing but isn't strictly required for logic.
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+}
+
+let currentStateIndex = 0;
+let isStepping = false;
+
+function initializeSimulationToStart() {
+  alert("DEBUG: NUOVA VERSIONE CARICATA (Manual Mode)\nSe vedi questo messaggio, il codice è aggiornato.");
+  if (!stateSequence.length) return;
+
+  const simulationSupport = modeler.get('simulationSupport');
+  // Ensure token simulation is active
+  simulationSupport.toggleSimulation(true);
+
+  // Reset sequence to t0
+  currentStateIndex = 0;
+
+  // FORCE PAUSE ON ALL ELEMENTS
+  // This ensures the token stops at Gateways, SubProcesses, etc.
+  const elementRegistry = modeler.get('elementRegistry');
+  const simulator = modeler.get('simulator');
+
+  elementRegistry.getAll().forEach(element => {
+    if (element.type !== 'bpmn:Process') {
+      simulator.setConfig(element, { wait: true });
+    }
+  });
+
+  // Render t0 only. Do NOT trigger Start Event yet.
+  // This ensures we start in a "waiting" state (t0).
+  // The first click on "Play" will trigger the Start Event (t0 -> t1).
+  console.log('Initializing to t0 (Pre-start)...');
+  try {
+    renderStateSnapshot(stateSequence[0]);
+  } catch (e) {
+    console.warn('Could not render t0:', e);
   }
 }
 
 async function playStates() {
-  const simulationSupport = modeler.get('simulationSupport');
+  console.log('PLAY STATE SEQUENCE CLICKED (Manual Mode)');
 
-  // ensure simulation is active
-  simulationSupport.toggleSimulation(true);
-
-  if (!stateSequence.length) {
-    console.warn('No state snapshots found in /states');
-    showStatePanelMessage('Nessuno snapshot trovato in /states');
+  if (isStepping) {
+    console.warn('Simulation step already in progress...');
     return;
   }
 
-  // kick things off by triggering the main start event
-  simulationSupport.triggerElement('StartEvent_0offpno');
+  isStepping = true;
+  playStatesBtn.disabled = true;
 
-  renderStateSnapshot(stateSequence[0]);
+  try {
+    const simulationSupport = modeler.get('simulationSupport');
 
-  for (let i = 1; i < stateSequence.length; i++) {
-    const prev = stateSequence[i - 1].state;
-    const nextSnapshot = stateSequence[i];
-    const next = nextSnapshot.state;
-    const completions = diffCompletions(prev, next);
+    // Ensure simulation is on
+    simulationSupport.toggleSimulation(true);
 
-    if (completions.length) {
-      await waitForTokenDrain(simulationSupport, completions);
+    if (!stateSequence.length) {
+      console.warn('No state snapshots found in /states');
+      showStatePanelMessage('Nessuno snapshot trovato in /states');
+      return;
     }
 
-    renderStateSnapshot(nextSnapshot);
+    // We are at currentStateIndex. We want to go to currentStateIndex + 1.
+    const nextIndex = currentStateIndex + 1;
+
+    if (nextIndex < stateSequence.length) {
+      const nextSnapshot = stateSequence[nextIndex];
+      console.log(`Advancing from ${currentStateIndex} to ${nextIndex}: ${nextSnapshot.name}`);
+
+      // CONFIRMATION ALERT
+      alert(`STEP ${currentStateIndex} -> ${nextIndex}: ${nextSnapshot.name}\n\nClicca OK per effettuare la transizione.`);
+
+      if (currentStateIndex === 0) {
+        // ... t0 -> t1
+        console.log('Triggering Start Event to transition t0 -> t1');
+        simulationSupport.triggerElement('StartEvent_0offpno');
+      } else {
+        // Normal Case: tN -> tN+1
+        const prev = stateSequence[currentStateIndex].state;
+        const next = nextSnapshot.state;
+        const completions = diffCompletions(prev, next);
+
+        if (completions.length) {
+          alert(`AZIONI AUTOMATICHE RILEVATE:\nIl sistema completerà ora i seguenti task per allinearsi allo stato ${nextSnapshot.name}:\n${completions.join(', ')}\n\nClicca OK per procedere con il completamento.`);
+          await waitForTokenDrain(simulationSupport, completions);
+        }
+      }
+
+      // Update UI to show we are now at nextSnapshot
+      renderStateSnapshot(nextSnapshot);
+      currentStateIndex = nextIndex;
+    } else {
+      console.log('State sequence completed');
+      showStatePanelMessage('Sequenza di stati completata.');
+    }
+  } catch (err) {
+    console.error('State playback failed', err);
+    alert('Errore durante la riproduzione dello step: ' + err.message);
+  } finally {
+    // ALWAYS re-enable the button
+    isStepping = false;
+    playStatesBtn.disabled = false;
   }
 }
 
-playStatesBtn.addEventListener('click', () => {
-  playStates().catch(err => console.error('State playback failed', err));
-});
+playStatesBtn.onclick = () => {
+  playStates();
+};
 
 modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
-  if (stateSequence.length) {
-    renderStateSnapshot(stateSequence[0]);
-  }
+  // Restart from t0 (no tokens)
+  initializeSimulationToStart();
 });
 
 
