@@ -206,6 +206,9 @@ function openDiagram(diagram) {
       }
 
       modeler.get('canvas').zoom('fit-viewport');
+
+      // Auto-start simulation at t0
+      initializeSimulationToStart();
     })
     .catch(err => {
       console.error(err);
@@ -357,62 +360,21 @@ function getExecutionOrderMap() {
 
   const executionOrder = [];
   const seenTasks = new Set();
+  const registry = elementRegistry();
 
-  stateSequence.forEach(snapshot => {
-    const newTasks = [];
-    Object.entries(snapshot.state).forEach(([taskId, status]) => {
-      if (!seenTasks.has(taskId) && status !== 'waiting' && status !== 'will not be executed') {
-        newTasks.push(taskId);
-        seenTasks.add(taskId);
-      }
-    });
-
-    // Sort newly active tasks by Name (if available) or ID to ensure deterministic order
-    newTasks.sort((a, b) => {
-      const elementA = elementRegistry().get(a);
-      const elementB = elementRegistry().get(b);
-      const nameA = elementA && elementA.businessObject.name ? elementA.businessObject.name : a;
-      const nameB = elementB && elementB.businessObject.name ? elementB.businessObject.name : b;
-      return nameA.localeCompare(nameB);
-    });
-
-    newTasks.forEach(taskId => executionOrder.push(taskId));
-  });
-
-  // Manual ordering for skipped tasks (requested by user)
-  // "Account Balance Information" and "Display Balance" after "Select Interaction"
-  const selectInteractionIdx = executionOrder.indexOf('Task_0po6mda');
-  if (selectInteractionIdx !== -1) {
-    const tasksToInsert = ['Task_1ept7kl', 'Task_180wh31'];
-    tasksToInsert.forEach(id => {
-      if (!executionOrder.includes(id)) {
-        executionOrder.splice(selectInteractionIdx + 1, 0, id);
-      }
-    });
-  }
-
-  // "Timeout" after "Issue Money"
-  const issueMoneyIdx = executionOrder.indexOf('Task_16oagb5');
-  if (issueMoneyIdx !== -1) {
-    const tasksToInsert = ['Task_1u7pqoy'];
-    tasksToInsert.forEach(id => {
-      if (!executionOrder.includes(id)) {
-        executionOrder.splice(issueMoneyIdx + 1, 0, id);
-      }
-    });
-  }
-
-  // Add any remaining tasks that never left "waiting" and weren't manually inserted
-  const remainingTasks = [];
   stateSequence.forEach(snapshot => {
     Object.keys(snapshot.state).forEach(taskId => {
-      if (!seenTasks.has(taskId) && !executionOrder.includes(taskId)) {
-        remainingTasks.push(taskId);
+
+      if (!registry.get(taskId)) {
+        throw new Error(`Elemento '${taskId}' presente nello snapshot '${snapshot.name}' non trovato nel modello BPMN.`);
+      }
+
+      if (!seenTasks.has(taskId)) {
+        executionOrder.push(taskId);
         seenTasks.add(taskId);
       }
     });
   });
-  remainingTasks.sort().forEach(taskId => executionOrder.push(taskId));
 
   executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
   return executionOrderMap;
@@ -453,8 +415,10 @@ function renderStateSnapshot(snapshot) {
   statePanel.classList.add('visible');
 
   if (statePanelTitle) {
-    statePanelTitle.textContent = `State: ${snapshot.name}`;
+    statePanelTitle.textContent = `State: ${snapshot.name} (Step Mode)`;
   }
+
+  console.log(`[${new Date().toLocaleTimeString()}] Loading State JSON: ${snapshot.name}`, snapshot.state);
 
   statePanelBody.innerHTML = '';
 
@@ -501,52 +465,181 @@ function diffCompletions(prev, next) {
   return Object.keys(next).filter(id => prev[id] === 'active' && next[id] === 'completed');
 }
 
+function diffActivations(prev, next) {
+  return Object.keys(next).filter(id => prev[id] !== 'active' && next[id] === 'active');
+}
+
+function getSortedTriggers(ids) {
+  const registry = elementRegistry();
+  return ids.sort((a, b) => {
+    const elA = registry.get(a);
+    const elB = registry.get(b);
+    return (elA ? elA.x : 0) - (elB ? elB.x : 0);
+  });
+}
+
 async function waitForTokenDrain(simulationSupport, ids) {
-  for (const id of ids) {
-    simulationSupport.triggerElement(id);
-    await simulationSupport.elementExit(id);
+  const sortedIds = getSortedTriggers(ids);
+  console.log('Triggering in order:', sortedIds);
+
+  for (const id of sortedIds) {
+    let attempts = 0;
+    const maxAttempts = 15;
+
+    while (attempts < maxAttempts) {
+      try {
+        // Try to trigger
+        simulationSupport.triggerElement(id);
+        console.log(`Triggered ${id} successfully.`);
+        break; // Exit retry loop on success
+      } catch (err) {
+        console.warn(`Attempt ${attempts + 1} to trigger ${id} failed: ${err.message}. Waiting...`);
+        attempts++;
+        if (attempts >= maxAttempts) {
+          console.error(`Failed to trigger ${id} after ${maxAttempts} attempts. Moving on.`);
+          // Optional: throw or alert final failure, or just continue to next element
+          // For now we continue, assuming user might click manually if needed.
+        } else {
+          // Wait for animation/token arrival
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
+      }
+    }
+
+    // Standard visual pacing delay after successful/failed trigger
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+}
+
+let currentStateIndex = 0;
+let isStepping = false;
+
+function initializeSimulationToStart() {
+  alert("DEBUG: NUOVA VERSIONE CARICATA (Manual Mode)\nSe vedi questo messaggio, il codice è aggiornato.");
+  if (!stateSequence.length) return;
+
+  const simulationSupport = modeler.get('simulationSupport');
+  // Ensure token simulation is active
+  simulationSupport.toggleSimulation(true);
+
+  // Reset sequence to t0
+  currentStateIndex = 0;
+
+  // FORCE PAUSE ON ALL ELEMENTS
+  // This ensures the token stops at Gateways, SubProcesses, etc.
+  const elementRegistry = modeler.get('elementRegistry');
+  const simulator = modeler.get('simulator');
+
+  elementRegistry.getAll().forEach(element => {
+    // Force pause on all elements EXCEPT EndEvents (they auto-consume) and Processes
+    if (element.type !== 'bpmn:Process' && element.type !== 'bpmn:EndEvent') {
+      simulator.setConfig(element, { wait: true });
+    }
+  });
+
+  // Render t0 only. Do NOT trigger Start Event yet.
+  // This ensures we start in a "waiting" state (t0).
+  // The first click on "Play" will trigger the Start Event (t0 -> t1).
+  console.log('Initializing to t0 (Pre-start)...');
+  try {
+    renderStateSnapshot(stateSequence[0]);
+  } catch (e) {
+    console.warn('Could not render t0:', e);
   }
 }
 
 async function playStates() {
-  const simulationSupport = modeler.get('simulationSupport');
+  console.log('PLAY STATE SEQUENCE CLICKED (Manual Mode)');
 
-  // ensure simulation is active
-  simulationSupport.toggleSimulation(true);
-
-  if (!stateSequence.length) {
-    console.warn('No state snapshots found in /states');
-    showStatePanelMessage('Nessuno snapshot trovato in /states');
+  if (isStepping) {
+    console.warn('Simulation step already in progress...');
     return;
   }
 
-  // kick things off by triggering the main start event
-  simulationSupport.triggerElement('StartEvent_0offpno');
+  isStepping = true;
+  playStatesBtn.disabled = true;
 
-  renderStateSnapshot(stateSequence[0]);
+  try {
+    const simulationSupport = modeler.get('simulationSupport');
+    const registry = elementRegistry();
 
-  for (let i = 1; i < stateSequence.length; i++) {
-    const prev = stateSequence[i - 1].state;
-    const nextSnapshot = stateSequence[i];
-    const next = nextSnapshot.state;
-    const completions = diffCompletions(prev, next);
+    // Ensure simulation is on
+    simulationSupport.toggleSimulation(true);
 
-    if (completions.length) {
-      await waitForTokenDrain(simulationSupport, completions);
+    if (!stateSequence.length) {
+      console.warn('No state snapshots found in /states');
+      showStatePanelMessage('Nessuno snapshot trovato in /states');
+      return;
     }
 
-    renderStateSnapshot(nextSnapshot);
+    // We are at currentStateIndex. We want to go to currentStateIndex + 1.
+    const nextIndex = currentStateIndex + 1;
+
+    if (nextIndex < stateSequence.length) {
+      const nextSnapshot = stateSequence[nextIndex];
+      console.log(`Advancing from ${currentStateIndex} to ${nextIndex}: ${nextSnapshot.name}`);
+
+      // CONFIRMATION ALERT
+      alert(`STEP ${currentStateIndex} -> ${nextIndex}: ${nextSnapshot.name}\n\nClicca OK per effettuare la transizione.`);
+
+      if (currentStateIndex === 0) {
+        // ... t0 -> t1
+        console.log('Triggering Start Event to transition t0 -> t1');
+        simulationSupport.triggerElement('StartEvent_0offpno');
+      } else {
+        // Normal Case: tN -> tN+1
+        const prev = stateSequence[currentStateIndex].state;
+        const next = nextSnapshot.state;
+
+        const completions = diffCompletions(prev, next);
+
+        // Detect SubProcesses becoming active (entering) OR Catch Events becoming active (pulling from Gateway)
+        const activations = diffActivations(prev, next).filter(id => {
+          const el = registry.get(id);
+          return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
+        });
+
+        const allActions = [...activations, ...completions].filter(id => {
+          // Do NOT try to trigger EndEvents, they don't support it.
+          const el = registry.get(id);
+          // Also skip EventBasedGateway triggering if we are triggering the Event instead.
+          // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
+          // Best to skip triggering the Gateway itself if it's EventBased.
+          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway';
+        });
+
+        if (allActions.length) {
+          alert(`AZIONI AUTOMATICHE RILEVATE:\nIl sistema completerà/avvierà ora i seguenti elementi (ordinati per posizione):\n` +
+            `${getSortedTriggers(allActions).join(', ')}\n\nClicca OK per procedere.`);
+
+          await waitForTokenDrain(simulationSupport, allActions);
+        }
+      }
+
+      // Update UI to show we are now at nextSnapshot
+      renderStateSnapshot(nextSnapshot);
+      currentStateIndex = nextIndex;
+    } else {
+      console.log('State sequence completed');
+      showStatePanelMessage('Sequenza di stati completata.');
+    }
+  } catch (err) {
+    console.error('State playback failed', err);
+    alert('Errore durante la riproduzione dello step: ' + err.message);
+  } finally {
+    // ALWAYS re-enable the button
+    isStepping = false;
+    playStatesBtn.disabled = false;
   }
 }
 
-playStatesBtn.addEventListener('click', () => {
-  playStates().catch(err => console.error('State playback failed', err));
-});
+playStatesBtn.onclick = () => {
+  playStates();
+};
 
 modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
-  if (stateSequence.length) {
-    renderStateSnapshot(stateSequence[0]);
-  }
+  // Restart from t0 (no tokens)
+  initializeSimulationToStart();
 });
 
 
