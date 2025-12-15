@@ -89,14 +89,19 @@ npm run start:basic
 To run the project inside a Docker container use:
 
 ```sh
-./run-container.sh [port]
+./run.sh -p 8080
 ```
 
-The script binds the application to port `8081` by default and checks whether the port is free.
-If the port is already in use, specify a different one:
+The script binds the application to port `8080` by default. To specify a different port:
 
 ```sh
-./run-container.sh 9090
+./run.sh -p 9090
+```
+
+On Windows, use the batch script:
+
+```cmd
+run.bat -p 8080
 ```
 
 
