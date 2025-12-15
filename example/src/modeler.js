@@ -483,13 +483,30 @@ async function waitForTokenDrain(simulationSupport, ids) {
   console.log('Triggering in order:', sortedIds);
 
   for (const id of sortedIds) {
-    // Trigger the element to move the token
-    simulationSupport.triggerElement(id);
+    let attempts = 0;
+    const maxAttempts = 15;
 
-    // We do NOT await elementExit here because it can hang if the simulator
-    // pauses at the very next element (which we forced with wait: true).
-    // Instead, we trust the trigger and let the animation proceed.
-    // A small delay helps visual pacing but isn't strictly required for logic.
+    while (attempts < maxAttempts) {
+      try {
+        // Try to trigger
+        simulationSupport.triggerElement(id);
+        console.log(`Triggered ${id} successfully.`);
+        break; // Exit retry loop on success
+      } catch (err) {
+        console.warn(`Attempt ${attempts + 1} to trigger ${id} failed: ${err.message}. Waiting...`);
+        attempts++;
+        if (attempts >= maxAttempts) {
+          console.error(`Failed to trigger ${id} after ${maxAttempts} attempts. Moving on.`);
+          // Optional: throw or alert final failure, or just continue to next element
+          // For now we continue, assuming user might click manually if needed.
+        } else {
+          // Wait for animation/token arrival
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
+      }
+    }
+
+    // Standard visual pacing delay after successful/failed trigger
     await new Promise(resolve => setTimeout(resolve, 300));
   }
 }
@@ -514,7 +531,8 @@ function initializeSimulationToStart() {
   const simulator = modeler.get('simulator');
 
   elementRegistry.getAll().forEach(element => {
-    if (element.type !== 'bpmn:Process') {
+    // Force pause on all elements EXCEPT EndEvents (they auto-consume) and Processes
+    if (element.type !== 'bpmn:Process' && element.type !== 'bpmn:EndEvent') {
       simulator.setConfig(element, { wait: true });
     }
   });
@@ -581,7 +599,11 @@ async function playStates() {
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction');
         });
 
-        const allActions = [...activations, ...completions];
+        const allActions = [...activations, ...completions].filter(id => {
+          // Do NOT try to trigger EndEvents, they don't support it.
+          const el = registry.get(id);
+          return el && el.type !== 'bpmn:EndEvent';
+        });
 
         if (allActions.length) {
           alert(`AZIONI AUTOMATICHE RILEVATE:\nIl sistema completerà/avvierà ora i seguenti elementi (ordinati per posizione):\n` +
