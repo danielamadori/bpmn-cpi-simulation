@@ -465,8 +465,24 @@ function diffCompletions(prev, next) {
   return Object.keys(next).filter(id => prev[id] === 'active' && next[id] === 'completed');
 }
 
+function diffActivations(prev, next) {
+  return Object.keys(next).filter(id => prev[id] !== 'active' && next[id] === 'active');
+}
+
+function getSortedTriggers(ids) {
+  const registry = elementRegistry();
+  return ids.sort((a, b) => {
+    const elA = registry.get(a);
+    const elB = registry.get(b);
+    return (elA ? elA.x : 0) - (elB ? elB.x : 0);
+  });
+}
+
 async function waitForTokenDrain(simulationSupport, ids) {
-  for (const id of ids) {
+  const sortedIds = getSortedTriggers(ids);
+  console.log('Triggering in order:', sortedIds);
+
+  for (const id of sortedIds) {
     // Trigger the element to move the token
     simulationSupport.triggerElement(id);
 
@@ -527,6 +543,7 @@ async function playStates() {
 
   try {
     const simulationSupport = modeler.get('simulationSupport');
+    const registry = elementRegistry();
 
     // Ensure simulation is on
     simulationSupport.toggleSimulation(true);
@@ -555,11 +572,22 @@ async function playStates() {
         // Normal Case: tN -> tN+1
         const prev = stateSequence[currentStateIndex].state;
         const next = nextSnapshot.state;
+
         const completions = diffCompletions(prev, next);
 
-        if (completions.length) {
-          alert(`AZIONI AUTOMATICHE RILEVATE:\nIl sistema completerà ora i seguenti task per allinearsi allo stato ${nextSnapshot.name}:\n${completions.join(', ')}\n\nClicca OK per procedere con il completamento.`);
-          await waitForTokenDrain(simulationSupport, completions);
+        // Detect SubProcesses becoming active (entering)
+        const activations = diffActivations(prev, next).filter(id => {
+          const el = registry.get(id);
+          return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction');
+        });
+
+        const allActions = [...activations, ...completions];
+
+        if (allActions.length) {
+          alert(`AZIONI AUTOMATICHE RILEVATE:\nIl sistema completerà/avvierà ora i seguenti elementi (ordinati per posizione):\n` +
+            `${getSortedTriggers(allActions).join(', ')}\n\nClicca OK per procedere.`);
+
+          await waitForTokenDrain(simulationSupport, allActions);
         }
       }
 
