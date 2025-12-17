@@ -72,10 +72,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
+    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function() {
+        eventBus.on('commandStack.changed', function () {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -100,7 +100,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    } ]
+    }]
   ]
 };
 
@@ -287,7 +287,7 @@ function exportSVG() {
   });
 }
 
-document.body.addEventListener('keydown', function(event) {
+document.body.addEventListener('keydown', function (event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
 
@@ -301,21 +301,21 @@ document.body.addEventListener('keydown', function(event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function(event) {
+document.querySelector('#download-button').addEventListener('click', function (event) {
   downloadDiagram();
 });
 
-document.querySelector('#export-png').addEventListener('click', function(event) {
+document.querySelector('#export-png').addEventListener('click', function (event) {
   exportPNG();
 });
 
-document.querySelector('#export-svg').addEventListener('click', function(event) {
+document.querySelector('#export-svg').addEventListener('click', function (event) {
   exportSVG();
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
   fileOpen({
-    extensions: [ '.bpmn' ],
+    extensions: ['.bpmn'],
     description: 'BPMN diagrams'
   }).then(openFile);
 });
@@ -374,7 +374,13 @@ const elementRegistry = () => modeler.get('elementRegistry');
 // webpack injects require.context; lint as a known global.
 // eslint-disable-next-line no-undef
 const statesContext = require.context('../../states', false, /\.json$/);
-const stateSequence = statesContext.keys().sort().map(key => ({
+const stateSequence = statesContext.keys().sort((a, b) => {
+  const getNumber = (str) => {
+    const match = str.match(/t(\d+)\.json$/);
+    return match ? parseInt(match[1], 10) : 0;
+  };
+  return getNumber(a) - getNumber(b);
+}).map(key => ({
   name: key.replace('./', '').replace('.json', ''),
   state: statesContext(key)
 }));
@@ -404,7 +410,7 @@ function getExecutionOrderMap() {
     });
   });
 
-  executionOrderMap = new Map(executionOrder.map((id, index) => [ id, index ]));
+  executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
   return executionOrderMap;
 }
 
@@ -451,7 +457,7 @@ function renderStateSnapshot(snapshot) {
   statePanelBody.innerHTML = '';
 
   const orderMap = getExecutionOrderMap();
-  const entries = Object.entries(snapshot.state).sort(([ a ], [ b ]) => {
+  const entries = Object.entries(snapshot.state).sort(([a], [b]) => {
     const orderA = orderMap.has(a) ? orderMap.get(a) : Infinity;
     const orderB = orderMap.has(b) ? orderMap.get(b) : Infinity;
     return orderA - orderB;
@@ -468,7 +474,7 @@ function renderStateSnapshot(snapshot) {
     return;
   }
 
-  entries.forEach(([ taskId, status ]) => {
+  entries.forEach(([taskId, status]) => {
     const row = document.createElement('tr');
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
@@ -516,9 +522,28 @@ async function waitForTokenDrain(simulationSupport, ids) {
 
     while (attempts < maxAttempts) {
       try {
+        const simulator = modeler.get('simulator');
+        const element = elementRegistry().get(id);
 
-        // Try to trigger
-        simulationSupport.triggerElement(id);
+        // Check if we are waiting at this element (e.g. paused Gateway)
+        // If so, we need to SIGNAL the scope, not trigger the element again
+        const waitingScope = simulator.findScopes({
+          element: element
+        }).find(scope => scope.children.length === 0 && !scope.destroyed);
+        // Note: Waiting scopes usually have no children and are suspended.
+
+        if (waitingScope) {
+          console.log(`Found waiting scope for ${id}, signaling...`);
+          simulator.signal({
+            scope: waitingScope,
+            element: element,
+            initiator: element // Passing initiator can be important
+          });
+        } else {
+          // Standard trigger for fresh activation or resume provided by simulationSupport
+          simulationSupport.triggerElement(id);
+        }
+
         console.log(`Triggered ${id} successfully.`);
         break; // Exit retry loop on success
       } catch (err) {
@@ -544,6 +569,66 @@ async function waitForTokenDrain(simulationSupport, ids) {
 
 let currentStateIndex = 0;
 let isStepping = false;
+
+// Helper to lock exclusive gateways if their path is determined by the next state
+// Helper to lock exclusive gateways if their path is determined by the next state
+function configureExclusiveGateways(startIndex) {
+  const simulator = modeler.get('simulator');
+  const registry = elementRegistry();
+
+  // Get all exclusive gateways
+  const gateways = registry.getAll().filter(el => el.type === 'bpmn:ExclusiveGateway');
+
+  gateways.forEach(gateway => {
+
+    // Look ahead to find the transition where this gateway consumes its token
+    let targetFlow = null;
+
+    // We start searching from the transition leading TO startIndex
+    // But we are interested in when the gateway LEAVES (Active -> Inactive)
+    for (let i = startIndex; i < stateSequence.length; i++) {
+      const prev = i > 0 ? stateSequence[i - 1].state : {};
+      const next = stateSequence[i].state;
+
+      // Check if gateway fires in this transition (prev has it, next doesn't)
+      const wasActive = prev[gateway.id] === 'active';
+      const isActive = next[gateway.id] === 'active';
+
+      if (wasActive && !isActive) {
+
+        // Find which outgoing flow matches the activated element
+        const activations = diffActivations(prev, next);
+
+        // Find the child that connects to this gateway
+        const activeChildId = activations.find(childId => {
+          const child = registry.get(childId);
+          return child && child.incoming.some(flow => flow.source === gateway);
+        });
+
+        if (activeChildId) {
+          const child = registry.get(activeChildId);
+          targetFlow = child.incoming.find(flow => flow.source === gateway);
+        }
+
+        // We found the transition point, stop searching
+        break;
+      }
+    }
+
+    if (targetFlow) {
+      simulator.setConfig(gateway, {
+        locked: true,
+        activeOutgoing: targetFlow,
+        wait: true
+      });
+    } else {
+      // If no future transition found for this gateway, unlock it
+      // BUT: Only strictly unlock if we scanned the whole future and found nothing.
+      // If the gateway is not even active in the sequence, we unlock it (default behavior).
+      simulator.setConfig(gateway, { locked: false, wait: false });
+    }
+  });
+}
 
 function initializeSimulationToStart() {
   logInfo('DEBUG: NEW VERSION LOADED (Manual Mode). If you see this message, the code is up to date.');
@@ -576,6 +661,7 @@ function initializeSimulationToStart() {
   console.log('Initializing to t0 (Pre-start)...');
   try {
     renderStateSnapshot(stateSequence[0]);
+    configureExclusiveGateways(1);
   } catch (e) {
     console.warn('Could not render t0:', e);
   }
@@ -633,7 +719,7 @@ async function playStates() {
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
-        const allActions = [ ...activations, ...completions ].filter(id => {
+        const allActions = [...activations, ...completions].filter(id => {
 
           // Do NOT try to trigger EndEvents, they don't support it.
           const el = registry.get(id);
@@ -654,6 +740,8 @@ async function playStates() {
       // Update UI to show we are now at nextSnapshot
       renderStateSnapshot(nextSnapshot);
       currentStateIndex = nextIndex;
+
+      configureExclusiveGateways(nextIndex + 1);
     } else {
       console.log('State sequence completed');
       showStatePanelMessage('State sequence completed.');
