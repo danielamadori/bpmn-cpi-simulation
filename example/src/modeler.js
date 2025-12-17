@@ -645,8 +645,7 @@ async function playStates() {
         });
 
         if (allActions.length) {
-          logWarning('AUTOMATIC ACTIONS DETECTED: the system will complete/start the following elements (sorted by position): ' +
-            `${getSortedTriggers(allActions).join(', ')}`);
+
 
           await waitForTokenDrain(simulationSupport, allActions);
         }
