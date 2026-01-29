@@ -1,0 +1,10 @@
+{
+  "extends": [ "bpmnlint:recommended" ],
+  "rules": {
+    "label-required": "warn",
+    "no-implicit-end": "warn",
+    "no-inclusive-gateway": "warn",
+    "no-implicit-split": "warn",
+    "no-gateway-join-fork": "warn"
+  }
+}
