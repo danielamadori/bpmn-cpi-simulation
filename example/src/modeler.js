@@ -72,10 +72,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
+    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function () {
+        eventBus.on('commandStack.changed', function() {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -100,7 +100,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    }]
+    } ]
   ]
 };
 
@@ -155,9 +155,6 @@ function logInfo(message) {
   logMessage('info', message);
 }
 
-function logWarning(message) {
-  logMessage('warning', message);
-}
 
 function logError(message) {
   logMessage('error', message);
@@ -287,7 +284,7 @@ function exportSVG() {
   });
 }
 
-document.body.addEventListener('keydown', function (event) {
+document.body.addEventListener('keydown', function(event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
 
@@ -301,21 +298,21 @@ document.body.addEventListener('keydown', function (event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function (event) {
+document.querySelector('#download-button').addEventListener('click', function(event) {
   downloadDiagram();
 });
 
-document.querySelector('#export-png').addEventListener('click', function (event) {
+document.querySelector('#export-png').addEventListener('click', function(event) {
   exportPNG();
 });
 
-document.querySelector('#export-svg').addEventListener('click', function (event) {
+document.querySelector('#export-svg').addEventListener('click', function(event) {
   exportSVG();
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
   fileOpen({
-    extensions: ['.bpmn'],
+    extensions: [ '.bpmn' ],
     description: 'BPMN diagrams'
   }).then(openFile);
 });
@@ -410,7 +407,7 @@ function getExecutionOrderMap() {
     });
   });
 
-  executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
+  executionOrderMap = new Map(executionOrder.map((id, index) => [ id, index ]));
   return executionOrderMap;
 }
 
@@ -457,7 +454,7 @@ function renderStateSnapshot(snapshot) {
   statePanelBody.innerHTML = '';
 
   const orderMap = getExecutionOrderMap();
-  const entries = Object.entries(snapshot.state).sort(([a], [b]) => {
+  const entries = Object.entries(snapshot.state).sort(([ a ], [ b ]) => {
     const orderA = orderMap.has(a) ? orderMap.get(a) : Infinity;
     const orderB = orderMap.has(b) ? orderMap.get(b) : Infinity;
     return orderA - orderB;
@@ -474,7 +471,7 @@ function renderStateSnapshot(snapshot) {
     return;
   }
 
-  entries.forEach(([taskId, status]) => {
+  entries.forEach(([ taskId, status ]) => {
     const row = document.createElement('tr');
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
@@ -517,54 +514,80 @@ async function waitForTokenDrain(simulationSupport, ids) {
   console.log('Triggering in order:', sortedIds);
 
   for (const id of sortedIds) {
+    let triggered = false;
     let attempts = 0;
-    const maxAttempts = 15;
+    const maxAttempts = 3;
 
-    while (attempts < maxAttempts) {
+    while (!triggered && attempts < maxAttempts) {
       try {
         const simulator = modeler.get('simulator');
         const element = elementRegistry().get(id);
 
-        // Check if we are waiting at this element (e.g. paused Gateway)
-        // If so, we need to SIGNAL the scope, not trigger the element again
+        if (!element) {
+          throw new Error('Element not found in registry');
+        }
+
         const waitingScope = simulator.findScopes({
           element: element
         }).find(scope => scope.children.length === 0 && !scope.destroyed);
-        // Note: Waiting scopes usually have no children and are suspended.
 
         if (waitingScope) {
           console.log(`Found waiting scope for ${id}, signaling...`);
           simulator.signal({
             scope: waitingScope,
             element: element,
-            initiator: element // Passing initiator can be important
+            initiator: element
           });
         } else {
-          // Standard trigger for fresh activation or resume provided by simulationSupport
           simulationSupport.triggerElement(id);
         }
 
         console.log(`Triggered ${id} successfully.`);
-        break; // Exit retry loop on success
+        triggered = true;
       } catch (err) {
-        console.warn(`Attempt ${attempts + 1} to trigger ${id} failed: ${err.message}. Waiting...`);
+        console.warn(`Attempt ${attempts + 1} to trigger ${id} failed: ${err.message}.`);
         attempts++;
         if (attempts >= maxAttempts) {
           console.error(`Failed to trigger ${id} after ${maxAttempts} attempts. Moving on.`);
-
-          // Optional: throw or alert final failure, or just continue to next element
-          // For now we continue, assuming user might click manually if needed.
         } else {
 
-          // Wait for animation/token arrival
-          await new Promise(resolve => setTimeout(resolve, 300));
+          // Fallback minimal safe wait before retry if API is genuinely not ready
+          await new Promise(r => requestAnimationFrame(r));
         }
       }
     }
-
-    // Standard visual pacing delay after successful/failed trigger
-    await new Promise(resolve => setTimeout(resolve, 300));
   }
+
+  // Wait deterministically for ALL triggers' cascading simulator events and animations to drain
+  await drainSimulationQueues();
+}
+
+async function drainSimulationQueues() {
+
+  // The simulator processes all jobs synchronously inside queue(),
+  // so by the time triggerElement/signal returns, simulator jobs are already done.
+  // The only async work is token animations along sequence flows.
+  const animation = modeler.get('animation', false);
+
+  if (!animation || !animation._animations) return;
+
+  return new Promise(resolve => {
+    const MAX_WAIT = 10000;
+    const start = Date.now();
+
+    function checkDrain() {
+      const pendingAnimations = animation._animations.size;
+
+      if (pendingAnimations > 0 && (Date.now() - start) < MAX_WAIT) {
+        requestAnimationFrame(checkDrain);
+      } else {
+        resolve();
+      }
+    }
+
+    // Give animation engine at least 1 frame to start
+    requestAnimationFrame(checkDrain);
+  });
 }
 
 let currentStateIndex = 0;
@@ -622,6 +645,7 @@ function configureExclusiveGateways(startIndex) {
         wait: true
       });
     } else {
+
       // If no future transition found for this gateway, unlock it
       // BUT: Only strictly unlock if we scanned the whole future and found nothing.
       // If the gateway is not even active in the sequence, we unlock it (default behavior).
@@ -719,7 +743,7 @@ async function playStates() {
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
-        const allActions = [...activations, ...completions].filter(id => {
+        const allActions = [ ...activations, ...completions ].filter(id => {
 
           // Do NOT try to trigger EndEvents, they don't support it.
           const el = registry.get(id);
