@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_MessageStart"
+  targetNamespace="http://example.com/bpmn/communication">
+  <bpmn:message id="Message_Request" name="Request" />
+
+  <bpmn:collaboration id="Collab_MessageStart">
+    <bpmn:participant id="Participant_Client" name="Client" processRef="Process_Client" />
+    <bpmn:participant id="Participant_Service" name="Service" processRef="Process_Service" />
+    <bpmn:messageFlow
+      id="Flow_Request"
+      name="Request"
+      sourceRef="Task_SendRequest"
+      targetRef="Start_Message"
+      messageRef="Message_Request" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Client" isExecutable="false">
+    <bpmn:startEvent id="Start_Client" name="Start">
+      <bpmn:outgoing>Flow_C1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sendTask id="Task_SendRequest" name="Send Request" messageRef="Message_Request">
+      <bpmn:incoming>Flow_C1</bpmn:incoming>
+      <bpmn:outgoing>Flow_C2</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="End_Client" name="Done">
+      <bpmn:incoming>Flow_C2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_C1" sourceRef="Start_Client" targetRef="Task_SendRequest" />
+    <bpmn:sequenceFlow id="Flow_C2" sourceRef="Task_SendRequest" targetRef="End_Client" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_Service" isExecutable="false">
+    <bpmn:startEvent id="Start_Message" name="Request Received">
+      <bpmn:outgoing>Flow_SV1</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_Request" />
+    </bpmn:startEvent>
+    <bpmn:task id="Task_Handle" name="Handle Request">
+      <bpmn:incoming>Flow_SV1</bpmn:incoming>
+      <bpmn:outgoing>Flow_SV2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_Service" name="Done">
+      <bpmn:incoming>Flow_SV2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_SV1" sourceRef="Start_Message" targetRef="Task_Handle" />
+    <bpmn:sequenceFlow id="Flow_SV2" sourceRef="Task_Handle" targetRef="End_Service" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_MessageStart">
+    <bpmndi:BPMNPlane id="BPMNPlane_MessageStart" bpmnElement="Collab_MessageStart">
+      <bpmndi:BPMNShape id="Participant_Client_di" bpmnElement="Participant_Client" isHorizontal="true">
+        <dc:Bounds x="120" y="80" width="620" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_Service_di" bpmnElement="Participant_Service" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="620" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_Client_di" bpmnElement="Start_Client">
+        <dc:Bounds x="170" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendRequest_di" bpmnElement="Task_SendRequest">
+        <dc:Bounds x="250" y="128" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Client_di" bpmnElement="End_Client">
+        <dc:Bounds x="450" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_Message_di" bpmnElement="Start_Message">
+        <dc:Bounds x="170" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Handle_di" bpmnElement="Task_Handle">
+        <dc:Bounds x="250" y="368" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Service_di" bpmnElement="End_Service">
+        <dc:Bounds x="450" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_C1_di" bpmnElement="Flow_C1">
+        <di:waypoint x="206" y="168" />
+        <di:waypoint x="250" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C2_di" bpmnElement="Flow_C2">
+        <di:waypoint x="390" y="168" />
+        <di:waypoint x="450" y="168" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SV1_di" bpmnElement="Flow_SV1">
+        <di:waypoint x="206" y="408" />
+        <di:waypoint x="250" y="408" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SV2_di" bpmnElement="Flow_SV2">
+        <di:waypoint x="390" y="408" />
+        <di:waypoint x="450" y="408" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Request_di" bpmnElement="Flow_Request">
+        <di:waypoint x="320" y="208" />
+        <di:waypoint x="188" y="390" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

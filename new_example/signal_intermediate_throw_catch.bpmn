@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_SignalThrowCatch"
+  targetNamespace="http://example.com/bpmn/communication">
+  <bpmn:signal id="Signal_Resume" name="Resume" />
+
+  <bpmn:collaboration id="Collab_SignalThrowCatch">
+    <bpmn:participant id="Participant_SignalProducer" name="Producer" processRef="Process_SignalProducer" />
+    <bpmn:participant id="Participant_SignalConsumer" name="Consumer" processRef="Process_SignalConsumer" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_SignalProducer" isExecutable="false">
+    <bpmn:startEvent id="Start_SP" name="Start">
+      <bpmn:outgoing>Flow_SP1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_PreSignal" name="Before Signal">
+      <bpmn:incoming>Flow_SP1</bpmn:incoming>
+      <bpmn:outgoing>Flow_SP2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateThrowEvent id="Throw_Resume" name="Throw Resume">
+      <bpmn:incoming>Flow_SP2</bpmn:incoming>
+      <bpmn:outgoing>Flow_SP3</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_Resume" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="End_SP" name="Done">
+      <bpmn:incoming>Flow_SP3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_SP1" sourceRef="Start_SP" targetRef="Task_PreSignal" />
+    <bpmn:sequenceFlow id="Flow_SP2" sourceRef="Task_PreSignal" targetRef="Throw_Resume" />
+    <bpmn:sequenceFlow id="Flow_SP3" sourceRef="Throw_Resume" targetRef="End_SP" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_SignalConsumer" isExecutable="false">
+    <bpmn:startEvent id="Start_SC" name="Start">
+      <bpmn:outgoing>Flow_SC1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_WaitContext" name="Wait Context">
+      <bpmn:incoming>Flow_SC1</bpmn:incoming>
+      <bpmn:outgoing>Flow_SC2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="Catch_Resume" name="Catch Resume">
+      <bpmn:incoming>Flow_SC2</bpmn:incoming>
+      <bpmn:outgoing>Flow_SC3</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_Resume" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End_SC" name="Done">
+      <bpmn:incoming>Flow_SC3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_SC1" sourceRef="Start_SC" targetRef="Task_WaitContext" />
+    <bpmn:sequenceFlow id="Flow_SC2" sourceRef="Task_WaitContext" targetRef="Catch_Resume" />
+    <bpmn:sequenceFlow id="Flow_SC3" sourceRef="Catch_Resume" targetRef="End_SC" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_SignalThrowCatch">
+    <bpmndi:BPMNPlane id="BPMNPlane_SignalThrowCatch" bpmnElement="Collab_SignalThrowCatch">
+      <bpmndi:BPMNShape id="Participant_SignalProducer_di" bpmnElement="Participant_SignalProducer" isHorizontal="true">
+        <dc:Bounds x="120" y="80" width="680" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_SignalConsumer_di" bpmnElement="Participant_SignalConsumer" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="680" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_SP_di" bpmnElement="Start_SP">
+        <dc:Bounds x="170" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_PreSignal_di" bpmnElement="Task_PreSignal">
+        <dc:Bounds x="250" y="128" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Throw_Resume_di" bpmnElement="Throw_Resume">
+        <dc:Bounds x="450" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_SP_di" bpmnElement="End_SP">
+        <dc:Bounds x="560" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_SC_di" bpmnElement="Start_SC">
+        <dc:Bounds x="170" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_WaitContext_di" bpmnElement="Task_WaitContext">
+        <dc:Bounds x="250" y="368" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Catch_Resume_di" bpmnElement="Catch_Resume">
+        <dc:Bounds x="450" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_SC_di" bpmnElement="End_SC">
+        <dc:Bounds x="560" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_SP1_di" bpmnElement="Flow_SP1">
+        <di:waypoint x="206" y="168" />
+        <di:waypoint x="250" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SP2_di" bpmnElement="Flow_SP2">
+        <di:waypoint x="390" y="168" />
+        <di:waypoint x="450" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SP3_di" bpmnElement="Flow_SP3">
+        <di:waypoint x="486" y="168" />
+        <di:waypoint x="560" y="168" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SC1_di" bpmnElement="Flow_SC1">
+        <di:waypoint x="206" y="408" />
+        <di:waypoint x="250" y="408" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SC2_di" bpmnElement="Flow_SC2">
+        <di:waypoint x="390" y="408" />
+        <di:waypoint x="450" y="408" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SC3_di" bpmnElement="Flow_SC3">
+        <di:waypoint x="486" y="408" />
+        <di:waypoint x="560" y="408" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

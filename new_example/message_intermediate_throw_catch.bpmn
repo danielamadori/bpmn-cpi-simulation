@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_MessageThrowCatch"
+  targetNamespace="http://example.com/bpmn/communication">
+  <bpmn:message id="Message_Approval" name="Approval" />
+
+  <bpmn:collaboration id="Collab_MessageThrowCatch">
+    <bpmn:participant id="Participant_A" name="Producer" processRef="Process_Producer" />
+    <bpmn:participant id="Participant_B" name="Consumer" processRef="Process_Consumer" />
+    <bpmn:messageFlow
+      id="Flow_Approval"
+      name="Approval"
+      sourceRef="Throw_Approval"
+      targetRef="Catch_Approval"
+      messageRef="Message_Approval" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Producer" isExecutable="false">
+    <bpmn:startEvent id="Start_Producer" name="Start">
+      <bpmn:outgoing>Flow_P1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_Prepare" name="Prepare">
+      <bpmn:incoming>Flow_P1</bpmn:incoming>
+      <bpmn:outgoing>Flow_P2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateThrowEvent id="Throw_Approval" name="Throw Approval">
+      <bpmn:incoming>Flow_P2</bpmn:incoming>
+      <bpmn:outgoing>Flow_P3</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_Approval" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="End_Producer" name="Done">
+      <bpmn:incoming>Flow_P3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_P1" sourceRef="Start_Producer" targetRef="Task_Prepare" />
+    <bpmn:sequenceFlow id="Flow_P2" sourceRef="Task_Prepare" targetRef="Throw_Approval" />
+    <bpmn:sequenceFlow id="Flow_P3" sourceRef="Throw_Approval" targetRef="End_Producer" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_Consumer" isExecutable="false">
+    <bpmn:startEvent id="Start_Consumer" name="Start">
+      <bpmn:outgoing>Flow_CU1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_WaitingContext" name="Context">
+      <bpmn:incoming>Flow_CU1</bpmn:incoming>
+      <bpmn:outgoing>Flow_CU2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="Catch_Approval" name="Catch Approval">
+      <bpmn:incoming>Flow_CU2</bpmn:incoming>
+      <bpmn:outgoing>Flow_CU3</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_Approval" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End_Consumer" name="Done">
+      <bpmn:incoming>Flow_CU3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_CU1" sourceRef="Start_Consumer" targetRef="Task_WaitingContext" />
+    <bpmn:sequenceFlow id="Flow_CU2" sourceRef="Task_WaitingContext" targetRef="Catch_Approval" />
+    <bpmn:sequenceFlow id="Flow_CU3" sourceRef="Catch_Approval" targetRef="End_Consumer" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_MessageThrowCatch">
+    <bpmndi:BPMNPlane id="BPMNPlane_MessageThrowCatch" bpmnElement="Collab_MessageThrowCatch">
+      <bpmndi:BPMNShape id="Participant_A_di" bpmnElement="Participant_A" isHorizontal="true">
+        <dc:Bounds x="120" y="80" width="680" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_B_di" bpmnElement="Participant_B" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="680" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_Producer_di" bpmnElement="Start_Producer">
+        <dc:Bounds x="170" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Prepare_di" bpmnElement="Task_Prepare">
+        <dc:Bounds x="250" y="128" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Throw_Approval_di" bpmnElement="Throw_Approval">
+        <dc:Bounds x="430" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Producer_di" bpmnElement="End_Producer">
+        <dc:Bounds x="540" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_Consumer_di" bpmnElement="Start_Consumer">
+        <dc:Bounds x="170" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_WaitingContext_di" bpmnElement="Task_WaitingContext">
+        <dc:Bounds x="250" y="368" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Catch_Approval_di" bpmnElement="Catch_Approval">
+        <dc:Bounds x="430" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Consumer_di" bpmnElement="End_Consumer">
+        <dc:Bounds x="540" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_P1_di" bpmnElement="Flow_P1">
+        <di:waypoint x="206" y="168" />
+        <di:waypoint x="250" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_P2_di" bpmnElement="Flow_P2">
+        <di:waypoint x="370" y="168" />
+        <di:waypoint x="430" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_P3_di" bpmnElement="Flow_P3">
+        <di:waypoint x="466" y="168" />
+        <di:waypoint x="540" y="168" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_CU1_di" bpmnElement="Flow_CU1">
+        <di:waypoint x="206" y="408" />
+        <di:waypoint x="250" y="408" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CU2_di" bpmnElement="Flow_CU2">
+        <di:waypoint x="370" y="408" />
+        <di:waypoint x="430" y="408" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CU3_di" bpmnElement="Flow_CU3">
+        <di:waypoint x="466" y="408" />
+        <di:waypoint x="540" y="408" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Approval_di" bpmnElement="Flow_Approval">
+        <di:waypoint x="448" y="186" />
+        <di:waypoint x="448" y="390" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
