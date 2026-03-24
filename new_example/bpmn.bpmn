@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sese="http://example.com/sese/extensions" id="Definitions_1" targetNamespace="http://example.com/sese">
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:task id="Task_3" name="Cutting">
+      <bpmn:incoming>Flow_21</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="3" regionType="task" regionLabel="Cutting" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="10" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:parallelGateway id="ParallelSplit_4" name="parallel">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="4" regionType="parallel" regionLabel="parallel" role="split" />
+      </bpmn:extensionElements>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="ParallelJoin_4" name="parallel_join">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="4" regionType="parallel" regionLabel="parallel" role="join" />
+      </bpmn:extensionElements>
+    </bpmn:parallelGateway>
+    <bpmn:task id="Task_6" name="Bending">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="6" regionType="task" regionLabel="Bending" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="20" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="ExclusiveSplit_7" name="N1">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="7" regionType="natural" regionLabel="N1" role="split" />
+        <sese:nature distribution="0.2,0.8" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveJoin_7" name="choice_join">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="7" regionType="natural" regionLabel="N1" role="join" />
+        <sese:nature distribution="0.2,0.8" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_8" name="Heavy_Polishing">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="8" regionType="task" regionLabel="Heavy_Polishing" role="task" />
+        <sese:duration min="0" max="2" />
+        <sese:impact name="electric energy" value="5" />
+        <sese:impact name="worker hours" value="4" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:task id="Task_9" name="Light_Polishing">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="9" regionType="task" regionLabel="Light_Polishing" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="8" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:task id="Task_11" name="Milling">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="11" regionType="task" regionLabel="Milling" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="50" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="ExclusiveSplit_12" name="C1">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="12" regionType="choice" regionLabel="C1" role="split" />
+        <sese:choice maxDelay="0.0" kind="exclusive" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveJoin_12" name="choice_join">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="12" regionType="choice" regionLabel="C1" role="join" />
+        <sese:choice maxDelay="0.0" kind="exclusive" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_13" name="Fine_Deposition">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="13" regionType="task" regionLabel="Fine_Deposition" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="30" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:task id="Task_14" name="Rough_Deposition">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="14" regionType="task" regionLabel="Rough_Deposition" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="10" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="ExclusiveSplit_15" name="C2">
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="15" regionType="choice" regionLabel="C2" role="split" />
+        <sese:choice maxDelay="0.0" kind="exclusive" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveJoin_15" name="choice_join">
+      <bpmn:incoming>Flow_17</bpmn:incoming>
+      <bpmn:incoming>Flow_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_22</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="15" regionType="choice" regionLabel="C2" role="join" />
+        <sese:choice maxDelay="0.0" kind="exclusive" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_16" name="HPHS">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_17</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="16" regionType="task" regionLabel="HPHS" role="task" />
+        <sese:duration min="0" max="1" />
+        <sese:impact name="electric energy" value="40" />
+        <sese:impact name="worker hours" value="1" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:task id="Task_17" name="LPLS">
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_19</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="17" regionType="task" regionLabel="LPLS" role="task" />
+        <sese:duration min="0" max="2" />
+        <sese:impact name="electric energy" value="20" />
+        <sese:impact name="worker hours" value="3" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:startEvent id="RootEvent_0" name="Start" isInterrupting="true">
+      <bpmn:outgoing>Flow_21</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:region regionId="0" regionType="event" regionLabel="Start" role="root_event" eventPosition="start" eventDefinition="none" interrupting="true" />
+        <sese:task type="task" />
+      </bpmn:extensionElements>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1" name="End">
+      <bpmn:incoming>Flow_22</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="ExclusiveSplit_7" targetRef="Task_8" name="p=0.2">
+      <bpmn:extensionElements>
+        <sese:flowLabel value="p=0.2" />
+        <sese:probability value="0.2" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_8" targetRef="ExclusiveJoin_7">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="ExclusiveSplit_7" targetRef="Task_9" name="p=0.8">
+      <bpmn:extensionElements>
+        <sese:flowLabel value="p=0.8" />
+        <sese:probability value="0.8" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_9" targetRef="ExclusiveJoin_7">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_6" targetRef="ExclusiveSplit_7">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="ExclusiveSplit_12" targetRef="Task_13" name="left">
+      <bpmn:extensionElements>
+        <sese:flowLabel value="left" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_13" targetRef="ExclusiveJoin_12">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="ExclusiveSplit_12" targetRef="Task_14" name="right">
+      <bpmn:extensionElements>
+        <sese:flowLabel value="right" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_14" targetRef="ExclusiveJoin_12">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_11" targetRef="ExclusiveSplit_12">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="ParallelSplit_4" targetRef="Task_6">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="ParallelSplit_4" targetRef="Task_11">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="ExclusiveJoin_7" targetRef="ParallelJoin_4">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="ExclusiveJoin_12" targetRef="ParallelJoin_4">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_3" targetRef="ParallelSplit_4">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="ExclusiveSplit_15" targetRef="Task_16" name="left">
+      <bpmn:extensionElements>
+        <sese:flowLabel value="left" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Task_16" targetRef="ExclusiveJoin_15">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="ExclusiveSplit_15" targetRef="Task_17" name="right">
+      <bpmn:extensionElements>
+        <sese:flowLabel value="right" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_19" sourceRef="Task_17" targetRef="ExclusiveJoin_15">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="ParallelJoin_4" targetRef="ExclusiveSplit_15">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_21" sourceRef="RootEvent_0" targetRef="Task_3">
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_22" sourceRef="ExclusiveJoin_15" targetRef="EndEvent_1">
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="Task_3_di" bpmnElement="Task_3">
+        <dc:Bounds x="280.000" y="180.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ParallelSplit_4_di" bpmnElement="ParallelSplit_4">
+        <dc:Bounds x="535.000" y="195.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ParallelJoin_4_di" bpmnElement="ParallelJoin_4">
+        <dc:Bounds x="1635.000" y="195.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_6_di" bpmnElement="Task_6">
+        <dc:Bounds x="720.000" y="265.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveSplit_7_di" bpmnElement="ExclusiveSplit_7">
+        <dc:Bounds x="975.000" y="280.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveJoin_7_di" bpmnElement="ExclusiveJoin_7">
+        <dc:Bounds x="1415.000" y="280.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_8_di" bpmnElement="Task_8">
+        <dc:Bounds x="1160.000" y="180.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_9_di" bpmnElement="Task_9">
+        <dc:Bounds x="1160.000" y="350.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_11_di" bpmnElement="Task_11">
+        <dc:Bounds x="720.000" y="95.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveSplit_12_di" bpmnElement="ExclusiveSplit_12">
+        <dc:Bounds x="975.000" y="110.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveJoin_12_di" bpmnElement="ExclusiveJoin_12">
+        <dc:Bounds x="1415.000" y="110.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_13_di" bpmnElement="Task_13">
+        <dc:Bounds x="1160.000" y="10.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_14_di" bpmnElement="Task_14">
+        <dc:Bounds x="1160.000" y="180.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveSplit_15_di" bpmnElement="ExclusiveSplit_15">
+        <dc:Bounds x="1855.000" y="195.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveJoin_15_di" bpmnElement="ExclusiveJoin_15">
+        <dc:Bounds x="2295.000" y="195.000" width="50.000" height="50.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_16_di" bpmnElement="Task_16">
+        <dc:Bounds x="2040.000" y="95.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_17_di" bpmnElement="Task_17">
+        <dc:Bounds x="2040.000" y="265.000" width="120.000" height="80.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="RootEvent_0_di" bpmnElement="RootEvent_0">
+        <dc:Bounds x="102.000" y="202.000" width="36.000" height="36.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="2522.000" y="202.000" width="36.000" height="36.000" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="1025.000" y="305.000" />
+        <di:waypoint x="1095.000" y="305.000" />
+        <di:waypoint x="1095.000" y="220.000" />
+        <di:waypoint x="1160.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="1280.000" y="220.000" />
+        <di:waypoint x="1350.000" y="220.000" />
+        <di:waypoint x="1350.000" y="305.000" />
+        <di:waypoint x="1415.000" y="305.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="1025.000" y="305.000" />
+        <di:waypoint x="1095.000" y="305.000" />
+        <di:waypoint x="1095.000" y="390.000" />
+        <di:waypoint x="1160.000" y="390.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="1280.000" y="390.000" />
+        <di:waypoint x="1350.000" y="390.000" />
+        <di:waypoint x="1350.000" y="305.000" />
+        <di:waypoint x="1415.000" y="305.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="840.000" y="305.000" />
+        <di:waypoint x="975.000" y="305.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1025.000" y="135.000" />
+        <di:waypoint x="1095.000" y="135.000" />
+        <di:waypoint x="1095.000" y="50.000" />
+        <di:waypoint x="1160.000" y="50.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1280.000" y="50.000" />
+        <di:waypoint x="1350.000" y="50.000" />
+        <di:waypoint x="1350.000" y="135.000" />
+        <di:waypoint x="1415.000" y="135.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1025.000" y="135.000" />
+        <di:waypoint x="1095.000" y="135.000" />
+        <di:waypoint x="1095.000" y="220.000" />
+        <di:waypoint x="1160.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1280.000" y="220.000" />
+        <di:waypoint x="1350.000" y="220.000" />
+        <di:waypoint x="1350.000" y="135.000" />
+        <di:waypoint x="1415.000" y="135.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="840.000" y="135.000" />
+        <di:waypoint x="975.000" y="135.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="585.000" y="220.000" />
+        <di:waypoint x="655.000" y="220.000" />
+        <di:waypoint x="655.000" y="305.000" />
+        <di:waypoint x="720.000" y="305.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="585.000" y="220.000" />
+        <di:waypoint x="655.000" y="220.000" />
+        <di:waypoint x="655.000" y="135.000" />
+        <di:waypoint x="720.000" y="135.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1465.000" y="305.000" />
+        <di:waypoint x="1550.000" y="305.000" />
+        <di:waypoint x="1550.000" y="220.000" />
+        <di:waypoint x="1635.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="1465.000" y="135.000" />
+        <di:waypoint x="1550.000" y="135.000" />
+        <di:waypoint x="1550.000" y="220.000" />
+        <di:waypoint x="1635.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="400.000" y="220.000" />
+        <di:waypoint x="535.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="1905.000" y="220.000" />
+        <di:waypoint x="1975.000" y="220.000" />
+        <di:waypoint x="1975.000" y="135.000" />
+        <di:waypoint x="2040.000" y="135.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17_di" bpmnElement="Flow_17">
+        <di:waypoint x="2160.000" y="135.000" />
+        <di:waypoint x="2230.000" y="135.000" />
+        <di:waypoint x="2230.000" y="220.000" />
+        <di:waypoint x="2295.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18_di" bpmnElement="Flow_18">
+        <di:waypoint x="1905.000" y="220.000" />
+        <di:waypoint x="1975.000" y="220.000" />
+        <di:waypoint x="1975.000" y="305.000" />
+        <di:waypoint x="2040.000" y="305.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19_di" bpmnElement="Flow_19">
+        <di:waypoint x="2160.000" y="305.000" />
+        <di:waypoint x="2230.000" y="305.000" />
+        <di:waypoint x="2230.000" y="220.000" />
+        <di:waypoint x="2295.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_20_di" bpmnElement="Flow_20">
+        <di:waypoint x="1685.000" y="220.000" />
+        <di:waypoint x="1855.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_21_di" bpmnElement="Flow_21">
+        <di:waypoint x="138.000" y="220.000" />
+        <di:waypoint x="280.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_22_di" bpmnElement="Flow_22">
+        <di:waypoint x="2345.000" y="220.000" />
+        <di:waypoint x="2522.000" y="220.000" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
