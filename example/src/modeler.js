@@ -24,6 +24,7 @@ import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
+
 import exampleXML from '../resources/example.bpmn';
 
 const url = new URL(window.location.href);
@@ -32,7 +33,7 @@ const persistent = url.searchParams.has('p');
 const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
-let fileName = 'diagram.bpmn';
+let fileName = 'example.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -72,10 +73,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
+    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function() {
+        eventBus.on('commandStack.changed', function () {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -100,7 +101,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    } ]
+    }]
   ]
 };
 
@@ -144,10 +145,14 @@ function logMessage(level, message) {
   }
 
   if (log && typeof log.log === 'function') {
-    log.log({
-      text: message,
-      type: level === 'error' ? 'error' : level === 'warning' ? 'warning' : 'info'
-    });
+    try {
+      log.log({
+        text: message,
+        type: level === 'error' ? 'error' : level === 'warning' ? 'warning' : 'info'
+      });
+    } catch (e) {
+      console.warn('Could not output to UI log:', e.message);
+    }
   }
 }
 
@@ -179,6 +184,10 @@ function sanitizeDiagram(modeler, { persist = false } = {}) {
   }
 
   elementRegistry.getAll().forEach(element => {
+    if (element.labelTarget) {
+      return;
+    }
+
     const bo = element.businessObject;
 
     // only normalize BPMN flow nodes (events, tasks, gateways, subprocesses, etc.)
@@ -187,12 +196,16 @@ function sanitizeDiagram(modeler, { persist = false } = {}) {
     }
 
 
-    const rawName = bo.name && bo.name.trim();
+    const rawName = (bo.name || '').trim();
 
-    const baseName = rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`;
+    // Clean existing (N) suffixes to prevent accumulation like (2) (2)
+    const baseName = (rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`)
+      .replace(/\s\(\d+\)$/, '');
+
     const uniqueName = nextName(baseName);
 
     if (bo.name !== uniqueName) {
+      console.log(`[Sanitize] Renaming ${bo.id}: "${bo.name}" -> "${uniqueName}"`);
       bo.name = uniqueName;
     }
   });
@@ -234,6 +247,15 @@ function openDiagram(diagram) {
       }
 
       modeler.get('canvas').zoom('fit-viewport');
+
+      // Force ALL tasks to behave as wait states so tokens stay visible on them
+      const registry = modeler.get('elementRegistry');
+      const simulator = modeler.get('simulator');
+      registry.getAll().forEach(el => {
+        if (el.type === 'bpmn:Task' || el.type === 'bpmn:UserTask' || el.type === 'bpmn:ServiceTask') {
+          simulator.waitAtElement(el, true);
+        }
+      });
 
       // Auto-start simulation at t0
       initializeSimulationToStart();
@@ -284,7 +306,7 @@ function exportSVG() {
   });
 }
 
-document.body.addEventListener('keydown', function(event) {
+document.body.addEventListener('keydown', function (event) {
   if (event.code === 'KeyS' && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
 
@@ -298,21 +320,21 @@ document.body.addEventListener('keydown', function(event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function(event) {
+document.querySelector('#download-button').addEventListener('click', function (event) {
   downloadDiagram();
 });
 
-document.querySelector('#export-png').addEventListener('click', function(event) {
+document.querySelector('#export-png').addEventListener('click', function (event) {
   exportPNG();
 });
 
-document.querySelector('#export-svg').addEventListener('click', function(event) {
+document.querySelector('#export-svg').addEventListener('click', function (event) {
   exportSVG();
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
   fileOpen({
-    extensions: [ '.bpmn' ],
+    extensions: ['.bpmn'],
     description: 'BPMN diagrams'
   }).then(openFile);
 });
@@ -370,19 +392,34 @@ const elementRegistry = () => modeler.get('elementRegistry');
 // load all JSON state snapshots from /states in lexicographic order
 // webpack injects require.context; lint as a known global.
 // eslint-disable-next-line no-undef
-const statesContext = require.context('../../states', false, /\.json$/);
-const stateSequence = statesContext.keys().sort((a, b) => {
-  const getNumber = (str) => {
-    const match = str.match(/t(\d+)\.json$/);
-    return match ? parseInt(match[1], 10) : 0;
-  };
-  return getNumber(a) - getNumber(b);
-}).map(key => ({
-  name: key.replace('./', '').replace('.json', ''),
-  state: statesContext(key)
-}));
+const statesContext = require.context('../../states', true, /\.json$/);
 
+let stateSequence = [];
 let executionOrderMap = null;
+
+function loadStateSequenceForCurrentDiagram() {
+  const baseName = fileName.replace(/\.bpmn$/i, '');
+  const allKeys = statesContext.keys();
+  console.log('[StateLoader] fileName:', fileName, 'baseName:', baseName);
+  console.log('[StateLoader] All context keys:', allKeys);
+  // Filter keys for this specific diagram's subdirectory
+  const diagramKeys = allKeys.filter(k => k.startsWith(`./${baseName}/`));
+  console.log('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
+
+  stateSequence = diagramKeys.sort((a, b) => {
+    const getNumber = (str) => {
+      const match = str.match(/t(\d+)\.json$/);
+      return match ? parseInt(match[1], 10) : 0;
+    };
+    return getNumber(a) - getNumber(b);
+  }).map(key => ({
+    name: key.replace(`./${baseName}/`, '').replace('.json', ''),
+    state: statesContext(key)
+  }));
+  console.log('[StateLoader] Loaded', stateSequence.length, 'snapshots for', baseName);
+
+  executionOrderMap = null;
+}
 
 function getExecutionOrderMap() {
   if (executionOrderMap) {
@@ -397,7 +434,8 @@ function getExecutionOrderMap() {
     Object.keys(snapshot.state).forEach(taskId => {
 
       if (!registry.get(taskId)) {
-        throw new Error(`Element '${taskId}' in snapshot '${snapshot.name}' not found in the BPMN model.`);
+        console.warn(`Element '${taskId}' in snapshot '${snapshot.name}' not found in the BPMN model. Skipping.`);
+        return;
       }
 
       if (!seenTasks.has(taskId)) {
@@ -407,7 +445,7 @@ function getExecutionOrderMap() {
     });
   });
 
-  executionOrderMap = new Map(executionOrder.map((id, index) => [ id, index ]));
+  executionOrderMap = new Map(executionOrder.map((id, index) => [id, index]));
   return executionOrderMap;
 }
 
@@ -454,7 +492,7 @@ function renderStateSnapshot(snapshot) {
   statePanelBody.innerHTML = '';
 
   const orderMap = getExecutionOrderMap();
-  const entries = Object.entries(snapshot.state).sort(([ a ], [ b ]) => {
+  const entries = Object.entries(snapshot.state).sort(([a], [b]) => {
     const orderA = orderMap.has(a) ? orderMap.get(a) : Infinity;
     const orderB = orderMap.has(b) ? orderMap.get(b) : Infinity;
     return orderA - orderB;
@@ -471,7 +509,7 @@ function renderStateSnapshot(snapshot) {
     return;
   }
 
-  entries.forEach(([ taskId, status ]) => {
+  entries.forEach(([taskId, status]) => {
     const row = document.createElement('tr');
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
@@ -656,7 +694,13 @@ function configureExclusiveGateways(startIndex) {
 
 function initializeSimulationToStart() {
   logInfo('DEBUG: NEW VERSION LOADED (Manual Mode). If you see this message, the code is up to date.');
-  if (!stateSequence.length) return;
+
+  loadStateSequenceForCurrentDiagram();
+
+  if (!stateSequence.length) {
+    showStatePanelMessage('No state snapshots found for ' + fileName);
+    return;
+  }
 
   const simulationSupport = modeler.get('simulationSupport');
 
@@ -727,8 +771,19 @@ async function playStates() {
       if (currentStateIndex === 0) {
 
         // ... t0 -> t1
-        console.log('Triggering Start Event to transition t0 -> t1');
-        simulationSupport.triggerElement('StartEvent_0offpno');
+        // Find the StartEvent that transitions from waiting -> completed in t0 -> t1
+        const prev = stateSequence[0].state;
+        const next = nextSnapshot.state;
+        const startEventId = Object.keys(next).find(id => {
+          const el = registry.get(id);
+          return el && el.type === 'bpmn:StartEvent' && prev[id] === 'waiting' && next[id] === 'completed';
+        });
+        console.log('[PlayStates] Detected root start event from JSON:', startEventId);
+        if (startEventId) {
+          simulationSupport.triggerElement(startEventId);
+        } else {
+          console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
+        }
       } else {
 
         // Normal Case: tN -> tN+1
@@ -743,7 +798,7 @@ async function playStates() {
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
-        const allActions = [ ...activations, ...completions ].filter(id => {
+        const allActions = [...activations, ...completions].filter(id => {
 
           // Do NOT try to trigger EndEvents, they don't support it.
           const el = registry.get(id);

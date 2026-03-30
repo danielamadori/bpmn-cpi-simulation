@@ -101,7 +101,7 @@
   display: none;
 }
 
-.bts-token-count + .bts-token-count {
+.bts-token-count+.bts-token-count {
   margin-left: -8px;
 }
 
@@ -112,7 +112,9 @@
 }
 
 @keyframes bts-jump {
-  50% { top: 5px; }
+  50% {
+    top: 5px;
+  }
 }
 
 .bts-notifications {
@@ -151,27 +153,27 @@
   color: var(--token-simulation-white, #FFFFFF);
 }
 
-.bts-notifications .bts-notification > * {
+.bts-notifications .bts-notification>* {
   flex: initial;
 }
 
-.bts-notifications .bts-notification > :not(:last-child) {
+.bts-notifications .bts-notification> :not(:last-child) {
   margin-right: 6px;
 }
 
-.bts-notifications .bts-notification > .bts-icon {
+.bts-notifications .bts-notification>.bts-icon {
   min-width: 20px;
   text-align: center;
 }
 
-.bts-notifications .bts-notification > .bts-text {
+.bts-notifications .bts-notification>.bts-text {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.bts-notifications .bts-notification > .bts-scope {
+.bts-notifications .bts-notification>.bts-scope {
   font-family: monospace;
   font-size: .8em;
   padding: 2px 3px;
@@ -179,8 +181,8 @@
   cursor: default;
 }
 
-.bts-notifications .bts-notification > .bts-icon [class^="bpmn-icon-"]:before,
-.bts-notifications .bts-notification > .bts-icon [class*=" bpmn-icon-"]:before {
+.bts-notifications .bts-notification>.bts-icon [class^="bpmn-icon-"]:before,
+.bts-notifications .bts-notification>.bts-icon [class*=" bpmn-icon-"]:before {
   margin: 0;
 }
 
@@ -256,7 +258,7 @@
 
 .bjs-container.simulation .djs-overlay:not(.djs-overlay-bts-context-menu, .djs-overlay-bts-element-notification, .djs-overlay-bts-token-count, .djs-overlay-drilldown) {
   display: none !important;
-} 
+}
 
 .bts-palette {
   position: absolute;
@@ -407,20 +409,20 @@
   margin: 0;
 }
 
-.bts-log .bts-entry > * {
+.bts-log .bts-entry>* {
   flex: initial;
 }
 
-.bts-log .bts-entry > :not(:last-child) {
+.bts-log .bts-entry> :not(:last-child) {
   margin-right: 6px;
 }
 
-.bts-log .bts-entry > .bts-icon {
+.bts-log .bts-entry>.bts-icon {
   min-width: 20px;
   text-align: center;
 }
 
-.bts-log .bts-entry > .bts-scope {
+.bts-log .bts-entry>.bts-scope {
   font-family: monospace;
   font-size: .8em;
   padding: 2px 3px;
@@ -428,7 +430,7 @@
   cursor: default;
 }
 
-.bts-log .bts-entry > .bts-text {
+.bts-log .bts-entry>.bts-text {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -528,6 +530,7 @@
   z-index: auto;
   margin: 0;
 }
+
 #simulation-control-stack .bts-set-animation-speed .bts-animation-speed-buttons {
   margin-left: 0;
 }
@@ -538,6 +541,6 @@
   justify-content: center;
 }
 
-.bts-icon > svg {
+.bts-icon>svg {
   height: 1em;
 }
