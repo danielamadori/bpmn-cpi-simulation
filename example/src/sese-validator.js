@@ -4,16 +4,17 @@ export function validateSESE(modeler) {
   const errors = [];
 
   // Find all scopes: Root Process(es) and SubProcesses
-  // Note: Root elements might not be in elementRegistry.getAll() depending on implementation, 
+  // Note: Root elements might not be in elementRegistry.getAll() depending on implementation,
   // but they are accessible via canvas.getRootElement().
-  
+
   const scopes = [];
-  
+
   // 1. Check Root Element
   const root = canvas.getRootElement();
   if (root.type === 'bpmn:Process') {
     scopes.push(root);
   } else if (root.type === 'bpmn:Collaboration') {
+
     // Collect Participants (Pools) which act as Processes
     if (root.children) {
       root.children.forEach(child => {
@@ -34,6 +35,7 @@ export function validateSESE(modeler) {
 
   // Validate each scope
   scopes.forEach(scope => {
+
     // Defensive check for children
     if (!scope.children) return;
 
