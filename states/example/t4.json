@@ -1,5 +1,7 @@
 {
-  "StartEvent_0offpno": "completed",
+  "StartEvent_0offpno@main": "completed",
+  "StartEvent_0offpno@main": "active",
+  "StartEvent_0offpno@main": "waiting",
   "Task_026c0id": "completed",
   "Task_0po6mda": "completed",
   "ExclusiveGateway_13kuced": "completed",
