@@ -432,9 +432,9 @@ function getExecutionOrderMap() {
 
   stateSequence.forEach(snapshot => {
     Object.keys(snapshot.state).forEach(taskId => {
-
-      if (!registry.get(taskId)) {
-        console.warn(`Element '${taskId}' in snapshot '${snapshot.name}' not found in the BPMN model. Skipping.`);
+      const registryId = taskId.split('@')[0];
+      if (!registry.get(registryId)) {
+        console.warn(`Element '${registryId}' in snapshot '${snapshot.name}' not found in the BPMN model. Skipping.`);
         return;
       }
 
@@ -514,10 +514,15 @@ function renderStateSnapshot(snapshot) {
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
 
-    const element = elementRegistry().get(taskId);
-    const displayName = element && element.businessObject && element.businessObject.name
+    const [registryId, contextId] = taskId.split('@');
+    const element = elementRegistry().get(registryId);
+    let displayName = element && element.businessObject && element.businessObject.name
       ? element.businessObject.name
-      : taskId;
+      : registryId;
+      
+    if (contextId) {
+      displayName += `@${contextId}`;
+    }
 
     taskCell.textContent = displayName;
     statusCell.textContent = status;
@@ -652,8 +657,11 @@ function configureExclusiveGateways(startIndex) {
       const next = stateSequence[i].state;
 
       // Check if gateway fires in this transition (prev has it, next doesn't)
-      const wasActive = prev[gateway.id] === 'active';
-      const isActive = next[gateway.id] === 'active';
+      const gatewayKeyPrev = Object.keys(prev).find(k => k === gateway.id || k.startsWith(gateway.id + '@'));
+      const gatewayKeyNext = Object.keys(next).find(k => k === gateway.id || k.startsWith(gateway.id + '@'));
+
+      const wasActive = gatewayKeyPrev ? prev[gatewayKeyPrev] === 'active' : false;
+      const isActive = gatewayKeyNext ? next[gatewayKeyNext] === 'active' : false;
 
       if (wasActive && !isActive) {
 
@@ -662,12 +670,14 @@ function configureExclusiveGateways(startIndex) {
 
         // Find the child that connects to this gateway
         const activeChildId = activations.find(childId => {
-          const child = registry.get(childId);
+          const registryId = childId.split('@')[0];
+          const child = registry.get(registryId);
           return child && child.incoming.some(flow => flow.source === gateway);
         });
 
         if (activeChildId) {
-          const child = registry.get(activeChildId);
+          const registryId = activeChildId.split('@')[0];
+          const child = registry.get(registryId);
           targetFlow = child.incoming.find(flow => flow.source === gateway);
         }
 
@@ -775,12 +785,13 @@ async function playStates() {
         const prev = stateSequence[0].state;
         const next = nextSnapshot.state;
         const startEventId = Object.keys(next).find(id => {
-          const el = registry.get(id);
+          const registryId = id.split('@')[0];
+          const el = registry.get(registryId);
           return el && el.type === 'bpmn:StartEvent' && prev[id] === 'waiting' && next[id] === 'completed';
         });
         console.log('[PlayStates] Detected root start event from JSON:', startEventId);
         if (startEventId) {
-          simulationSupport.triggerElement(startEventId);
+          simulationSupport.triggerElement(startEventId.split('@')[0]);
         } else {
           console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
         }
@@ -794,14 +805,16 @@ async function playStates() {
 
         // Detect SubProcesses becoming active (entering) OR Catch Events becoming active (pulling from Gateway)
         const activations = diffActivations(prev, next).filter(id => {
-          const el = registry.get(id);
+          const registryId = id.split('@')[0];
+          const el = registry.get(registryId);
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
         const allActions = [...activations, ...completions].filter(id => {
 
           // Do NOT try to trigger EndEvents, they don't support it.
-          const el = registry.get(id);
+          const registryId = id.split('@')[0];
+          const el = registry.get(registryId);
 
           // Also skip EventBasedGateway triggering if we are triggering the Event instead.
           // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
@@ -810,9 +823,9 @@ async function playStates() {
         });
 
         if (allActions.length) {
+          const triggerableIds = allActions.map(id => id.split('@')[0]);
 
-
-          await waitForTokenDrain(simulationSupport, allActions);
+          await waitForTokenDrain(simulationSupport, triggerableIds);
         }
       }
 
