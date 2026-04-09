@@ -702,10 +702,37 @@ function configureExclusiveGateways(startIndex) {
   });
 }
 
+let _statesInjectedViaApi = false;
+let _pendingApiStates = null;
+let _pendingApiTargetIndex = null;
+
 function initializeSimulationToStart() {
   logInfo('DEBUG: NEW VERSION LOADED (Manual Mode). If you see this message, the code is up to date.');
 
-  loadStateSequenceForCurrentDiagram();
+  // Check for deferred API states (arrived before diagram was ready)
+  if (_pendingApiStates) {
+    const registry = modeler.get('elementRegistry');
+    const firstKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
+    const testId = firstKey ? firstKey.split('@')[0] : null;
+    if (testId && registry.get(testId)) {
+      stateSequence = _pendingApiStates;
+      _statesInjectedViaApi = true;
+      _pendingApiStates = null;
+      console.log('[init] Applied pending API states');
+    } else {
+      console.log('[init] Pending states do not match current diagram, deferring');
+    }
+  }
+
+  if (!_statesInjectedViaApi) {
+    const remoteDiagramParam = new URL(window.location.href).searchParams.get('diagram');
+    if (remoteDiagramParam) {
+      console.log('[init] Remote diagram mode — skipping file-based states, waiting for postMessage');
+      stateSequence = [];
+    } else {
+      loadStateSequenceForCurrentDiagram();
+    }
+  }
 
   if (!stateSequence.length) {
     showStatePanelMessage('No state snapshots found for ' + fileName);
@@ -742,6 +769,19 @@ function initializeSimulationToStart() {
     configureExclusiveGateways(1);
   } catch (e) {
     console.warn('Could not render t0:', e);
+  }
+
+  // If API states were deferred, replay to the target index now
+  if (_statesInjectedViaApi && _pendingApiTargetIndex !== null) {
+    const target = _pendingApiTargetIndex;
+    _pendingApiTargetIndex = null;
+    console.log('[init] Replaying to deferred target index', target);
+    (async () => {
+      for (let i = 0; i < target && currentStateIndex < stateSequence.length - 1; i++) {
+        await playStates();
+      }
+      console.log('[init] Replay complete at index', currentStateIndex);
+    })();
   }
 }
 
@@ -888,3 +928,63 @@ if (remoteDiagram) {
 
 // expose for theming
 window.bpmnjs = modeler;
+
+// --- postMessage API for external state injection ---
+// Parent frame (combined.html) sends {type: 'loadStates', states: [...]}
+// when user selects a node in the execution tree. We reset the simulation
+// and replay step by step using the SAME playStates() mechanism.
+window.addEventListener('message', async (event) => {
+  const data = event.data;
+  if (!data || typeof data !== 'object') return;
+
+  if (data.type === 'loadStates') {
+    const states = Array.isArray(data.states) ? data.states : [];
+    const targetIndex = parseInt(data.targetIndex, 10) || (states.length - 1);
+    console.log('[postMessage] Received', states.length, 'states, target index', targetIndex);
+
+    // Check if the current diagram matches these states
+    const firstKey = Object.keys(states.length ? states[0].state : {})[0];
+    const testId = firstKey ? firstKey.split('@')[0] : null;
+    const registry = modeler.get('elementRegistry');
+    const diagramMatches = testId && registry.get(testId);
+
+    if (!diagramMatches) {
+      // BPMN not loaded yet — save for deferred application
+      _pendingApiStates = states;
+      _pendingApiTargetIndex = targetIndex;
+      console.log('[postMessage] Diagram not ready, deferring');
+      return;
+    }
+
+    // Reset simulation completely
+    isStepping = false;  // unlock playStates() guard in case a previous replay is in progress
+    modeler.get('eventBus').fire('tokenSimulation.resetSimulation');
+
+    // Inject states — same setup as initializeSimulationToStart
+    stateSequence = states;
+    currentStateIndex = 0;
+    executionOrderMap = null;
+    _statesInjectedViaApi = true;
+
+    const simulationSupport = modeler.get('simulationSupport');
+    simulationSupport.toggleSimulation(true);
+
+    // Force pause on all elements
+    registry.getAll().forEach(el => {
+      if (el.type !== 'bpmn:Process' && el.type !== 'bpmn:EndEvent') {
+        modeler.get('simulator').setConfig(el, { wait: true });
+      }
+    });
+
+    if (stateSequence.length) {
+      renderStateSnapshot(stateSequence[0]);
+      configureExclusiveGateways(1);
+
+      // Replay step by step using playStates() — same as manual "Play" button
+      for (let i = 0; i < targetIndex && currentStateIndex < stateSequence.length - 1; i++) {
+        await playStates();
+      }
+      console.log('[postMessage] Replay complete at index', currentStateIndex);
+    }
+  }
+});
