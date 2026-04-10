@@ -25,16 +25,15 @@ import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 
-//import exampleXML from '../resources/example.bpmn';
-import exampleXML from '../../new_example/message_intermediate_throw_catch.bpmn';
+import exampleXML from '../resources/example.bpmn';
+
 const url = new URL(window.location.href);
 
 const persistent = url.searchParams.has('p');
 const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
-//let fileName = 'example.bpmn';
-let fileName = 'message_intermediate_throw_catch.bpmn';
+let fileName = 'example.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -465,11 +464,12 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
       const targetScopeId = getLatestScopeId(targetElement.id);
       const sourceScopeId = getLatestScopeId(sourceElement.id);
 
-      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#(${sourceScopeId})`;
-      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#(${targetScopeId})`;
+      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#${sourceScopeId}`;
+      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#${targetScopeId}`;
       
       const bo = element.businessObject;
-      const messageId = bo.messageRef ? bo.messageRef.id : element.id;
+      const baseMessageId = bo.messageRef ? bo.messageRef.id : element.id;
+      const messageId = `${baseMessageId}#${sourceScopeId}:#${targetScopeId}`;
       const messageName = bo.messageRef && bo.messageRef.name ? bo.messageRef.name : element.id;
       const payloadStr = `contenuto base messaggio ${messageName}`;
 
@@ -942,6 +942,7 @@ async function playStates() {
         console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
         if (startEventIds.length > 0) {
           startEventIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
+          await drainSimulationQueues();
         } else {
           console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
         }
@@ -950,6 +951,27 @@ async function playStates() {
         // Normal Case: tN -> tN+1
         const prev = stateSequence[currentStateIndex].state;
         const next = nextSnapshot.state;
+
+        // Detect StartEvents that fire in this step (waiting -> completed)
+        // This handles processes that start later in the sequence (e.g. Sender starts after Receiver)
+        // Exclude Message Start Events — they are triggered automatically via MessageFlow
+        const lateStartIds = Object.keys(next).filter(id => {
+          const registryId = id.split('@')[0];
+          const el = registry.get(registryId);
+          if (!el || el.type !== 'bpmn:StartEvent') return false;
+          if (getOverallStatus(prev[id]) !== 'waiting' || getOverallStatus(next[id]) !== 'completed') return false;
+          // Skip Message Start Events (they have a messageEventDefinition)
+          const bo = el.businessObject;
+          const hasMessageDef = bo && bo.eventDefinitions && bo.eventDefinitions.some(d => d.$type === 'bpmn:MessageEventDefinition');
+          if (hasMessageDef) return false;
+          return true;
+        });
+
+        if (lateStartIds.length > 0) {
+          console.log('[PlayStates] Detected late-starting processes:', lateStartIds);
+          lateStartIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
+          await drainSimulationQueues();
+        }
 
         const completions = diffCompletions(prev, next);
 
@@ -962,14 +984,23 @@ async function playStates() {
 
         const allActions = [...activations, ...completions].filter(id => {
 
-          // Do NOT try to trigger EndEvents, they don't support it.
           const registryId = id.split('@')[0];
           const el = registry.get(registryId);
 
-          // Also skip EventBasedGateway triggering if we are triggering the Event instead.
-          // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
-          // Best to skip triggering the Gateway itself if it's EventBased.
-          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway';
+          // Do NOT try to trigger EndEvents, they don't support it.
+          if (!el || el.type === 'bpmn:EndEvent' || el.type === 'bpmn:EventBasedGateway') return false;
+
+          // Skip IntermediateCatchEvents with signal/message definitions —
+          // they are unblocked automatically by the corresponding throw event
+          if (el.type === 'bpmn:IntermediateCatchEvent') {
+            const bo = el.businessObject;
+            const hasAutoTrigger = bo && bo.eventDefinitions && bo.eventDefinitions.some(d =>
+              d.$type === 'bpmn:SignalEventDefinition' || d.$type === 'bpmn:MessageEventDefinition'
+            );
+            if (hasAutoTrigger) return false;
+          }
+
+          return true;
         });
 
         if (allActions.length) {
