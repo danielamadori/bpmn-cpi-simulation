@@ -539,7 +539,16 @@ function renderStateSnapshot(snapshot) {
 // Uses the SAME logic as playStates() but without isStepping guard / UI button.
 // Replays step-by-step from t0 to targetIndex using the existing
 // diffCompletions/diffActivations/waitForTokenDrain mechanism.
+let _replayInProgress = false;
+
 async function replayToIndex(targetIndex) {
+  if (_replayInProgress) {
+    console.log('[replay] Already in progress, skipping');
+    return;
+  }
+  _replayInProgress = true;
+
+  try {
   const simulationSupport = modeler.get('simulationSupport');
   const simulator = modeler.get('simulator');
   const registry = modeler.get('elementRegistry');
@@ -547,9 +556,14 @@ async function replayToIndex(targetIndex) {
   // Ensure simulation mode is active
   simulationSupport.toggleSimulation(true);
 
-  // Reset simulator directly. Do NOT fire tokenSimulation.resetSimulation —
-  // that triggers initializeSimulationToStart which calls replayToIndex again (recursion).
-  simulator.reset();
+  // Clear all child scopes (tokens) without full reset.
+  // simulator.reset() causes event cascades that trigger infinite loops.
+  const allScopes = simulator.findScopes({ trait: 1 }); // ACTIVATED
+  for (const scope of allScopes) {
+    if (scope.parent) {
+      try { simulator.destroyScope(scope); } catch (_) {}
+    }
+  }
 
   const clampedTarget = Math.min(targetIndex, stateSequence.length - 1);
 
@@ -652,6 +666,10 @@ async function replayToIndex(targetIndex) {
   });
 
   console.log('[replay] Complete at index', currentStateIndex);
+
+  } finally {
+    _replayInProgress = false;
+  }
 }
 
 function diffCompletions(prev, next) {
@@ -1050,6 +1068,10 @@ window.addEventListener('message', async (event) => {
   if (!data || typeof data !== 'object') return;
 
   if (data.type === 'loadStates') {
+    if (_replayInProgress) {
+      console.log('[postMessage] Replay in progress, ignoring');
+      return;
+    }
     const states = Array.isArray(data.states) ? data.states : [];
     const targetIndex = parseInt(data.targetIndex, 10) || (states.length - 1);
     console.log('[postMessage] Received', states.length, 'states, target index', targetIndex);
