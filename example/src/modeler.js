@@ -26,7 +26,7 @@ import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 
 //import exampleXML from '../resources/example.bpmn';
-import exampleXML from '../../new_example/message_send_task_receive_task.bpmn';
+import exampleXML from '../../new_example/message_start_event.bpmn';
 const url = new URL(window.location.href);
 
 const persistent = url.searchParams.has('p');
@@ -34,7 +34,7 @@ const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
 //let fileName = 'example.bpmn';
-let fileName = 'message_send_task_receive_task.bpmn';
+let fileName = 'message_start_event.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -955,10 +955,17 @@ async function playStates() {
 
         // Detect StartEvents that fire in this step (waiting -> completed)
         // This handles processes that start later in the sequence (e.g. Sender starts after Receiver)
+        // Exclude Message Start Events — they are triggered automatically via MessageFlow
         const lateStartIds = Object.keys(next).filter(id => {
           const registryId = id.split('@')[0];
           const el = registry.get(registryId);
-          return el && el.type === 'bpmn:StartEvent' && getOverallStatus(prev[id]) === 'waiting' && getOverallStatus(next[id]) === 'completed';
+          if (!el || el.type !== 'bpmn:StartEvent') return false;
+          if (getOverallStatus(prev[id]) !== 'waiting' || getOverallStatus(next[id]) !== 'completed') return false;
+          // Skip Message Start Events (they have a messageEventDefinition)
+          const bo = el.businessObject;
+          const hasMessageDef = bo && bo.eventDefinitions && bo.eventDefinitions.some(d => d.$type === 'bpmn:MessageEventDefinition');
+          if (hasMessageDef) return false;
+          return true;
         });
 
         if (lateStartIds.length > 0) {
