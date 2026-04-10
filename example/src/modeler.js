@@ -547,8 +547,6 @@ async function replayToIndex(targetIndex) {
     return;
   }
   _replayInProgress = true;
-
-  try {
   const simulationSupport = modeler.get('simulationSupport');
   const simulator = modeler.get('simulator');
   const registry = modeler.get('elementRegistry');
@@ -556,14 +554,10 @@ async function replayToIndex(targetIndex) {
   // Ensure simulation mode is active
   simulationSupport.toggleSimulation(true);
 
-  // Clear all child scopes (tokens) without full reset.
-  // simulator.reset() causes event cascades that trigger infinite loops.
-  const allScopes = simulator.findScopes({ trait: 1 }); // ACTIVATED
-  for (const scope of allScopes) {
-    if (scope.parent) {
-      try { simulator.destroyScope(scope); } catch (_) {}
-    }
-  }
+  // Full reset via simulator.reset() — properly destroys all scopes and
+  // reinitializes root scopes. The _replayInProgress guard prevents
+  // cascading resets from initializeSimulationToStart.
+  simulator.reset();
 
   const clampedTarget = Math.min(targetIndex, stateSequence.length - 1);
 
@@ -667,9 +661,7 @@ async function replayToIndex(targetIndex) {
 
   console.log('[replay] Complete at index', currentStateIndex);
 
-  } finally {
-    _replayInProgress = false;
-  }
+  _replayInProgress = false;
 }
 
 function diffCompletions(prev, next) {
