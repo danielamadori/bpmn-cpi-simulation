@@ -1,0 +1,10 @@
+{
+    "Start_SP@Process_SignalProducer.signal_intermediate_throw_catch": "completed",
+    "Task_PreSignal@Process_SignalProducer.signal_intermediate_throw_catch": "completed",
+    "Throw_Resume@Process_SignalProducer.signal_intermediate_throw_catch": "active",
+    "End_SP@Process_SignalProducer.signal_intermediate_throw_catch": "waiting",
+    "Start_SC@Process_SignalConsumer.signal_intermediate_throw_catch": "completed",
+    "Task_WaitContext@Process_SignalConsumer.signal_intermediate_throw_catch": "completed",
+    "Catch_Resume@Process_SignalConsumer.signal_intermediate_throw_catch": "completed",
+    "End_SC@Process_SignalConsumer.signal_intermediate_throw_catch": "completed"
+}
