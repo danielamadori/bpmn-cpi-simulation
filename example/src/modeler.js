@@ -26,7 +26,7 @@ import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 
 //import exampleXML from '../resources/example.bpmn';
-import exampleXML from '../../new_example/message_intermediate_throw_catch.bpmn';
+import exampleXML from '../../new_example/message_send_task_receive_task.bpmn';
 const url = new URL(window.location.href);
 
 const persistent = url.searchParams.has('p');
@@ -34,7 +34,7 @@ const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
 //let fileName = 'example.bpmn';
-let fileName = 'message_intermediate_throw_catch.bpmn';
+let fileName = 'message_send_task_receive_task.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -465,11 +465,12 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
       const targetScopeId = getLatestScopeId(targetElement.id);
       const sourceScopeId = getLatestScopeId(sourceElement.id);
 
-      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#(${sourceScopeId})`;
-      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#(${targetScopeId})`;
+      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#${sourceScopeId}`;
+      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#${targetScopeId}`;
       
       const bo = element.businessObject;
-      const messageId = bo.messageRef ? bo.messageRef.id : element.id;
+      const baseMessageId = bo.messageRef ? bo.messageRef.id : element.id;
+      const messageId = `${baseMessageId}#${sourceScopeId}:#${targetScopeId}`;
       const messageName = bo.messageRef && bo.messageRef.name ? bo.messageRef.name : element.id;
       const payloadStr = `contenuto base messaggio ${messageName}`;
 
@@ -942,6 +943,7 @@ async function playStates() {
         console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
         if (startEventIds.length > 0) {
           startEventIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
+          await drainSimulationQueues();
         } else {
           console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
         }
@@ -950,6 +952,20 @@ async function playStates() {
         // Normal Case: tN -> tN+1
         const prev = stateSequence[currentStateIndex].state;
         const next = nextSnapshot.state;
+
+        // Detect StartEvents that fire in this step (waiting -> completed)
+        // This handles processes that start later in the sequence (e.g. Sender starts after Receiver)
+        const lateStartIds = Object.keys(next).filter(id => {
+          const registryId = id.split('@')[0];
+          const el = registry.get(registryId);
+          return el && el.type === 'bpmn:StartEvent' && getOverallStatus(prev[id]) === 'waiting' && getOverallStatus(next[id]) === 'completed';
+        });
+
+        if (lateStartIds.length > 0) {
+          console.log('[PlayStates] Detected late-starting processes:', lateStartIds);
+          lateStartIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
+          await drainSimulationQueues();
+        }
 
         const completions = diffCompletions(prev, next);
 
