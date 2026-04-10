@@ -25,16 +25,15 @@ import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 
-//import exampleXML from '../resources/example.bpmn';
-import exampleXML from '../../new_example/message_start_event.bpmn';
+import exampleXML from '../resources/example.bpmn';
+
 const url = new URL(window.location.href);
 
 const persistent = url.searchParams.has('p');
 const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
-//let fileName = 'example.bpmn';
-let fileName = 'message_start_event.bpmn';
+let fileName = 'example.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -985,14 +984,23 @@ async function playStates() {
 
         const allActions = [...activations, ...completions].filter(id => {
 
-          // Do NOT try to trigger EndEvents, they don't support it.
           const registryId = id.split('@')[0];
           const el = registry.get(registryId);
 
-          // Also skip EventBasedGateway triggering if we are triggering the Event instead.
-          // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
-          // Best to skip triggering the Gateway itself if it's EventBased.
-          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway';
+          // Do NOT try to trigger EndEvents, they don't support it.
+          if (!el || el.type === 'bpmn:EndEvent' || el.type === 'bpmn:EventBasedGateway') return false;
+
+          // Skip IntermediateCatchEvents with signal/message definitions —
+          // they are unblocked automatically by the corresponding throw event
+          if (el.type === 'bpmn:IntermediateCatchEvent') {
+            const bo = el.businessObject;
+            const hasAutoTrigger = bo && bo.eventDefinitions && bo.eventDefinitions.some(d =>
+              d.$type === 'bpmn:SignalEventDefinition' || d.$type === 'bpmn:MessageEventDefinition'
+            );
+            if (hasAutoTrigger) return false;
+          }
+
+          return true;
         });
 
         if (allActions.length) {
