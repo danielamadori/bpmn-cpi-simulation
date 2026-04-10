@@ -1,0 +1,8 @@
+{
+    "Start_Sender@Process_Sender.message_send_task_receive_task": "completed",
+    "Task_SendOrder@Process_Sender.message_send_task_receive_task": "active",
+    "End_Sender@Process_Sender.message_send_task_receive_task": "waiting",
+    "Start_Receiver@Process_Receiver.message_send_task_receive_task": "completed",
+    "Task_ReceiveOrder@Process_Receiver.message_send_task_receive_task": "active",
+    "End_Receiver@Process_Receiver.message_send_task_receive_task": "waiting"
+}
