@@ -535,6 +535,125 @@ function renderStateSnapshot(snapshot) {
   });
 }
 
+// --- Replay to target index ---
+// Uses the SAME logic as playStates() but without isStepping guard / UI button.
+// Replays step-by-step from t0 to targetIndex using the existing
+// diffCompletions/diffActivations/waitForTokenDrain mechanism.
+async function replayToIndex(targetIndex) {
+  const simulationSupport = modeler.get('simulationSupport');
+  const simulator = modeler.get('simulator');
+  const registry = modeler.get('elementRegistry');
+
+  // Ensure simulation mode is active
+  simulationSupport.toggleSimulation(true);
+
+  // Reset simulator directly. Do NOT fire tokenSimulation.resetSimulation —
+  // that triggers initializeSimulationToStart which calls replayToIndex again (recursion).
+  simulator.reset();
+
+  const clampedTarget = Math.min(targetIndex, stateSequence.length - 1);
+
+  if (!stateSequence.length || targetIndex < 1) {
+    if (stateSequence.length) renderStateSnapshot(stateSequence[0]);
+    return;
+  }
+
+  // Configure wait based on TARGET snapshot:
+  // - completed elements → wait:false (token flows through)
+  // - active elements → wait:true (token stops here)
+  // - waiting elements → wait:true (token stops if it arrives)
+  const targetState = stateSequence[clampedTarget] ? stateSequence[clampedTarget].state : {};
+  const completedInTarget = new Set();
+  Object.entries(targetState).forEach(([key, status]) => {
+    if (status === 'completed') completedInTarget.add(key.split('@')[0]);
+  });
+
+  const waitConfig = {};
+  registry.getAll().forEach(el => {
+    if (el.type === 'bpmn:Process' || el.type === 'bpmn:Participant') return;
+    let shouldWait = !completedInTarget.has(el.id);
+    // Join gateways (incoming > 1) are not in the target state map —
+    // they must always let tokens through (wait:false).
+    const isJoin = (el.type === 'bpmn:ExclusiveGateway' || el.type === 'bpmn:ParallelGateway')
+      && el.incoming && el.incoming.filter(f => f.type === 'bpmn:SequenceFlow').length > 1;
+    if (isJoin) shouldWait = false;
+    simulator.setConfig(el, { wait: shouldWait });
+    waitConfig[el.id] = shouldWait;
+  });
+  console.log('[replay] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
+
+  // Render t0
+  currentStateIndex = 0;
+  renderStateSnapshot(stateSequence[0]);
+
+  // Lock exclusive gateways, select the correct branch, and color flows.
+  // Uses the same elementColors/simulationStyles API as ExclusiveGatewaySettings.
+  const elementColors = modeler.get('elementColors');
+  const simulationStyles = modeler.get('simulationStyles');
+
+  const gateways = registry.getAll().filter(el => el.type === 'bpmn:ExclusiveGateway');
+  gateways.forEach(gateway => {
+    const outgoing = (gateway.outgoing || []).filter(f => f.type === 'bpmn:SequenceFlow');
+    if (outgoing.length < 2) return;
+
+    if (!completedInTarget.has(gateway.id)) return;
+
+    const selectedFlow = outgoing.find(flow =>
+      flow.target && completedInTarget.has(flow.target.id)
+    );
+
+    if (selectedFlow) {
+      simulator.setConfig(gateway, { locked: true, activeOutgoing: selectedFlow, wait: false });
+
+      // Color: selected branch dark, non-selected light grey
+      outgoing.forEach(flow => {
+        const style = flow === selectedFlow
+          ? '--token-simulation-grey-darken-30'
+          : '--token-simulation-grey-lighten-56';
+        elementColors.add(flow, 'exclusive-gateway-settings', {
+          stroke: simulationStyles.get(style)
+        }, 2000);
+      });
+    } else {
+      simulator.setConfig(gateway, { locked: false, wait: false });
+    }
+  });
+
+  // Trigger all StartEvents ONCE. Tokens flow through wait:false (completed)
+  // elements and stop on wait:true (active/waiting) elements automatically.
+  const t1 = stateSequence[1] ? stateSequence[1].state : {};
+  const startEventIds = Object.keys(t1).filter(id => {
+    const registryId = id.split('@')[0];
+    const el = registry.get(registryId);
+    return el && el.type === 'bpmn:StartEvent';
+  });
+
+  console.log('[replay] Triggering StartEvents:', startEventIds.map(id => id.split('@')[0]));
+  for (const seId of startEventIds) {
+    try {
+      simulationSupport.triggerElement(seId.split('@')[0]);
+    } catch (err) {
+      console.warn('[replay] triggerElement failed for', seId.split('@')[0], err.message);
+    }
+  }
+
+  // Wait for tokens to settle
+  await new Promise(r => setTimeout(r, 500));
+
+  // Update state panel to show target
+  currentStateIndex = clampedTarget;
+  renderStateSnapshot(stateSequence[clampedTarget]);
+
+  // Force token count refresh — the simulator may not emit elementChanged
+  // for all elements during async replay. Fire tick to update overlays.
+  await new Promise(r => setTimeout(r, 100));
+  registry.getAll().forEach(el => {
+    modeler.get('eventBus').fire('tokenSimulation.simulator.elementChanged', { element: el });
+  });
+
+  console.log('[replay] Complete at index', currentStateIndex);
+}
+
 function diffCompletions(prev, next) {
   return Object.keys(next).filter(id => prev[id] === 'active' && next[id] === 'completed');
 }
@@ -734,15 +853,16 @@ function initializeSimulationToStart() {
     }
   }
 
+  const simulationSupport = modeler.get('simulationSupport');
+
+  // Ensure token simulation is active — ALWAYS, even with empty stateSequence.
+  // This initializes the simulation mode (token counts, context pads, etc.)
+  simulationSupport.toggleSimulation(true);
+
   if (!stateSequence.length) {
     showStatePanelMessage('No state snapshots found for ' + fileName);
     return;
   }
-
-  const simulationSupport = modeler.get('simulationSupport');
-
-  // Ensure token simulation is active
-  simulationSupport.toggleSimulation(true);
 
   // Reset sequence to t0
   currentStateIndex = 0;
@@ -771,17 +891,11 @@ function initializeSimulationToStart() {
     console.warn('Could not render t0:', e);
   }
 
-  // If API states were deferred, replay to the target index now
+  // If API states were deferred, replay to target
   if (_statesInjectedViaApi && _pendingApiTargetIndex !== null) {
     const target = _pendingApiTargetIndex;
     _pendingApiTargetIndex = null;
-    console.log('[init] Replaying to deferred target index', target);
-    (async () => {
-      for (let i = 0; i < target && currentStateIndex < stateSequence.length - 1; i++) {
-        await playStates();
-      }
-      console.log('[init] Replay complete at index', currentStateIndex);
-    })();
+    replayToIndex(target);
   }
 }
 
@@ -843,23 +957,21 @@ async function playStates() {
 
         const completions = diffCompletions(prev, next);
 
-        // Detect SubProcesses becoming active (entering) OR Catch Events becoming active (pulling from Gateway)
-        const activations = diffActivations(prev, next).filter(id => {
-          const registryId = id.split('@')[0];
-          const el = registry.get(registryId);
-          return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
+        // Detect ALL elements becoming active (not just SubProcess/CatchEvent)
+        const activations = diffActivations(prev, next);
+
+        // Detect elements that jump from waiting directly to completed
+        // (zero-time tasks in our SPIN execution model that are traversed
+        // instantaneously). These need to be triggered too.
+        const directCompletions = Object.keys(next).filter(id => {
+          return prev[id] === 'waiting' && next[id] === 'completed' && !completions.includes(id);
         });
 
-        const allActions = [...activations, ...completions].filter(id => {
-
-          // Do NOT try to trigger EndEvents, they don't support it.
+        const allActions = [...activations, ...completions, ...directCompletions].filter(id => {
           const registryId = id.split('@')[0];
           const el = registry.get(registryId);
-
-          // Also skip EventBasedGateway triggering if we are triggering the Event instead.
-          // Actually, triggering the Gateway usually does nothing. Let's leave it filtered out OR just let it fail silently.
-          // Best to skip triggering the Gateway itself if it's EventBased.
-          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway';
+          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway'
+            && el.type !== 'bpmn:StartEvent';
         });
 
         if (allActions.length) {
@@ -956,35 +1068,11 @@ window.addEventListener('message', async (event) => {
       return;
     }
 
-    // Reset simulation completely
-    isStepping = false;  // unlock playStates() guard in case a previous replay is in progress
-    modeler.get('eventBus').fire('tokenSimulation.resetSimulation');
-
-    // Inject states — same setup as initializeSimulationToStart
+    // Inject states and replay to target
     stateSequence = states;
-    currentStateIndex = 0;
     executionOrderMap = null;
     _statesInjectedViaApi = true;
 
-    const simulationSupport = modeler.get('simulationSupport');
-    simulationSupport.toggleSimulation(true);
-
-    // Force pause on all elements
-    registry.getAll().forEach(el => {
-      if (el.type !== 'bpmn:Process' && el.type !== 'bpmn:EndEvent') {
-        modeler.get('simulator').setConfig(el, { wait: true });
-      }
-    });
-
-    if (stateSequence.length) {
-      renderStateSnapshot(stateSequence[0]);
-      configureExclusiveGateways(1);
-
-      // Replay step by step using playStates() — same as manual "Play" button
-      for (let i = 0; i < targetIndex && currentStateIndex < stateSequence.length - 1; i++) {
-        await playStates();
-      }
-      console.log('[postMessage] Replay complete at index', currentStateIndex);
-    }
+    await replayToIndex(targetIndex);
   }
 });
