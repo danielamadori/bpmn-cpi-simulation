@@ -1,0 +1,8 @@
+{
+    "Start_Client@Process_Client.message_start_event": "completed",
+    "Task_SendRequest@Process_Client.message_start_event": "active",
+    "End_Client@Process_Client.message_start_event": "waiting",
+    "Start_Message@Process_Service.message_start_event": "waiting",
+    "Task_Handle@Process_Service.message_start_event": "waiting",
+    "End_Service@Process_Service.message_start_event": "waiting"
+}
