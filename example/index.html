@@ -75,6 +75,31 @@
                     </table>
                 </div>
             </div>
+
+            <div id="message-panel" class="state-panel" aria-live="polite" style="margin-top: 15px;">
+                <div class="state-panel-header">
+                    <span id="message-panel-title">Message Interceptor</span>
+                </div>
+                <div class="state-panel-table-wrapper">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid #ccc; padding: 5px;">SOURCE</th>
+                                <th style="border: 1px solid #ccc; padding: 5px;">DESTINATARIO</th>
+                                <th style="border: 1px solid #ccc; padding: 5px;">ID</th>
+                                <th style="border: 1px solid #ccc; padding: 5px;">PAYLOAD</th>
+                            </tr>
+                        </thead>
+                        <tbody id="message-panel-body">
+                            <tr>
+                                <td class="state-panel-empty" colspan="4" style="text-align: center; border: 1px solid #ccc; padding: 5px;">
+                                    Nessun messaggio tracciato
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="group" id="properties-group">

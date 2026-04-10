@@ -25,15 +25,16 @@ import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
 
-import exampleXML from '../resources/example.bpmn';
-
+//import exampleXML from '../resources/example.bpmn';
+import exampleXML from '../../new_example/message_intermediate_throw_catch.bpmn';
 const url = new URL(window.location.href);
 
 const persistent = url.searchParams.has('p');
 const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
-let fileName = 'example.bpmn';
+//let fileName = 'example.bpmn';
+let fileName = 'message_intermediate_throw_catch.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -381,6 +382,109 @@ function moveSimulationControls() {
 const controlsObserver = new MutationObserver(() => moveSimulationControls());
 controlsObserver.observe(document.body, { childList: true, subtree: true });
 
+const elementTokenHistory = new Map();
+let messageLogs = []; // Global state for intercepted messages
+let currentDiagramName = ''; // Dynamically mapped when loading a diagram
+
+function renderMessageLogs() {
+  const panel = document.getElementById('message-panel');
+  if (panel) panel.classList.add('visible');
+
+  const tbody = document.getElementById('message-panel-body');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+  if (messageLogs.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="state-panel-empty" colspan="4" style="text-align: center; border: 1px solid #ccc; padding: 5px;">Nessun messaggio tracciato</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
+  messageLogs.forEach(msg => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em; word-break: break-all;">${msg.source}</td>
+      <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em; word-break: break-all;">${msg.destination}</td>
+      <td style="border: 1px solid #ccc; padding: 5px;">${msg.id}</td>
+      <td style="border: 1px solid #ccc; padding: 5px;">${msg.payload}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Helpers for extracting correct semantic scope and processes
+function getProcessId(el) {
+  if (!el || !el.businessObject) return 'UnknownProcess';
+  let bo = el.businessObject;
+  while (bo && bo.$type !== 'bpmn:Process') {
+     bo = bo.$parent;
+  }
+  return bo ? bo.id : 'UnknownProcess';
+}
+
+function getLatestScopeId(elementId) {
+  if (elementTokenHistory.has(elementId)) {
+    const history = elementTokenHistory.get(elementId);
+    if (history.size > 0) {
+      return [...history.keys()].pop();
+    }
+  }
+  return 'unknown';
+}
+
+modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
+  const { action, element, scope: elementScope } = event;
+  if (!element || !elementScope) return;
+  
+  if (action === 'enter' || action === 'signal') {
+    const elementId = element.id || element;
+    if (!elementTokenHistory.has(elementId)) {
+      elementTokenHistory.set(elementId, new Map());
+    }
+    const tokenScope = elementScope.parent || elementScope;
+    elementTokenHistory.get(elementId).set(tokenScope.id, 'active');
+  }
+
+  if (action === 'exit') {
+    const elementId = element.id || element;
+    if (elementTokenHistory.has(elementId)) {
+       const tokenScope = elementScope.parent || elementScope;
+       elementTokenHistory.get(elementId).set(tokenScope.id, 'completed');
+    }
+
+    if (element.type === 'bpmn:MessageFlow') {
+      const sourceElement = element.source;
+      const targetElement = element.target;
+
+      const sourceProcessName = getProcessId(sourceElement);
+      const targetProcessName = getProcessId(targetElement);
+      
+      const diagramId = currentDiagramName; 
+      
+      const targetScopeId = getLatestScopeId(targetElement.id);
+      const sourceScopeId = getLatestScopeId(sourceElement.id);
+
+      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#(${sourceScopeId})`;
+      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#(${targetScopeId})`;
+      
+      const bo = element.businessObject;
+      const messageId = bo.messageRef ? bo.messageRef.id : element.id;
+      const messageName = bo.messageRef && bo.messageRef.name ? bo.messageRef.name : element.id;
+      const payloadStr = `contenuto base messaggio ${messageName}`;
+
+      messageLogs.push({
+        source: sourceStr,
+        destination: destStr,
+        id: messageId,
+        payload: payloadStr
+      });
+      
+      renderMessageLogs();
+    }
+  }
+});
+
 // --- state sequence playback (drives tokens from JSON snapshots) ---
 
 const playStatesBtn = document.getElementById('play-state-sequence');
@@ -401,6 +505,7 @@ function loadStateSequenceForCurrentDiagram() {
   const baseName = fileName.replace(/\.bpmn$/i, '');
   const allKeys = statesContext.keys();
   console.log('[StateLoader] fileName:', fileName, 'baseName:', baseName);
+  currentDiagramName = baseName; // Update global baseName for message mapping
   console.log('[StateLoader] All context keys:', allKeys);
   // Filter keys for this specific diagram's subdirectory
   const diagramKeys = allKeys.filter(k => k.startsWith(`./${baseName}/`));
@@ -524,9 +629,38 @@ function renderStateSnapshot(snapshot) {
       displayName += `@${contextId}`;
     }
 
+    let finalStatus = status;
+
+    if (elementTokenHistory.has(registryId)) {
+      const scopeMap = elementTokenHistory.get(registryId);
+      if (scopeMap.size > 0) {
+        finalStatus = {};
+        for (const [scopeId, scopeState] of scopeMap.entries()) {
+          // Se lo snapshot in JSON dice 'waiting', ma nel nostro history noi abbiamo messo
+          // implicitamente 'active' etc, forziamo il valore del JSON se il processo indica waiting.
+          // In ogni caso è preferibile assecondare il JSON principale per coerenza generale.
+          const expectedStatus = getOverallStatus(status);
+          finalStatus[scopeId] = expectedStatus === 'waiting' ? 'waiting' : scopeState;
+        }
+      }
+    }
+
     taskCell.textContent = displayName;
-    statusCell.textContent = status;
-    statusCell.classList.add(normalizeStatusClass(status));
+    
+    if (typeof finalStatus === 'object' && finalStatus !== null) {
+      statusCell.style.whiteSpace = "pre-wrap";
+      statusCell.innerHTML = '';
+      Object.entries(finalStatus).forEach(([tokenId, tokenStatus]) => {
+        const div = document.createElement('div');
+        div.textContent = `${tokenId}: "${tokenStatus}"`;
+        // Apply class to the div based on token status
+        div.classList.add(normalizeStatusClass(tokenStatus));
+        statusCell.appendChild(div);
+      });
+    } else {
+      statusCell.textContent = `"${finalStatus}"`;
+      statusCell.classList.add(normalizeStatusClass(finalStatus));
+    }
 
     row.appendChild(taskCell);
     row.appendChild(statusCell);
@@ -535,12 +669,24 @@ function renderStateSnapshot(snapshot) {
   });
 }
 
+function getOverallStatus(status) {
+  if (typeof status === 'string') return status;
+  if (typeof status === 'object' && status !== null) {
+    const values = Object.values(status);
+    if (values.includes('active')) return 'active';
+    if (values.every(v => v === 'completed')) return 'completed';
+    if (values.includes('waiting')) return 'waiting';
+    return 'unknown';
+  }
+  return status;
+}
+
 function diffCompletions(prev, next) {
-  return Object.keys(next).filter(id => prev[id] === 'active' && next[id] === 'completed');
+  return Object.keys(next).filter(id => getOverallStatus(prev[id]) === 'active' && getOverallStatus(next[id]) === 'completed');
 }
 
 function diffActivations(prev, next) {
-  return Object.keys(next).filter(id => prev[id] !== 'active' && next[id] === 'active');
+  return Object.keys(next).filter(id => getOverallStatus(prev[id]) !== 'active' && getOverallStatus(next[id]) === 'active');
 }
 
 function getSortedTriggers(ids) {
@@ -660,8 +806,8 @@ function configureExclusiveGateways(startIndex) {
       const gatewayKeyPrev = Object.keys(prev).find(k => k === gateway.id || k.startsWith(gateway.id + '@'));
       const gatewayKeyNext = Object.keys(next).find(k => k === gateway.id || k.startsWith(gateway.id + '@'));
 
-      const wasActive = gatewayKeyPrev ? prev[gatewayKeyPrev] === 'active' : false;
-      const isActive = gatewayKeyNext ? next[gatewayKeyNext] === 'active' : false;
+      const wasActive = gatewayKeyPrev ? getOverallStatus(prev[gatewayKeyPrev]) === 'active' : false;
+      const isActive = gatewayKeyNext ? getOverallStatus(next[gatewayKeyNext]) === 'active' : false;
 
       if (wasActive && !isActive) {
 
@@ -725,6 +871,10 @@ function initializeSimulationToStart() {
   const elementRegistry = modeler.get('elementRegistry');
   const simulator = modeler.get('simulator');
 
+  elementTokenHistory.clear();
+  messageLogs = [];
+  renderMessageLogs();
+
   elementRegistry.getAll().forEach(element => {
 
     // Force pause on all elements EXCEPT EndEvents (they auto-consume) and Processes
@@ -784,14 +934,14 @@ async function playStates() {
         // Find the StartEvent that transitions from waiting -> completed in t0 -> t1
         const prev = stateSequence[0].state;
         const next = nextSnapshot.state;
-        const startEventId = Object.keys(next).find(id => {
+        const startEventIds = Object.keys(next).filter(id => {
           const registryId = id.split('@')[0];
           const el = registry.get(registryId);
-          return el && el.type === 'bpmn:StartEvent' && prev[id] === 'waiting' && next[id] === 'completed';
+          return el && el.type === 'bpmn:StartEvent' && getOverallStatus(prev[id]) === 'waiting' && getOverallStatus(next[id]) === 'completed';
         });
-        console.log('[PlayStates] Detected root start event from JSON:', startEventId);
-        if (startEventId) {
-          simulationSupport.triggerElement(startEventId.split('@')[0]);
+        console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
+        if (startEventIds.length > 0) {
+          startEventIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
         } else {
           console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
         }
