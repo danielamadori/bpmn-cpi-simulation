@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sese="http://example.com/sese/extensions" id="Definitions_1" targetNamespace="http://example.com/sese" exporter="bpmn-js-token-simulation" exporterVersion="0.38.2">
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="Participant_1" name="Manufacturing" processRef="Process_1" />
+  </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Production" name="Production">
+        <bpmn:flowNodeRef>RootEvent_0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ParallelSplit_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ParallelJoin_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveSplit_7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveJoin_7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveSplit_12</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveJoin_12</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_13</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_14</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveSplit_15</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveJoin_15</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_16</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_17</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
     <bpmn:userTask id="Task_3" name="Cutting">
       <bpmn:extensionElements>
         <sese:region regionId="3" regionType="task" regionLabel="Cutting" role="task" />
@@ -227,7 +253,13 @@
     <bpmn:sequenceFlow id="Flow_22" sourceRef="ExclusiveJoin_15" targetRef="EndEvent_1" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
+      <bpmndi:BPMNShape id="Participant_1_di" bpmnElement="Participant_1" isHorizontal="true">
+        <dc:Bounds x="60" y="-20" width="2530" height="480" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Production_di" bpmnElement="Lane_Production" isHorizontal="true">
+        <dc:Bounds x="90" y="-20" width="2500" height="480" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_3_di" bpmnElement="Task_3">
         <dc:Bounds x="280" y="180" width="120" height="80" />
       </bpmndi:BPMNShape>
