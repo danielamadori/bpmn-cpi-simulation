@@ -1117,21 +1117,21 @@ async function playStates() {
 
         const completions = diffCompletions(prev, next);
 
-        // Detect ALL elements becoming active (not just SubProcess/CatchEvent)
-        const activations = diffActivations(prev, next);
-
-        // Detect elements that jump from waiting directly to completed
-        // (zero-time tasks in our SPIN execution model that are traversed
-        // instantaneously). These need to be triggered too.
-        const directCompletions = Object.keys(next).filter(id => {
-          return prev[id] === 'waiting' && next[id] === 'completed' && !completions.includes(id);
-        });
-
-        const allActions = [...activations, ...completions, ...directCompletions].filter(id => {
+        // Detect SubProcesses becoming active (entering) OR Catch Events becoming active (pulling from Gateway)
+        const activations = diffActivations(prev, next).filter(id => {
           const registryId = id.split('@')[0];
           const el = registry.get(registryId);
-          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway'
-            && el.type !== 'bpmn:StartEvent';
+          return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
+        });
+
+        const allActions = [...activations, ...completions].filter(id => {
+
+          // Do NOT try to trigger EndEvents, they don't support it.
+          const registryId = id.split('@')[0];
+          const el = registry.get(registryId);
+
+          // Also skip EventBasedGateway triggering if we are triggering the Event instead.
+          return el && el.type !== 'bpmn:EndEvent' && el.type !== 'bpmn:EventBasedGateway';
         });
 
         if (allActions.length) {
