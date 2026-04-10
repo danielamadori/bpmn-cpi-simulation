@@ -1,0 +1,10 @@
+{
+    "Start_Producer@Process_Producer.message_intermediate_throw_catch" : "completed",
+    "Task_Prepare@Process_Producer.message_intermediate_throw_catch" : "active",
+    "Throw_Approval@Process_Producer.message_intermediate_throw_catch" : "waiting",
+    "End_Producer@Process_Producer.message_intermediate_throw_catch" : "waiting",
+    "Start_Consumer@Process_Consumer.message_intermediate_throw_catch" : "completed",
+    "Task_WaitingContext@Process_Consumer.message_intermediate_throw_catch" : "active",
+    "Catch_Approval@Process_Consumer.message_intermediate_throw_catch" : "waiting",
+    "End_Consumer@Process_Consumer.message_intermediate_throw_catch" : "waiting"
+}
