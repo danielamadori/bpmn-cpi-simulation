@@ -383,6 +383,55 @@ const controlsObserver = new MutationObserver(() => moveSimulationControls());
 controlsObserver.observe(document.body, { childList: true, subtree: true });
 
 const elementTokenHistory = new Map();
+let messageLogs = []; // Global state for intercepted messages
+let currentDiagramName = ''; // Dynamically mapped when loading a diagram
+
+function renderMessageLogs() {
+  const panel = document.getElementById('message-panel');
+  if (panel) panel.classList.add('visible');
+
+  const tbody = document.getElementById('message-panel-body');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+  if (messageLogs.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="state-panel-empty" colspan="4" style="text-align: center; border: 1px solid #ccc; padding: 5px;">Nessun messaggio tracciato</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
+  messageLogs.forEach(msg => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em; word-break: break-all;">${msg.source}</td>
+      <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em; word-break: break-all;">${msg.destination}</td>
+      <td style="border: 1px solid #ccc; padding: 5px;">${msg.id}</td>
+      <td style="border: 1px solid #ccc; padding: 5px;">${msg.payload}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Helpers for extracting correct semantic scope and processes
+function getProcessId(el) {
+  if (!el || !el.businessObject) return 'UnknownProcess';
+  let bo = el.businessObject;
+  while (bo && bo.$type !== 'bpmn:Process') {
+     bo = bo.$parent;
+  }
+  return bo ? bo.id : 'UnknownProcess';
+}
+
+function getLatestScopeId(elementId) {
+  if (elementTokenHistory.has(elementId)) {
+    const history = elementTokenHistory.get(elementId);
+    if (history.size > 0) {
+      return [...history.keys()].pop();
+    }
+  }
+  return 'unknown';
+}
 
 modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   const { action, element, scope: elementScope } = event;
@@ -393,7 +442,6 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
     if (!elementTokenHistory.has(elementId)) {
       elementTokenHistory.set(elementId, new Map());
     }
-    // L'ID reale visto nella UI (e nei log) è quello del parent (il container del processo/token)
     const tokenScope = elementScope.parent || elementScope;
     elementTokenHistory.get(elementId).set(tokenScope.id, 'active');
   }
@@ -403,6 +451,36 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
     if (elementTokenHistory.has(elementId)) {
        const tokenScope = elementScope.parent || elementScope;
        elementTokenHistory.get(elementId).set(tokenScope.id, 'completed');
+    }
+
+    if (element.type === 'bpmn:MessageFlow') {
+      const sourceElement = element.source;
+      const targetElement = element.target;
+
+      const sourceProcessName = getProcessId(sourceElement);
+      const targetProcessName = getProcessId(targetElement);
+      
+      const diagramId = currentDiagramName; 
+      
+      const targetScopeId = getLatestScopeId(targetElement.id);
+      const sourceScopeId = getLatestScopeId(sourceElement.id);
+
+      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#(${sourceScopeId})`;
+      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#(${targetScopeId})`;
+      
+      const bo = element.businessObject;
+      const messageId = bo.messageRef ? bo.messageRef.id : element.id;
+      const messageName = bo.messageRef && bo.messageRef.name ? bo.messageRef.name : element.id;
+      const payloadStr = `contenuto base messaggio ${messageName}`;
+
+      messageLogs.push({
+        source: sourceStr,
+        destination: destStr,
+        id: messageId,
+        payload: payloadStr
+      });
+      
+      renderMessageLogs();
     }
   }
 });
@@ -427,6 +505,7 @@ function loadStateSequenceForCurrentDiagram() {
   const baseName = fileName.replace(/\.bpmn$/i, '');
   const allKeys = statesContext.keys();
   console.log('[StateLoader] fileName:', fileName, 'baseName:', baseName);
+  currentDiagramName = baseName; // Update global baseName for message mapping
   console.log('[StateLoader] All context keys:', allKeys);
   // Filter keys for this specific diagram's subdirectory
   const diagramKeys = allKeys.filter(k => k.startsWith(`./${baseName}/`));
@@ -793,6 +872,8 @@ function initializeSimulationToStart() {
   const simulator = modeler.get('simulator');
 
   elementTokenHistory.clear();
+  messageLogs = [];
+  renderMessageLogs();
 
   elementRegistry.getAll().forEach(element => {
 
