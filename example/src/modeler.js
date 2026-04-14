@@ -497,6 +497,28 @@ function getLatestScopeId(elementId) {
   return 'unknown';
 }
 
+// Populate scopeIdToTokenMap for root scopes (Process/Participant) whenever
+// a scope is created or destroyed.  This ensures "Process started/finished"
+// Log entries get rewritten by the MutationObserver.
+function _mapRootScope(scope) {
+  if (!scope || !scope.element) return;
+  const type = scope.element.type;
+  if (type !== 'bpmn:Process' && type !== 'bpmn:Participant') return;
+  const processId = scope.element.businessObject
+    ? scope.element.businessObject.id
+    : scope.element.id;
+  const tokenId = processToTokenMap.get(processId);
+  if (tokenId) {
+    scopeIdToTokenMap.set(scope.id, tokenId);
+  }
+}
+modeler.get('eventBus').on('tokenSimulation.simulator.createScope', event => {
+  _mapRootScope(event.scope);
+});
+modeler.get('eventBus').on('tokenSimulation.simulator.destroyScope', event => {
+  _mapRootScope(event.scope);
+});
+
 modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   const { action, element, scope: elementScope } = event;
   if (!element || !elementScope) return;
