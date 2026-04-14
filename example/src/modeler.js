@@ -435,11 +435,19 @@ function buildProcessToTokenMap() {
   }
 }
 
+// Mapping bpmn-js scopeId → our tok_N, populated by trace listener.
+const scopeIdToTokenMap = new Map();
+
 // Resolve a bpmn-js scope ID to our tok_N for a given element.
 function resolveTokenId(element, scopeId) {
   if (processToTokenMap.size === 0) return scopeId;
   const processId = getProcessId(element);
-  return processToTokenMap.get(processId) || scopeId;
+  const tokenId = processToTokenMap.get(processId) || scopeId;
+  // Cache the mapping for the Log rewriter
+  if (tokenId !== scopeId) {
+    scopeIdToTokenMap.set(scopeId, tokenId);
+  }
+  return tokenId;
 }
 
 function renderMessageLogs() {
@@ -543,6 +551,36 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
     }
   }
 });
+
+// --- Rewrite bpmn-js scope IDs to our tok_N in the DOM ---
+// The Simulation Log, ShowScopes, and Notifications components write
+// scope.id directly into <span class="bts-scope"> elements.  We observe
+// the DOM and replace the visible text with our tok_N from scopeIdToTokenMap.
+const _scopeRewriter = new MutationObserver(mutations => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeType !== 1) continue;
+      // The node itself might be a .bts-scope span
+      if (node.classList && node.classList.contains('bts-scope') && node.dataset.scopeId) {
+        const tid = scopeIdToTokenMap.get(node.dataset.scopeId);
+        if (tid) node.textContent = tid;
+      }
+      // Or it might contain .bts-scope children (e.g. a <p> log entry)
+      if (node.querySelectorAll) {
+        for (const span of node.querySelectorAll('.bts-scope[data-scope-id]')) {
+          const tid = scopeIdToTokenMap.get(span.dataset.scopeId);
+          if (tid) span.textContent = tid;
+        }
+      }
+      // ShowScopes: rewrite title="Focus process instance XXX"
+      if (node.dataset && node.dataset.scopeId && node.title) {
+        const tid = scopeIdToTokenMap.get(node.dataset.scopeId);
+        if (tid) node.title = 'Focus process instance ' + tid;
+      }
+    }
+  }
+});
+_scopeRewriter.observe(document.body, { childList: true, subtree: true });
 
 // --- state sequence playback (drives tokens from JSON snapshots) ---
 
