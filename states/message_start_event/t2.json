@@ -1,8 +1,8 @@
 {
-    "Start_Client@Process_Client.message_start_event": "completed",
-    "Task_SendRequest@Process_Client.message_start_event": "completed",
-    "End_Client@Process_Client.message_start_event": "completed",
-    "Start_Message@Process_Service.message_start_event": "completed",
-    "Task_Handle@Process_Service.message_start_event": "active",
-    "End_Service@Process_Service.message_start_event": "waiting"
+  "Start_Client@Process_Client.message_start_event#tok_0": "completed",
+  "Task_SendRequest@Process_Client.message_start_event#tok_0": "completed",
+  "End_Client@Process_Client.message_start_event#tok_0": "completed",
+  "Start_Message@Process_Service.message_start_event#tok_1": "completed",
+  "Task_Handle@Process_Service.message_start_event#tok_1": "active",
+  "End_Service@Process_Service.message_start_event#tok_1": "waiting"
 }

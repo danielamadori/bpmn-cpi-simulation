@@ -105,6 +105,73 @@ const ExampleModule = {
   ]
 };
 
+// --- Token ID helpers ---
+
+/**
+ * Parse a canonical state key ``registryId@contextId.filename#tokenId``
+ * into its components.
+ */
+function parseStateKey(key) {
+  const hashIdx = key.indexOf('#');
+  let tokenId = null;
+  let keyWithoutToken = key;
+  if (hashIdx >= 0) {
+    tokenId = key.substring(hashIdx + 1);
+    keyWithoutToken = key.substring(0, hashIdx);
+  }
+  const [registryId, contextId] = keyWithoutToken.split('@');
+  return { registryId, contextId: contextId || null, tokenId };
+}
+
+/**
+ * Extract root process token_ids from the state sequence.
+ * Returns them in order of first appearance (= XML document order).
+ */
+function extractProcessTokens(stateSeq) {
+  const tokens = [];
+  const seen = new Set();
+  // Scan ALL snapshots — late-starting processes may only appear at tN.
+  for (const entry of stateSeq) {
+    for (const key of Object.keys(entry.state || {})) {
+      const { tokenId } = parseStateKey(key);
+      if (tokenId) {
+        // Root token = first two parts: tok_0 from tok_0_0
+        const parts = tokenId.split('_');
+        const rootToken = parts.length >= 2 ? parts.slice(0, 2).join('_') : tokenId;
+        if (!seen.has(rootToken)) {
+          seen.add(rootToken);
+          tokens.push(rootToken);
+        }
+      }
+    }
+  }
+  return tokens;
+}
+
+// --- Custom scopeIds DI module ---
+// Injects our token_ids as root process scope IDs.
+// initializeRootScopes() calls ids.next() once per process.
+const CustomScopeIdsModule = {
+  scopeIds: ['factory', function() {
+    let processTokens = [];
+    let processIdx = 0;
+    let autoIdx = 0;
+    return {
+      next() {
+        if (processIdx < processTokens.length) {
+          return processTokens[processIdx++];
+        }
+        return `s_${autoIdx++}`;
+      },
+      loadProcessTokens(tokens) {
+        processTokens = tokens;
+        processIdx = 0;
+        autoIdx = 0;
+      }
+    };
+  }]
+};
+
 const additionalModules = [
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
@@ -115,7 +182,8 @@ const additionalModules = [
   SimulationSupportModule,
   ExampleModule,
   minimapModule,
-  BpmnLintModule
+  BpmnLintModule,
+  CustomScopeIdsModule
 ];
 
 const modeler = new BpmnModeler({
@@ -537,7 +605,7 @@ function getExecutionOrderMap() {
 
   stateSequence.forEach(snapshot => {
     Object.keys(snapshot.state).forEach(taskId => {
-      const registryId = taskId.split('@')[0];
+      const { registryId } = parseStateKey(taskId);
       if (!registry.get(registryId)) {
         console.warn(`Element '${registryId}' in snapshot '${snapshot.name}' not found in the BPMN model. Skipping.`);
         return;
@@ -614,57 +682,59 @@ function renderStateSnapshot(snapshot) {
     return;
   }
 
+  // Group entries by element (without #token_id) — one row per element.
+  const elementEntries = new Map(); // "registryId@contextId" → Map(tokenId → status)
+  const elementOrder = [];          // preserve execution order
   entries.forEach(([taskId, status]) => {
+    const { registryId, contextId, tokenId } = parseStateKey(taskId);
+    const elementKey = contextId ? `${registryId}@${contextId}` : registryId;
+    if (!elementEntries.has(elementKey)) {
+      elementEntries.set(elementKey, new Map());
+      elementOrder.push(elementKey);
+    }
+    if (!tokenId) {
+      throw new Error(`State key "${taskId}" is missing #token_id fragment`);
+    }
+    elementEntries.get(elementKey).set(tokenId, status);
+  });
+
+  elementOrder.forEach(elementKey => {
+    const tokenMap = elementEntries.get(elementKey);
     const row = document.createElement('tr');
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
 
-    const [registryId, contextId] = taskId.split('@');
+    const { registryId, contextId } = parseStateKey(elementKey);
     const element = elementRegistry().get(registryId);
     let displayName = element && element.businessObject && element.businessObject.name
       ? element.businessObject.name
       : registryId;
-      
+
     if (contextId) {
       displayName += `@${contextId}`;
     }
 
-    let finalStatus = status;
-
-    if (elementTokenHistory.has(registryId)) {
-      const scopeMap = elementTokenHistory.get(registryId);
-      if (scopeMap.size > 0) {
-        finalStatus = {};
-        for (const [scopeId, scopeState] of scopeMap.entries()) {
-          // Se lo snapshot in JSON dice 'waiting', ma nel nostro history noi abbiamo messo
-          // implicitamente 'active' etc, forziamo il valore del JSON se il processo indica waiting.
-          // In ogni caso è preferibile assecondare il JSON principale per coerenza generale.
-          const expectedStatus = getOverallStatus(status);
-          finalStatus[scopeId] = expectedStatus === 'waiting' ? 'waiting' : scopeState;
-        }
-      }
-    }
-
     taskCell.textContent = displayName;
-    
-    if (typeof finalStatus === 'object' && finalStatus !== null) {
+
+    if (tokenMap.size > 1) {
+      // Multiple tokens on this element — show each token_id with status
       statusCell.style.whiteSpace = "pre-wrap";
       statusCell.innerHTML = '';
-      Object.entries(finalStatus).forEach(([tokenId, tokenStatus]) => {
+      for (const [tokenId, tokenStatus] of tokenMap.entries()) {
         const div = document.createElement('div');
         div.textContent = `${tokenId}: "${tokenStatus}"`;
-        // Apply class to the div based on token status
         div.classList.add(normalizeStatusClass(tokenStatus));
         statusCell.appendChild(div);
-      });
+      }
     } else {
-      statusCell.textContent = `"${finalStatus}"`;
-      statusCell.classList.add(normalizeStatusClass(finalStatus));
+      // Single token — show token_id: "status"
+      const [tokenId, tokenStatus] = [...tokenMap.entries()][0];
+      statusCell.textContent = `${tokenId}: "${tokenStatus}"`;
+      statusCell.classList.add(normalizeStatusClass(tokenStatus));
     }
 
     row.appendChild(taskCell);
     row.appendChild(statusCell);
-
     statePanelBody.appendChild(row);
   });
 }
@@ -674,6 +744,7 @@ function renderStateSnapshot(snapshot) {
 // Replays step-by-step from t0 to targetIndex using the existing
 // diffCompletions/diffActivations/waitForTokenDrain mechanism.
 let _replayInProgress = false;
+let _initResetInProgress = false;
 
 async function replayToIndex(targetIndex) {
   if (_replayInProgress) {
@@ -687,6 +758,15 @@ async function replayToIndex(targetIndex) {
 
   // Ensure simulation mode is active
   simulationSupport.toggleSimulation(true);
+
+  // Load our process token_ids into the custom scopeIds generator
+  // BEFORE reset — initializeRootScopes() calls ids.next() per process.
+  const scopeIds = modeler.get('scopeIds');
+  if (scopeIds && scopeIds.loadProcessTokens) {
+    const processTokens = extractProcessTokens(stateSequence);
+    scopeIds.loadProcessTokens(processTokens);
+    console.log('[replay] Loaded process tokens:', processTokens);
+  }
 
   // Full reset via simulator.reset() — properly destroys all scopes and
   // reinitializes root scopes. The _replayInProgress guard prevents
@@ -707,7 +787,8 @@ async function replayToIndex(targetIndex) {
   const targetState = stateSequence[clampedTarget] ? stateSequence[clampedTarget].state : {};
   const completedInTarget = new Set();
   Object.entries(targetState).forEach(([key, status]) => {
-    if (status === 'completed') completedInTarget.add(key.split('@')[0]);
+    const { registryId } = parseStateKey(key);
+    if (status === 'completed') completedInTarget.add(registryId);
   });
 
   const waitConfig = {};
@@ -764,18 +845,23 @@ async function replayToIndex(targetIndex) {
   // Trigger all StartEvents ONCE. Tokens flow through wait:false (completed)
   // elements and stop on wait:true (active/waiting) elements automatically.
   const t1 = stateSequence[1] ? stateSequence[1].state : {};
-  const startEventIds = Object.keys(t1).filter(id => {
-    const registryId = id.split('@')[0];
+  // Deduplicate start events by registryId (multiple #token_id keys
+  // for the same element should trigger it only once).
+  const startEventRegistryIds = new Set();
+  Object.keys(t1).forEach(id => {
+    const { registryId } = parseStateKey(id);
     const el = registry.get(registryId);
-    return el && el.type === 'bpmn:StartEvent';
+    if (el && el.type === 'bpmn:StartEvent') {
+      startEventRegistryIds.add(registryId);
+    }
   });
 
-  console.log('[replay] Triggering StartEvents:', startEventIds.map(id => id.split('@')[0]));
-  for (const seId of startEventIds) {
+  console.log('[replay] Triggering StartEvents:', [...startEventRegistryIds]);
+  for (const seId of startEventRegistryIds) {
     try {
-      simulationSupport.triggerElement(seId.split('@')[0]);
+      simulationSupport.triggerElement(seId);
     } catch (err) {
-      console.warn('[replay] triggerElement failed for', seId.split('@')[0], err.message);
+      console.warn('[replay] triggerElement failed for', seId, err.message);
     }
   }
 
@@ -810,12 +896,36 @@ function getOverallStatus(status) {
   return status;
 }
 
+/**
+ * Aggregate state by registryId — combines all #token_id keys for the
+ * same element into a single overall status.
+ */
+function aggregateByElement(state) {
+  const result = {};  // registryId → overall status
+  for (const [key, status] of Object.entries(state)) {
+    const { registryId } = parseStateKey(key);
+    const prev = result[registryId];
+    if (!prev) {
+      result[registryId] = status;
+    } else {
+      // active > completed > waiting (keep the most "progressed" status)
+      if (status === 'active' || prev === 'active') result[registryId] = 'active';
+      else if (status === 'completed' && prev !== 'active') result[registryId] = 'completed';
+    }
+  }
+  return result;
+}
+
 function diffCompletions(prev, next) {
-  return Object.keys(next).filter(id => getOverallStatus(prev[id]) === 'active' && getOverallStatus(next[id]) === 'completed');
+  const prevAgg = aggregateByElement(prev);
+  const nextAgg = aggregateByElement(next);
+  return Object.keys(nextAgg).filter(id => prevAgg[id] === 'active' && nextAgg[id] === 'completed');
 }
 
 function diffActivations(prev, next) {
-  return Object.keys(next).filter(id => getOverallStatus(prev[id]) !== 'active' && getOverallStatus(next[id]) === 'active');
+  const prevAgg = aggregateByElement(prev);
+  const nextAgg = aggregateByElement(next);
+  return Object.keys(nextAgg).filter(id => prevAgg[id] !== 'active' && nextAgg[id] === 'active');
 }
 
 function getSortedTriggers(ids) {
@@ -932,11 +1042,11 @@ function configureExclusiveGateways(startIndex) {
       const next = stateSequence[i].state;
 
       // Check if gateway fires in this transition (prev has it, next doesn't)
-      const gatewayKeyPrev = Object.keys(prev).find(k => k === gateway.id || k.startsWith(gateway.id + '@'));
-      const gatewayKeyNext = Object.keys(next).find(k => k === gateway.id || k.startsWith(gateway.id + '@'));
+      const prevAggGw = aggregateByElement(prev);
+      const nextAggGw = aggregateByElement(next);
 
-      const wasActive = gatewayKeyPrev ? getOverallStatus(prev[gatewayKeyPrev]) === 'active' : false;
-      const isActive = gatewayKeyNext ? getOverallStatus(next[gatewayKeyNext]) === 'active' : false;
+      const wasActive = prevAggGw[gateway.id] === 'active';
+      const isActive = nextAggGw[gateway.id] === 'active';
 
       if (wasActive && !isActive) {
 
@@ -944,15 +1054,14 @@ function configureExclusiveGateways(startIndex) {
         const activations = diffActivations(prev, next);
 
         // Find the child that connects to this gateway
-        const activeChildId = activations.find(childId => {
-          const registryId = childId.split('@')[0];
+        // (diffActivations returns registryIds directly)
+        const activeChildId = activations.find(registryId => {
           const child = registry.get(registryId);
           return child && child.incoming.some(flow => flow.source === gateway);
         });
 
         if (activeChildId) {
-          const registryId = activeChildId.split('@')[0];
-          const child = registry.get(registryId);
+          const child = registry.get(activeChildId);
           targetFlow = child.incoming.find(flow => flow.source === gateway);
         }
 
@@ -988,7 +1097,7 @@ function initializeSimulationToStart() {
   if (_pendingApiStates) {
     const registry = modeler.get('elementRegistry');
     const firstKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
-    const testId = firstKey ? firstKey.split('@')[0] : null;
+    const testId = firstKey ? parseStateKey(firstKey).registryId : null;
     if (testId && registry.get(testId)) {
       stateSequence = _pendingApiStates;
       _statesInjectedViaApi = true;
@@ -1009,22 +1118,29 @@ function initializeSimulationToStart() {
     }
   }
 
-  const simulationSupport = modeler.get('simulationSupport');
-
-  // Ensure token simulation is active — ALWAYS, even with empty stateSequence.
-  // This initializes the simulation mode (token counts, context pads, etc.)
-  simulationSupport.toggleSimulation(true);
-
   if (!stateSequence.length) {
     showStatePanelMessage('No state snapshots found for ' + fileName);
     return;
   }
 
+  // Load process token_ids and activate simulation.
+  // initializeRootScopes() calls ids.next() per process.
+  const scopeIds = modeler.get('scopeIds');
+  if (scopeIds && scopeIds.loadProcessTokens) {
+    const processTokens = extractProcessTokens(stateSequence);
+    scopeIds.loadProcessTokens(processTokens);
+  }
+
+  const simulationSupport = modeler.get('simulationSupport');
+  // toggleSimulation(true) fires toggleMode event which triggers
+  // simulator.reset() → initializeRootScopes() → ids.next().
+  // loadProcessTokens was called above, so ids.next() = tok_0.
+  simulationSupport.toggleSimulation(true);
+
   // Reset sequence to t0
   currentStateIndex = 0;
 
   // FORCE PAUSE ON ALL ELEMENTS
-  // This ensures the token stops at Gateways, SubProcesses, etc.
   const elementRegistry = modeler.get('elementRegistry');
   const simulator = modeler.get('simulator');
 
@@ -1034,10 +1150,16 @@ function initializeSimulationToStart() {
 
   elementRegistry.getAll().forEach(element => {
 
-    // Force pause on all elements EXCEPT EndEvents (they auto-consume) and Processes
-    if (element.type !== 'bpmn:Process' && element.type !== 'bpmn:EndEvent') {
-      simulator.setConfig(element, { wait: true });
+    // Force pause on all elements EXCEPT:
+    // - Process/Participant: container scopes
+    // - EndEvent: auto-consume
+    // - StartEvent: wait:true blocks forever (signalOnEvent subscribes
+    //   to 'continue' but nothing triggers it)
+    if (element.type === 'bpmn:Process' || element.type === 'bpmn:Participant'
+        || element.type === 'bpmn:EndEvent' || element.type === 'bpmn:StartEvent') {
+      return;
     }
+    simulator.setConfig(element, { wait: true });
   });
 
   // Render t0 only. Do NOT trigger Start Event yet.
@@ -1098,15 +1220,20 @@ async function playStates() {
         // Find the StartEvent that transitions from waiting -> completed in t0 -> t1
         const prev = stateSequence[0].state;
         const next = nextSnapshot.state;
-        const startEventIds = Object.keys(next).filter(id => {
-          const registryId = id.split('@')[0];
-          const el = registry.get(registryId);
-          return el && el.type === 'bpmn:StartEvent' && getOverallStatus(prev[id]) === 'waiting' && getOverallStatus(next[id]) === 'completed';
+        const prevAgg = aggregateByElement(prev);
+        const nextAgg = aggregateByElement(next);
+        const startEventIds = Object.keys(nextAgg).filter(id => {
+          const el = registry.get(id);
+          return el && el.type === 'bpmn:StartEvent' && prevAgg[id] === 'waiting' && nextAgg[id] === 'completed';
         });
         console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
         if (startEventIds.length > 0) {
-          startEventIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
+          startEventIds.forEach(id => simulationSupport.triggerElement(id));
           await drainSimulationQueues();
+          // DEBUG: check scopes after trigger
+          const simDbg = modeler.get('simulator');
+          const allScopes = simDbg.findScopes({});
+          console.log('[DEBUG] Scopes after trigger:', allScopes.length, allScopes.map(s => `${s.element.id}:${s.id}:destroyed=${s.destroyed}:children=${s.children.length}`));
         } else {
           console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
         }
@@ -1119,11 +1246,12 @@ async function playStates() {
         // Detect StartEvents that fire in this step (waiting -> completed)
         // This handles processes that start later in the sequence (e.g. Sender starts after Receiver)
         // Exclude Message Start Events — they are triggered automatically via MessageFlow
-        const lateStartIds = Object.keys(next).filter(id => {
-          const registryId = id.split('@')[0];
-          const el = registry.get(registryId);
+        const prevAggN = aggregateByElement(prev);
+        const nextAggN = aggregateByElement(next);
+        const lateStartIds = Object.keys(nextAggN).filter(id => {
+          const el = registry.get(id);
           if (!el || el.type !== 'bpmn:StartEvent') return false;
-          if (getOverallStatus(prev[id]) !== 'waiting' || getOverallStatus(next[id]) !== 'completed') return false;
+          if (prevAggN[id] !== 'waiting' || nextAggN[id] !== 'completed') return false;
           // Skip Message Start Events (they have a messageEventDefinition)
           const bo = el.businessObject;
           const hasMessageDef = bo && bo.eventDefinitions && bo.eventDefinitions.some(d => d.$type === 'bpmn:MessageEventDefinition');
@@ -1133,23 +1261,21 @@ async function playStates() {
 
         if (lateStartIds.length > 0) {
           console.log('[PlayStates] Detected late-starting processes:', lateStartIds);
-          lateStartIds.forEach(id => simulationSupport.triggerElement(id.split('@')[0]));
+          lateStartIds.forEach(id => simulationSupport.triggerElement(id));
           await drainSimulationQueues();
         }
 
+        // diffCompletions/diffActivations now return registryIds directly
         const completions = diffCompletions(prev, next);
 
-        // Detect SubProcesses becoming active (entering) OR Catch Events becoming active (pulling from Gateway)
+        // Detect SubProcesses becoming active (entering) OR Catch Events becoming active
         const activations = diffActivations(prev, next).filter(id => {
-          const registryId = id.split('@')[0];
-          const el = registry.get(registryId);
+          const el = registry.get(id);
           return el && (el.type === 'bpmn:SubProcess' || el.type === 'bpmn:Transaction' || el.type === 'bpmn:IntermediateCatchEvent');
         });
 
         const allActions = [...activations, ...completions].filter(id => {
-
-          const registryId = id.split('@')[0];
-          const el = registry.get(registryId);
+          const el = registry.get(id);
 
           // Do NOT try to trigger EndEvents, they don't support it.
           if (!el || el.type === 'bpmn:EndEvent' || el.type === 'bpmn:EventBasedGateway') return false;
@@ -1168,9 +1294,8 @@ async function playStates() {
         });
 
         if (allActions.length) {
-          const triggerableIds = allActions.map(id => id.split('@')[0]);
-
-          await waitForTokenDrain(simulationSupport, triggerableIds);
+          // allActions are already registryIds from the diff functions
+          await waitForTokenDrain(simulationSupport, allActions);
         }
       }
 
@@ -1253,7 +1378,7 @@ window.addEventListener('message', async (event) => {
 
     // Check if the current diagram matches these states
     const firstKey = Object.keys(states.length ? states[0].state : {})[0];
-    const testId = firstKey ? firstKey.split('@')[0] : null;
+    const testId = firstKey ? parseStateKey(firstKey).registryId : null;
     const registry = modeler.get('elementRegistry');
     const diagramMatches = testId && registry.get(testId);
 
