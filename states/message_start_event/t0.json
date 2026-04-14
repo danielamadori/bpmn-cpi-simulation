@@ -1,8 +1,8 @@
 {
-    "Start_Client@Process_Client.message_start_event": "waiting",
-    "Task_SendRequest@Process_Client.message_start_event": "waiting",
-    "End_Client@Process_Client.message_start_event": "waiting",
-    "Start_Message@Process_Service.message_start_event": "waiting",
-    "Task_Handle@Process_Service.message_start_event": "waiting",
-    "End_Service@Process_Service.message_start_event": "waiting"
+  "Start_Client@Process_Client.message_start_event#tok_0": "waiting",
+  "Task_SendRequest@Process_Client.message_start_event#tok_0": "waiting",
+  "End_Client@Process_Client.message_start_event#tok_0": "waiting",
+  "Start_Message@Process_Service.message_start_event#tok_1": "waiting",
+  "Task_Handle@Process_Service.message_start_event#tok_1": "waiting",
+  "End_Service@Process_Service.message_start_event#tok_1": "waiting"
 }

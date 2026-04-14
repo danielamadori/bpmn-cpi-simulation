@@ -1,0 +1,33 @@
+{
+    "name": "SESE",
+    "uri": "http://example.com/sese/import",
+    "prefix": "sese",
+    "xml": {
+        "tagAlias": "lowerCase"
+    },
+    "types": [
+        {
+            "name": "Duration",
+            "superClass": [
+                "Element"
+            ],
+            "meta": {
+                "allowedIn": [
+                    "bpmn:ExtensionElements"
+                ]
+            },
+            "properties": [
+                {
+                    "name": "min",
+                    "isAttr": true,
+                    "type": "Float"
+                },
+                {
+                    "name": "max",
+                    "isAttr": true,
+                    "type": "Float"
+                }
+            ]
+        }
+    ]
+}

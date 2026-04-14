@@ -1,10 +1,10 @@
 {
-    "Start_SP@Process_SignalProducer.signal_intermediate_throw_catch": "completed",
-    "Task_PreSignal@Process_SignalProducer.signal_intermediate_throw_catch": "completed",
-    "Throw_Resume@Process_SignalProducer.signal_intermediate_throw_catch": "completed",
-    "End_SP@Process_SignalProducer.signal_intermediate_throw_catch": "completed",
-    "Start_SC@Process_SignalConsumer.signal_intermediate_throw_catch": "completed",
-    "Task_WaitContext@Process_SignalConsumer.signal_intermediate_throw_catch": "completed",
-    "Catch_Resume@Process_SignalConsumer.signal_intermediate_throw_catch": "completed",
-    "End_SC@Process_SignalConsumer.signal_intermediate_throw_catch": "completed"
+  "Start_SP@Process_SignalProducer.signal_intermediate_throw_catch#tok_0": "completed",
+  "Task_PreSignal@Process_SignalProducer.signal_intermediate_throw_catch#tok_0": "completed",
+  "Throw_Resume@Process_SignalProducer.signal_intermediate_throw_catch#tok_0": "completed",
+  "End_SP@Process_SignalProducer.signal_intermediate_throw_catch#tok_0": "completed",
+  "Start_SC@Process_SignalConsumer.signal_intermediate_throw_catch#tok_1": "completed",
+  "Task_WaitContext@Process_SignalConsumer.signal_intermediate_throw_catch#tok_1": "completed",
+  "Catch_Resume@Process_SignalConsumer.signal_intermediate_throw_catch#tok_1": "completed",
+  "End_SC@Process_SignalConsumer.signal_intermediate_throw_catch#tok_1": "completed"
 }

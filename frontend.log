@@ -1,0 +1,282 @@
+
+> bpmn-js-token-simulation@0.38.2 prestart:example
+> npm run bundle:src
+
+
+> bpmn-js-token-simulation@0.38.2 bundle:src
+> rollup -c --bundleConfigAsCjs
+
+[36m
+[1msrc/icons/index.js[22m → [1mlib/icons/index.js[22m...[39m
+[32mcreated [1mlib/icons/index.js[22m in [1m94ms[22m[39m
+
+> bpmn-js-token-simulation@0.38.2 start:example
+> webpack serve --static ./example --open --port 9091
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+<i> [webpack-dev-server] Project is running at:
+<i> [webpack-dev-server] Loopback: http://localhost:9091/, http://[::1]:9091/
+<i> [webpack-dev-server] On Your Network (IPv4): http://157.27.201.87:9091/
+<i> [webpack-dev-server] Content not from webpack is served from './example' directory
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by path dist/vendor/ 441 KiB
+  assets by path dist/vendor/bpmn-js/assets/ 385 KiB
+    assets by path dist/vendor/bpmn-js/assets/bpmn-font/ 361 KiB 8 assets
+    assets by path dist/vendor/bpmn-js/assets/*.css 23.8 KiB
+      asset dist/vendor/bpmn-js/assets/diagram-js.css 20.3 KiB [emitted] [from: node_modules/bpmn-js/dist/assets/diagram-js.css] [copied]
+      asset dist/vendor/bpmn-js/assets/bpmn-js.css 3.45 KiB [emitted] [from: node_modules/bpmn-js/dist/assets/bpmn-js.css] [copied]
+  asset dist/vendor/bpmn-js-properties-panel/assets/properties-panel.css 39.1 KiB [emitted] [from: node_modules/@bpmn-io/properties-panel/dist/assets/properties-panel.css] [copied]
+  asset dist/vendor/bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css 11.7 KiB [emitted] [from: assets/css/bpmn-js-token-simulation.css] [copied]
+  asset dist/vendor/bpmn-js-bpmnlint/assets/css/bpmn-js-bpmnlint.css 4 KiB [emitted] [from: node_modules/bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css] [copied]
+  asset dist/vendor/diagram-js-minimap/assets/diagram-js-minimap.css 1.4 KiB [emitted] [from: node_modules/diagram-js-minimap/assets/diagram-js-minimap.css] [copied]
+  asset dist/vendor/bpmn-js-color-picker/colors/color-picker.css 165 bytes [emitted] [from: node_modules/bpmn-js-color-picker/colors/color-picker.css] [copied]
+assets by path dist/*.js 17.6 MiB
+  asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+  asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+asset .bpmnlintrc/.bpmnlintrc 227 bytes [emitted] [from: .bpmnlintrc] [copied]
+runtime modules 56.1 KiB 26 modules
+orphan modules 471 bytes [orphan] 5 modules
+modules by path ./node_modules/ 4.62 MiB 489 modules
+modules by path ./lib/ 192 KiB 94 modules
+modules by path ./states/ 7.82 KiB
+  ./states/ sync nonrecursive \.json$ 315 bytes [built] [code generated]
+  ./states/t0.json 674 bytes [optional] [built] [code generated]
+  ./states/t1.json 673 bytes [optional] [built] [code generated]
+  ./states/t10.json 732 bytes [optional] [built] [code generated]
+  + 8 modules
+modules by path ./example/ 86.1 KiB
+  javascript modules 43.9 KiB 6 modules
+  asset modules 42.2 KiB
+    ./example/resources/example.bpmn 20.3 KiB [built] [code generated]
+    ./example/basic/resources/diagram.bpmn 21.9 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 2439 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 23.6 KiB [immutable]
+    assets by path *.js 23.5 KiB
+      asset modeler.57e3b0caa61dc39dc95d.hot-update.js 22.7 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.57e3b0caa61dc39dc95d.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.57e3b0caa61dc39dc95d.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.57e3b0caa61dc39dc95d.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.57e3b0caa61dc39dc95d.hot-update.js 22.7 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.57e3b0caa61dc39dc95d.hot-update.js 861 bytes
+cached modules 4.88 MiB [cached] 606 modules
+runtime modules 56.1 KiB 26 modules
+modules by layer 20.5 KiB
+  ./example/resources/example.bpmn 20.2 KiB [built] [code generated]
+  ./states/ sync nonrecursive \.json$ 315 bytes [built]
+webpack 5.103.0 compiled successfully in 313 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 23.2 KiB [immutable]
+    assets by path *.js 23.1 KiB
+      asset modeler.9ea1abfa13cbb88c512b.hot-update.js 22.3 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.9ea1abfa13cbb88c512b.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.9ea1abfa13cbb88c512b.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.9ea1abfa13cbb88c512b.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.9ea1abfa13cbb88c512b.hot-update.js 22.3 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.9ea1abfa13cbb88c512b.hot-update.js 861 bytes
+cached modules 4.88 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/resources/example.bpmn 19.8 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 442 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 22.8 KiB [immutable]
+    assets by path *.js 22.7 KiB
+      asset modeler.73e52b39659b42bb0294.hot-update.js 21.9 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.73e52b39659b42bb0294.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.73e52b39659b42bb0294.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.73e52b39659b42bb0294.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.73e52b39659b42bb0294.hot-update.js 21.9 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.73e52b39659b42bb0294.hot-update.js 861 bytes
+cached modules 4.88 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/resources/example.bpmn 19.4 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 855 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /
+<i> [webpack-dev-middleware] wait until bundle finished: /
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 22.1 KiB [immutable]
+    assets by path *.js 22 KiB
+      asset modeler.ae4836985859260758ff.hot-update.js 21.2 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.ae4836985859260758ff.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.ae4836985859260758ff.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.ae4836985859260758ff.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.ae4836985859260758ff.hot-update.js 21.2 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.ae4836985859260758ff.hot-update.js 861 bytes
+cached modules 4.88 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/resources/example.bpmn 18.8 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 997 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 21.4 KiB [immutable]
+    assets by path *.js 21.3 KiB
+      asset modeler.cfcf039203a0c2e0e5bf.hot-update.js 20.5 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.cfcf039203a0c2e0e5bf.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.cfcf039203a0c2e0e5bf.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.cfcf039203a0c2e0e5bf.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.cfcf039203a0c2e0e5bf.hot-update.js 20.5 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.cfcf039203a0c2e0e5bf.hot-update.js 861 bytes
+cached modules 4.88 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/resources/example.bpmn 18.1 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 434 ms
+assets by status 18 MiB [cached] 18 assets
+cached modules 4.88 MiB (javascript) 56.1 KiB (runtime) [cached] 633 modules
+./lib/icons/index.js 11.4 KiB [built]
+webpack 5.103.0 compiled successfully in 142 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 20.9 KiB [immutable]
+    assets by path *.js 20.8 KiB
+      asset modeler.927a21163a5c1ff67519.hot-update.js 20 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.927a21163a5c1ff67519.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.927a21163a5c1ff67519.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.927a21163a5c1ff67519.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.927a21163a5c1ff67519.hot-update.js 20 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.927a21163a5c1ff67519.hot-update.js 861 bytes
+cached modules 4.88 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/resources/example.bpmn 17.6 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 294 ms
+assets by status 18 MiB [cached] 18 assets
+cached modules 4.88 MiB (javascript) 56.1 KiB (runtime) [cached] 633 modules
+./lib/icons/index.js 11.4 KiB [built]
+webpack 5.103.0 compiled successfully in 252 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.6 MiB [emitted]
+  assets by info 5.92 KiB [immutable]
+    assets by path *.js 5.87 KiB
+      asset modeler.2ad1d6bc3272e9ec4ff6.hot-update.js 5.03 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.2ad1d6bc3272e9ec4ff6.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.2ad1d6bc3272e9ec4ff6.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.2ad1d6bc3272e9ec4ff6.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.5 MiB = dist/modeler.js 14.5 MiB modeler.2ad1d6bc3272e9ec4ff6.hot-update.js 5.03 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.2ad1d6bc3272e9ec4ff6.hot-update.js 861 bytes
+cached modules 4.89 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/src/api-client.js 1.24 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 302 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.7 MiB [emitted]
+  assets by info 102 KiB [immutable]
+    assets by path *.js 102 KiB
+      asset modeler.ab8efc5c49bc230e45c5.hot-update.js 101 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.ab8efc5c49bc230e45c5.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.ab8efc5c49bc230e45c5.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.ab8efc5c49bc230e45c5.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.6 MiB = dist/modeler.js 14.5 MiB modeler.ab8efc5c49bc230e45c5.hot-update.js 101 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.ab8efc5c49bc230e45c5.hot-update.js 861 bytes
+cached modules 4.86 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/src/modeler.js 34.8 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 523 ms
+assets by status 18 MiB [cached] 18 assets
+cached modules 4.89 MiB (javascript) 56.1 KiB (runtime) [cached] 633 modules
+./lib/icons/index.js 11.4 KiB [built]
+webpack 5.103.0 compiled successfully in 220 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.7 MiB [emitted]
+  assets by info 102 KiB [immutable]
+    assets by path *.js 102 KiB
+      asset modeler.0bec57c1f21df116c157.hot-update.js 101 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.0bec57c1f21df116c157.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.0bec57c1f21df116c157.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.0bec57c1f21df116c157.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.6 MiB = dist/modeler.js 14.5 MiB modeler.0bec57c1f21df116c157.hot-update.js 101 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.0bec57c1f21df116c157.hot-update.js 861 bytes
+cached modules 4.86 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/src/modeler.js 35 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 749 ms
+assets by status 18 MiB [cached] 18 assets
+cached modules 4.89 MiB (javascript) 56.1 KiB (runtime) [cached] 633 modules
+./lib/icons/index.js 11.4 KiB [built]
+webpack 5.103.0 compiled successfully in 184 ms
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /?e=1
+<i> [webpack-dev-middleware] wait until bundle finished: /
+assets by status 441 KiB [cached] 16 assets
+assets by status 17.7 MiB [emitted]
+  assets by info 104 KiB [immutable]
+    assets by path *.js 104 KiB
+      asset modeler.b1b4cc3eba4810b78391.hot-update.js 103 KiB [emitted] [immutable] [hmr] (name: modeler)
+      asset basic.b1b4cc3eba4810b78391.hot-update.js 861 bytes [emitted] [immutable] [hmr] (name: basic)
+    assets by path *.json 60 bytes
+      asset modeler.b1b4cc3eba4810b78391.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+      asset basic.b1b4cc3eba4810b78391.hot-update.json 29 bytes [emitted] [immutable] [hmr]
+  assets by path dist/*.js 17.6 MiB
+    asset dist/modeler.js 14.5 MiB [emitted] (name: modeler)
+    asset dist/basic.js 3.04 MiB [emitted] (name: basic)
+Entrypoint modeler 14.6 MiB = dist/modeler.js 14.5 MiB modeler.b1b4cc3eba4810b78391.hot-update.js 103 KiB
+Entrypoint basic 3.04 MiB = dist/basic.js 3.04 MiB basic.b1b4cc3eba4810b78391.hot-update.js 861 bytes
+cached modules 4.86 MiB [cached] 607 modules
+runtime modules 56.1 KiB 26 modules
+./example/src/modeler.js 35.8 KiB [built] [code generated]
+webpack 5.103.0 compiled successfully in 909 ms
+assets by status 18 MiB [cached] 18 assets
+cached modules 4.89 MiB (javascript) 56.1 KiB (runtime) [cached] 633 modules
+./lib/icons/index.js 11.4 KiB [built]
+webpack 5.103.0 compiled successfully in 209 ms
