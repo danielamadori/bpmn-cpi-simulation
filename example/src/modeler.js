@@ -123,55 +123,6 @@ function parseStateKey(key) {
   return { registryId, contextId: contextId || null, tokenId };
 }
 
-/**
- * Extract root process token_ids from the state sequence.
- * Returns them in order of first appearance (= XML document order).
- */
-function extractProcessTokens(stateSeq) {
-  const tokens = [];
-  const seen = new Set();
-  // Scan ALL snapshots — late-starting processes may only appear at tN.
-  for (const entry of stateSeq) {
-    for (const key of Object.keys(entry.state || {})) {
-      const { tokenId } = parseStateKey(key);
-      if (tokenId) {
-        // Root token = first two parts: tok_0 from tok_0_0
-        const parts = tokenId.split('_');
-        const rootToken = parts.length >= 2 ? parts.slice(0, 2).join('_') : tokenId;
-        if (!seen.has(rootToken)) {
-          seen.add(rootToken);
-          tokens.push(rootToken);
-        }
-      }
-    }
-  }
-  return tokens;
-}
-
-// --- Custom scopeIds DI module ---
-// Injects our token_ids as root process scope IDs.
-// initializeRootScopes() calls ids.next() once per process.
-const CustomScopeIdsModule = {
-  scopeIds: ['factory', function() {
-    let processTokens = [];
-    let processIdx = 0;
-    let autoIdx = 0;
-    return {
-      next() {
-        if (processIdx < processTokens.length) {
-          return processTokens[processIdx++];
-        }
-        return `s_${autoIdx++}`;
-      },
-      loadProcessTokens(tokens) {
-        processTokens = tokens;
-        processIdx = 0;
-        autoIdx = 0;
-      }
-    };
-  }]
-};
-
 const additionalModules = [
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
@@ -182,8 +133,7 @@ const additionalModules = [
   SimulationSupportModule,
   ExampleModule,
   minimapModule,
-  BpmnLintModule,
-  CustomScopeIdsModule
+  BpmnLintModule
 ];
 
 const modeler = new BpmnModeler({
@@ -453,6 +403,45 @@ const elementTokenHistory = new Map();
 let messageLogs = []; // Global state for intercepted messages
 let currentDiagramName = ''; // Dynamically mapped when loading a diagram
 
+// Mapping processId → tok_N, built from stateSequence keys.
+// Mirrors ExecutionTree.allocate_token_id() which assigns tok_0, tok_1, ...
+// one per process in XML document order.
+const processToTokenMap = new Map();
+
+function buildProcessToTokenMap() {
+  processToTokenMap.clear();
+  for (const entry of stateSequence) {
+    for (const key of Object.keys(entry.state || {})) {
+      const { tokenId } = parseStateKey(key);
+      if (!tokenId) continue;
+      // Extract processId from context: "Task@Process_1.filename#tok_0"
+      // contextId = "Process_1.filename", processId = walk up to bpmn:Process
+      // But we can get processId directly from the key's context.
+      // Context format: "Process_1.filename" or "SubProc.Process_1.filename"
+      const { contextId } = parseStateKey(key);
+      if (!contextId) continue;
+      // Process is the second-to-last segment: "Process_1" from "Process_1.filename"
+      // or the root process from "SubProc.Process_1.filename"
+      const parts = contextId.split('.');
+      if (parts.length < 2) continue;
+      const processId = parts[parts.length - 2]; // e.g. "Process_1"
+      // Root token = tok_N (first 2 parts of tokenId)
+      const rootToken = tokenId.split('_').slice(0, 2).join('_');
+      if (!processToTokenMap.has(processId)) {
+        processToTokenMap.set(processId, rootToken);
+      }
+    }
+    if (processToTokenMap.size > 0) break; // First snapshot with tokens is enough
+  }
+}
+
+// Resolve a bpmn-js scope ID to our tok_N for a given element.
+function resolveTokenId(element, scopeId) {
+  if (processToTokenMap.size === 0) return scopeId;
+  const processId = getProcessId(element);
+  return processToTokenMap.get(processId) || scopeId;
+}
+
 function renderMessageLogs() {
   const panel = document.getElementById('message-panel');
   if (panel) panel.classList.add('visible');
@@ -510,14 +499,16 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
       elementTokenHistory.set(elementId, new Map());
     }
     const tokenScope = elementScope.parent || elementScope;
-    elementTokenHistory.get(elementId).set(tokenScope.id, 'active');
+    const tokenId = resolveTokenId(element, tokenScope.id);
+    elementTokenHistory.get(elementId).set(tokenId, 'active');
   }
 
   if (action === 'exit') {
     const elementId = element.id || element;
     if (elementTokenHistory.has(elementId)) {
        const tokenScope = elementScope.parent || elementScope;
-       elementTokenHistory.get(elementId).set(tokenScope.id, 'completed');
+       const tokenId = resolveTokenId(element, tokenScope.id);
+       elementTokenHistory.get(elementId).set(tokenId, 'completed');
     }
 
     if (element.type === 'bpmn:MessageFlow') {
@@ -526,18 +517,18 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
 
       const sourceProcessName = getProcessId(sourceElement);
       const targetProcessName = getProcessId(targetElement);
-      
-      const diagramId = currentDiagramName; 
-      
-      const targetScopeId = getLatestScopeId(targetElement.id);
-      const sourceScopeId = getLatestScopeId(sourceElement.id);
 
-      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#${sourceScopeId}`;
-      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#${targetScopeId}`;
-      
+      const diagramId = currentDiagramName;
+
+      const sourceTokenId = processToTokenMap.get(sourceProcessName) || getLatestScopeId(sourceElement.id);
+      const targetTokenId = processToTokenMap.get(targetProcessName) || getLatestScopeId(targetElement.id);
+
+      const sourceStr = `${sourceElement.id}@${sourceProcessName}.${diagramId}#${sourceTokenId}`;
+      const destStr = `${targetElement.id}@${targetProcessName}.${diagramId}#${targetTokenId}`;
+
       const bo = element.businessObject;
       const baseMessageId = bo.messageRef ? bo.messageRef.id : element.id;
-      const messageId = `${baseMessageId}#${sourceScopeId}:#${targetScopeId}`;
+      const messageId = `${baseMessageId}#${sourceTokenId}:#${targetTokenId}`;
       const messageName = bo.messageRef && bo.messageRef.name ? bo.messageRef.name : element.id;
       const payloadStr = `contenuto base messaggio ${messageName}`;
 
@@ -547,7 +538,7 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
         id: messageId,
         payload: payloadStr
       });
-      
+
       renderMessageLogs();
     }
   }
@@ -590,6 +581,7 @@ function loadStateSequenceForCurrentDiagram() {
     state: statesContext(key)
   }));
   console.log('[StateLoader] Loaded', stateSequence.length, 'snapshots for', baseName);
+  buildProcessToTokenMap();
 
   executionOrderMap = null;
 }
@@ -744,7 +736,6 @@ function renderStateSnapshot(snapshot) {
 // Replays step-by-step from t0 to targetIndex using the existing
 // diffCompletions/diffActivations/waitForTokenDrain mechanism.
 let _replayInProgress = false;
-let _initResetInProgress = false;
 
 async function replayToIndex(targetIndex) {
   if (_replayInProgress) {
@@ -759,18 +750,7 @@ async function replayToIndex(targetIndex) {
   // Ensure simulation mode is active
   simulationSupport.toggleSimulation(true);
 
-  // Load our process token_ids into the custom scopeIds generator
-  // BEFORE reset — initializeRootScopes() calls ids.next() per process.
-  const scopeIds = modeler.get('scopeIds');
-  if (scopeIds && scopeIds.loadProcessTokens) {
-    const processTokens = extractProcessTokens(stateSequence);
-    scopeIds.loadProcessTokens(processTokens);
-    console.log('[replay] Loaded process tokens:', processTokens);
-  }
-
-  // Full reset via simulator.reset() — properly destroys all scopes and
-  // reinitializes root scopes. The _replayInProgress guard prevents
-  // cascading resets from initializeSimulationToStart.
+  // Full reset — destroys old scopes and reinitializes root scopes.
   simulator.reset();
 
   const clampedTarget = Math.min(targetIndex, stateSequence.length - 1);
@@ -1102,6 +1082,7 @@ function initializeSimulationToStart() {
       stateSequence = _pendingApiStates;
       _statesInjectedViaApi = true;
       _pendingApiStates = null;
+      buildProcessToTokenMap();
       console.log('[init] Applied pending API states');
     } else {
       console.log('[init] Pending states do not match current diagram, deferring');
@@ -1123,18 +1104,7 @@ function initializeSimulationToStart() {
     return;
   }
 
-  // Load process token_ids and activate simulation.
-  // initializeRootScopes() calls ids.next() per process.
-  const scopeIds = modeler.get('scopeIds');
-  if (scopeIds && scopeIds.loadProcessTokens) {
-    const processTokens = extractProcessTokens(stateSequence);
-    scopeIds.loadProcessTokens(processTokens);
-  }
-
   const simulationSupport = modeler.get('simulationSupport');
-  // toggleSimulation(true) fires toggleMode event which triggers
-  // simulator.reset() → initializeRootScopes() → ids.next().
-  // loadProcessTokens was called above, so ids.next() = tok_0.
   simulationSupport.toggleSimulation(true);
 
   // Reset sequence to t0
@@ -1393,6 +1363,7 @@ window.addEventListener('message', async (event) => {
     // Inject states and replay to target
     stateSequence = states;
     executionOrderMap = null;
+    buildProcessToTokenMap();
     _statesInjectedViaApi = true;
 
     await replayToIndex(targetIndex);
