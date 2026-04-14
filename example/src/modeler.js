@@ -490,14 +490,31 @@ function getLatestScopeId(elementId) {
   return 'unknown';
 }
 
+// Resolve the BPMN Process ID for a scope element.
+// For Participant elements, follows processRef to the actual Process.
+// For elements inside a process, walks up $parent to bpmn:Process.
+function _scopeProcessId(element) {
+  if (!element || !element.businessObject) return null;
+  var bo = element.businessObject;
+  // Participant → processRef → Process
+  if (bo.$type === 'bpmn:Participant' && bo.processRef) {
+    return bo.processRef.id;
+  }
+  // Walk up to bpmn:Process
+  while (bo && bo.$type !== 'bpmn:Process') {
+    bo = bo.$parent;
+  }
+  return bo ? bo.id : null;
+}
+
 // Set scope.displayId on every scope at creation time (priority 1500 = before
 // Log.js/ShowScopes/Notifications which run at 1000).  The lib/ components
 // read scope.displayId || scope.id for visible text.
 function _setDisplayId(scope) {
   if (!scope || !scope.element) return;
-  // Resolve the process ID for this scope's element
-  const processId = getProcessId(scope.element);
-  const tokenId = processToTokenMap.get(processId);
+  var processId = _scopeProcessId(scope.element);
+  if (!processId) return;
+  var tokenId = processToTokenMap.get(processId);
   if (tokenId) {
     scope.displayId = tokenId;
     scopeIdToTokenMap.set(scope.id, tokenId);
@@ -697,8 +714,9 @@ function renderStateSnapshot(snapshot) {
   }
 
   // Group entries by element (without #token_id) — one row per element.
-  const elementEntries = new Map(); // "registryId@contextId" → Map(tokenId → status)
-  const elementOrder = [];          // preserve execution order
+  // Aggregate split tokens (tok_0_0, tok_0_1) under their root (tok_0).
+  const elementEntries = new Map(); // "registryId@contextId" → Map(rootToken → status)
+  const elementOrder = [];
   entries.forEach(([taskId, status]) => {
     const { registryId, contextId, tokenId } = parseStateKey(taskId);
     const elementKey = contextId ? `${registryId}@${contextId}` : registryId;
@@ -709,7 +727,20 @@ function renderStateSnapshot(snapshot) {
     if (!tokenId) {
       throw new Error(`State key "${taskId}" is missing #token_id fragment`);
     }
-    elementEntries.get(elementKey).set(tokenId, status);
+    // Root token: tok_0 from tok_0_0 or tok_0_1
+    const parts = tokenId.split('_');
+    const rootToken = parts.length >= 2 ? parts.slice(0, 2).join('_') : tokenId;
+    const prev = elementEntries.get(elementKey).get(rootToken);
+    if (!prev) {
+      elementEntries.get(elementKey).set(rootToken, status);
+    } else {
+      // Aggregate: active > completed > waiting
+      if (status === 'active' || prev === 'active') {
+        elementEntries.get(elementKey).set(rootToken, 'active');
+      } else if (status === 'completed') {
+        elementEntries.get(elementKey).set(rootToken, 'completed');
+      }
+    }
   });
 
   elementOrder.forEach(elementKey => {
