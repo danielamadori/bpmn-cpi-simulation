@@ -414,24 +414,37 @@ function buildProcessToTokenMap() {
     for (const key of Object.keys(entry.state || {})) {
       const { tokenId } = parseStateKey(key);
       if (!tokenId) continue;
-      // Extract processId from context: "Task@Process_1.filename#tok_0"
-      // contextId = "Process_1.filename", processId = walk up to bpmn:Process
-      // But we can get processId directly from the key's context.
-      // Context format: "Process_1.filename" or "SubProc.Process_1.filename"
       const { contextId } = parseStateKey(key);
       if (!contextId) continue;
-      // Process is the second-to-last segment: "Process_1" from "Process_1.filename"
-      // or the root process from "SubProc.Process_1.filename"
       const parts = contextId.split('.');
       if (parts.length < 2) continue;
-      const processId = parts[parts.length - 2]; // e.g. "Process_1"
-      // Root token = tok_N (first 2 parts of tokenId)
+      const processId = parts[parts.length - 2];
       const rootToken = tokenId.split('_').slice(0, 2).join('_');
       if (!processToTokenMap.has(processId)) {
         processToTokenMap.set(processId, rootToken);
       }
     }
-    if (processToTokenMap.size > 0) break; // First snapshot with tokens is enough
+    if (processToTokenMap.size > 0) break;
+  }
+  // Flush pending scope mappings from createScope/destroyScope events
+  // that arrived before the map was ready.
+  while (_pendingScopeMappings.length > 0) {
+    const pending = _pendingScopeMappings.shift();
+    const tid = processToTokenMap.get(pending.processId);
+    if (tid) {
+      scopeIdToTokenMap.set(pending.scopeId, tid);
+    }
+  }
+  // Rescan existing DOM elements — entries created before the map was
+  // populated (e.g. "Process finished" from init reset) still have
+  // bpmn-js scope IDs.  Rewrite them now.
+  _rescanAllScopeBadges();
+}
+
+function _rescanAllScopeBadges() {
+  var spans = document.querySelectorAll('.bts-scope[data-scope-id]');
+  for (var i = 0; i < spans.length; i++) {
+    _rewriteScope(spans[i]);
   }
 }
 
@@ -497,6 +510,10 @@ function getLatestScopeId(elementId) {
   return 'unknown';
 }
 
+// Queue of {scopeId, processId} pairs from root scope events that arrived
+// before processToTokenMap was populated.  Flushed by buildProcessToTokenMap.
+const _pendingScopeMappings = [];
+
 // Populate scopeIdToTokenMap for root scopes (Process/Participant) whenever
 // a scope is created or destroyed.  This ensures "Process started/finished"
 // Log entries get rewritten by the MutationObserver.
@@ -504,12 +521,22 @@ function _mapRootScope(scope) {
   if (!scope || !scope.element) return;
   const type = scope.element.type;
   if (type !== 'bpmn:Process' && type !== 'bpmn:Participant') return;
-  const processId = scope.element.businessObject
-    ? scope.element.businessObject.id
-    : scope.element.id;
+  // For Participant, the processRef points to the actual Process.
+  // For Process, use the element directly.
+  const bo = scope.element.businessObject;
+  let processId;
+  if (bo && bo.processRef) {
+    processId = bo.processRef.id;
+  } else if (bo) {
+    processId = bo.id;
+  } else {
+    processId = scope.element.id;
+  }
   const tokenId = processToTokenMap.get(processId);
   if (tokenId) {
     scopeIdToTokenMap.set(scope.id, tokenId);
+  } else {
+    _pendingScopeMappings.push({ scopeId: scope.id, processId: processId });
   }
 }
 modeler.get('eventBus').on('tokenSimulation.simulator.createScope', event => {
