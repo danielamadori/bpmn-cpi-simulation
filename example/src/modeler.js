@@ -578,25 +578,42 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
 // The Simulation Log, ShowScopes, and Notifications components write
 // scope.id directly into <span class="bts-scope"> elements.  We observe
 // the DOM and replace the visible text with our tok_N from scopeIdToTokenMap.
+
+// Choose readable text color based on background luminance (WCAG contrast).
+function _readableTextColor(el) {
+  var bg = window.getComputedStyle(el).backgroundColor;
+  var m = bg.match(/\d+/g);
+  if (!m || m.length < 3) return;
+  var r = parseInt(m[0]), g = parseInt(m[1]), b = parseInt(m[2]);
+  // Relative luminance (sRGB)
+  var lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  el.style.color = lum > 0.6 ? '#000' : '#fff';
+}
+
+function _rewriteScope(span) {
+  var tid = scopeIdToTokenMap.get(span.dataset.scopeId);
+  if (!tid) return;
+  span.textContent = tid;
+  _readableTextColor(span);
+  if (span.title && span.title.indexOf('process instance') >= 0) {
+    span.title = 'Focus process instance ' + tid;
+  }
+}
+
 const _scopeRewriter = new MutationObserver(mutations => {
   for (const mutation of mutations) {
     for (const node of mutation.addedNodes) {
       if (node.nodeType !== 1) continue;
-      // The node itself might be a .bts-scope span
       if (node.classList && node.classList.contains('bts-scope') && node.dataset.scopeId) {
-        const tid = scopeIdToTokenMap.get(node.dataset.scopeId);
-        if (tid) node.textContent = tid;
+        _rewriteScope(node);
       }
-      // Or it might contain .bts-scope children (e.g. a <p> log entry)
       if (node.querySelectorAll) {
         for (const span of node.querySelectorAll('.bts-scope[data-scope-id]')) {
-          const tid = scopeIdToTokenMap.get(span.dataset.scopeId);
-          if (tid) span.textContent = tid;
+          _rewriteScope(span);
         }
       }
-      // ShowScopes: rewrite title="Focus process instance XXX"
-      if (node.dataset && node.dataset.scopeId && node.title) {
-        const tid = scopeIdToTokenMap.get(node.dataset.scopeId);
+      if (node.dataset && node.dataset.scopeId && node.title && node.title.indexOf('process instance') >= 0) {
+        var tid = scopeIdToTokenMap.get(node.dataset.scopeId);
         if (tid) node.title = 'Focus process instance ' + tid;
       }
     }
