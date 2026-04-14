@@ -426,26 +426,6 @@ function buildProcessToTokenMap() {
     }
     if (processToTokenMap.size > 0) break;
   }
-  // Flush pending scope mappings from createScope/destroyScope events
-  // that arrived before the map was ready.
-  while (_pendingScopeMappings.length > 0) {
-    const pending = _pendingScopeMappings.shift();
-    const tid = processToTokenMap.get(pending.processId);
-    if (tid) {
-      scopeIdToTokenMap.set(pending.scopeId, tid);
-    }
-  }
-  // Rescan existing DOM elements — entries created before the map was
-  // populated (e.g. "Process finished" from init reset) still have
-  // bpmn-js scope IDs.  Rewrite them now.
-  _rescanAllScopeBadges();
-}
-
-function _rescanAllScopeBadges() {
-  var spans = document.querySelectorAll('.bts-scope[data-scope-id]');
-  for (var i = 0; i < spans.length; i++) {
-    _rewriteScope(spans[i]);
-  }
 }
 
 // Mapping bpmn-js scopeId → our tok_N, populated by trace listener.
@@ -510,40 +490,24 @@ function getLatestScopeId(elementId) {
   return 'unknown';
 }
 
-// Queue of {scopeId, processId} pairs from root scope events that arrived
-// before processToTokenMap was populated.  Flushed by buildProcessToTokenMap.
-const _pendingScopeMappings = [];
-
-// Populate scopeIdToTokenMap for root scopes (Process/Participant) whenever
-// a scope is created or destroyed.  This ensures "Process started/finished"
-// Log entries get rewritten by the MutationObserver.
-function _mapRootScope(scope) {
+// Set scope.displayId on every scope at creation time (priority 1500 = before
+// Log.js/ShowScopes/Notifications which run at 1000).  The lib/ components
+// read scope.displayId || scope.id for visible text.
+function _setDisplayId(scope) {
   if (!scope || !scope.element) return;
-  const type = scope.element.type;
-  if (type !== 'bpmn:Process' && type !== 'bpmn:Participant') return;
-  // For Participant, the processRef points to the actual Process.
-  // For Process, use the element directly.
-  const bo = scope.element.businessObject;
-  let processId;
-  if (bo && bo.processRef) {
-    processId = bo.processRef.id;
-  } else if (bo) {
-    processId = bo.id;
-  } else {
-    processId = scope.element.id;
-  }
+  // Resolve the process ID for this scope's element
+  const processId = getProcessId(scope.element);
   const tokenId = processToTokenMap.get(processId);
   if (tokenId) {
+    scope.displayId = tokenId;
     scopeIdToTokenMap.set(scope.id, tokenId);
-  } else {
-    _pendingScopeMappings.push({ scopeId: scope.id, processId: processId });
   }
 }
-modeler.get('eventBus').on('tokenSimulation.simulator.createScope', event => {
-  _mapRootScope(event.scope);
+modeler.get('eventBus').on('tokenSimulation.simulator.createScope', 1500, function(event) {
+  _setDisplayId(event.scope);
 });
-modeler.get('eventBus').on('tokenSimulation.simulator.destroyScope', event => {
-  _mapRootScope(event.scope);
+modeler.get('eventBus').on('tokenSimulation.simulator.destroyScope', 1500, function(event) {
+  _setDisplayId(event.scope);
 });
 
 modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
@@ -601,52 +565,6 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   }
 });
 
-// --- Rewrite bpmn-js scope IDs to our tok_N in the DOM ---
-// The Simulation Log, ShowScopes, and Notifications components write
-// scope.id directly into <span class="bts-scope"> elements.  We observe
-// the DOM and replace the visible text with our tok_N from scopeIdToTokenMap.
-
-// Choose readable text color based on background luminance (WCAG contrast).
-function _readableTextColor(el) {
-  var bg = window.getComputedStyle(el).backgroundColor;
-  var m = bg.match(/\d+/g);
-  if (!m || m.length < 3) return;
-  var r = parseInt(m[0]), g = parseInt(m[1]), b = parseInt(m[2]);
-  // Relative luminance (sRGB)
-  var lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  el.style.color = lum > 0.6 ? '#000' : '#fff';
-}
-
-function _rewriteScope(span) {
-  var tid = scopeIdToTokenMap.get(span.dataset.scopeId);
-  if (!tid) return;
-  span.textContent = tid;
-  _readableTextColor(span);
-  if (span.title && span.title.indexOf('process instance') >= 0) {
-    span.title = 'Focus process instance ' + tid;
-  }
-}
-
-const _scopeRewriter = new MutationObserver(mutations => {
-  for (const mutation of mutations) {
-    for (const node of mutation.addedNodes) {
-      if (node.nodeType !== 1) continue;
-      if (node.classList && node.classList.contains('bts-scope') && node.dataset.scopeId) {
-        _rewriteScope(node);
-      }
-      if (node.querySelectorAll) {
-        for (const span of node.querySelectorAll('.bts-scope[data-scope-id]')) {
-          _rewriteScope(span);
-        }
-      }
-      if (node.dataset && node.dataset.scopeId && node.title && node.title.indexOf('process instance') >= 0) {
-        var tid = scopeIdToTokenMap.get(node.dataset.scopeId);
-        if (tid) node.title = 'Focus process instance ' + tid;
-      }
-    }
-  }
-});
-_scopeRewriter.observe(document.body, { childList: true, subtree: true });
 
 // --- state sequence playback (drives tokens from JSON snapshots) ---
 
