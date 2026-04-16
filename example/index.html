@@ -50,6 +50,17 @@
             <button class="link" id="validate-sese">Validate SESE</button>
             <button class="link" id="export-paco-json">Export PACO JSON</button>
             <button class="link" id="play-state-sequence">Play state sequence</button>
+            <div id="nav-controls" style="display:none; margin-top:8px;">
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                    <button class="link" id="nav-prev" disabled title="Previous step (&#x2190;)">&#x2190; Prev</button>
+                    <span id="nav-time" style="font-size:11px; color:#005f73; font-weight:600; min-width:60px; text-align:center;">t=0.000</span>
+                    <button class="link" id="nav-next" disabled title="Next step (&#x2192;)">Next &#x2192;</button>
+                    <label style="font-size:11px; color:#666; margin-left:6px;">dt:</label>
+                    <input type="number" id="nav-delta-t" value="" min="0" step="0.1"
+                           style="width:50px; font-size:11px; padding:2px 4px; border:1px solid #ccc; border-radius:3px;"
+                           placeholder="sat" title="Time delta (empty = saturation)">
+                </div>
+            </div>
             <div id="control-anim-wrapper"></div>
         </div>
 
@@ -113,6 +124,18 @@
     <div class="canvas-parent">
         <div class="canvas" id="canvas">
             <div class="djs-minimap"></div>
+        </div>
+    </div>
+
+    <!-- Branch decision dialog (hidden by default) -->
+    <div id="branch-dialog" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fffdf8; border-radius:12px; padding:24px; max-width:420px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.25); border:1px solid #c9c2b4;">
+            <h3 style="margin:0 0 6px; font-size:15px; color:#1e2a32; font-weight:700;">Scenario Selection</h3>
+            <p style="margin:0 0 16px; font-size:11px; color:#5b6770;">Select one option for each decision point, then confirm.</p>
+            <div class="branch-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid #e8e4dc;">
+                <button id="branch-dialog-cancel" style="cursor:pointer; font-size:12px; color:#5b6770; background:none; border:1px solid #c9c2b4; border-radius:6px; padding:6px 14px;">Cancel</button>
+            </div>
         </div>
     </div>
 

@@ -264,7 +264,7 @@ function openDiagram(diagram) {
         localStorage['diagram-xml'] = diagram;
       }
 
-      modeler.get('canvas').zoom('fit-viewport');
+      try { modeler.get('canvas').zoom('fit-viewport'); } catch(_) { /* iframe may not be visible yet */ }
 
       // Force ALL tasks to behave as wait states so tokens stay visible on them
       const registry = modeler.get('elementRegistry');
@@ -277,9 +277,45 @@ function openDiagram(diagram) {
 
       // Auto-start simulation at t0
       initializeSimulationToStart();
+
+      // Retry pending API states — they may have arrived before importXML
+      // completed and been deferred because the diagram wasn't ready yet.
+      if (_pendingApiStates) {
+        const retryKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
+        const retryId = retryKey ? parseStateKey(retryKey).registryId : null;
+        if (retryId && registry.get(retryId)) {
+          console.log('[openDiagram] Retrying deferred API states');
+          stateSequence = _pendingApiStates;
+          _statesInjectedViaApi = true;
+          _pendingApiStates = null;
+          buildProcessToTokenMap();
+          if (_pendingApiNavData) {
+            _treeTopology = _pendingApiNavData.topology;
+            _allPaths = _pendingApiNavData.allPaths;
+            _allPathNodeIds = _pendingApiNavData.allPathNodeIds;
+            _pathNodeIds = (_allPathNodeIds && _pendingApiNavData.nodeId != null)
+              ? _allPathNodeIds[String(_pendingApiNavData.nodeId)] || null : null;
+            _currentNodeId = _pendingApiNavData.nodeId != null
+              ? String(_pendingApiNavData.nodeId) : null;
+            _navigationMode = !!_treeTopology;
+            _pendingApiNavData = null;
+            setNavigationVisible(_navigationMode);
+          }
+          if (_pendingApiTargetIndex !== null) {
+            const target = _pendingApiTargetIndex;
+            _pendingApiTargetIndex = null;
+            replayToIndex(target).then(() => updateNavigationUI());
+          }
+        }
+      }
     })
     .catch(err => {
-      console.error(err);
+      console.error('[openDiagram] FAILED:', err.message || err);
+      // Even if import failed, try to apply pending states
+      if (_pendingApiStates) {
+        console.log('[openDiagram] Attempting pending state recovery after error');
+        initializeSimulationToStart();
+      }
     });
 }
 
@@ -790,7 +826,7 @@ function renderStateSnapshot(snapshot) {
 // diffCompletions/diffActivations/waitForTokenDrain mechanism.
 let _replayInProgress = false;
 
-async function replayToIndex(targetIndex) {
+async function replayToIndex(targetIndex, { instant = false } = {}) {
   if (_replayInProgress) {
     console.log('[replay] Already in progress, skipping');
     return;
@@ -809,7 +845,11 @@ async function replayToIndex(targetIndex) {
   const clampedTarget = Math.min(targetIndex, stateSequence.length - 1);
 
   if (!stateSequence.length || targetIndex < 1) {
-    if (stateSequence.length) renderStateSnapshot(stateSequence[0]);
+    if (stateSequence.length) {
+      currentStateIndex = 0;
+      renderStateSnapshot(stateSequence[0]);
+    }
+    _replayInProgress = false;
     return;
   }
 
@@ -899,7 +939,13 @@ async function replayToIndex(targetIndex) {
   }
 
   // Wait for tokens to settle
-  await new Promise(r => setTimeout(r, 500));
+  if (instant) {
+    // In instant mode, wait for all token animations to drain first
+    await drainSimulationQueues();
+    await new Promise(r => setTimeout(r, 50));
+  } else {
+    await new Promise(r => setTimeout(r, 500));
+  }
 
   // Update state panel to show target
   currentStateIndex = clampedTarget;
@@ -907,7 +953,7 @@ async function replayToIndex(targetIndex) {
 
   // Force token count refresh — the simulator may not emit elementChanged
   // for all elements during async replay. Fire tick to update overlays.
-  await new Promise(r => setTimeout(r, 100));
+  await new Promise(r => setTimeout(r, instant ? 50 : 100));
   registry.getAll().forEach(el => {
     modeler.get('eventBus').fire('tokenSimulation.simulator.elementChanged', { element: el });
   });
@@ -1005,6 +1051,10 @@ async function waitForTokenDrain(simulationSupport, ids) {
 
         console.log(`Triggered ${id} successfully.`);
         triggered = true;
+
+        // Drain after each trigger so cascading tokens (e.g. SendTask→ReceiveTask)
+        // settle before the next element is triggered.
+        await drainSimulationQueues();
       } catch (err) {
         console.warn(`Attempt ${attempts + 1} to trigger ${id} failed: ${err.message}.`);
         attempts++;
@@ -1013,13 +1063,13 @@ async function waitForTokenDrain(simulationSupport, ids) {
         } else {
 
           // Fallback minimal safe wait before retry if API is genuinely not ready
-          await new Promise(r => requestAnimationFrame(r));
+          await drainSimulationQueues();
         }
       }
     }
   }
 
-  // Wait deterministically for ALL triggers' cascading simulator events and animations to drain
+  // Final drain for any remaining animations
   await drainSimulationQueues();
 }
 
@@ -1053,6 +1103,16 @@ async function drainSimulationQueues() {
 
 let currentStateIndex = 0;
 let isStepping = false;
+
+// --- Navigation mode state ---
+let _treeTopology = null;      // {"0": {parent_id, children: [{id, label}]}, ...}
+let _allPaths = null;          // {"0": [states], "1": [states], ...}
+let _allPathNodeIds = null;    // {"0": [0], "1": [0,1], "2": [0,1,2], ...}
+let _pathNodeIds = null;       // current path's node ids: [0, 1, 2]
+let _currentNodeId = null;     // string: execution tree node id at current step
+let _navigationMode = false;   // true when tree topology is available
+let _pendingAdvanceDecisions = []; // pending decisions from API advance response
+let _advanceInProgress = false;    // guard against double-click during API call
 
 // Helper to lock exclusive gateways if their path is determined by the next state
 // Helper to lock exclusive gateways if their path is determined by the next state
@@ -1122,6 +1182,7 @@ function configureExclusiveGateways(startIndex) {
 let _statesInjectedViaApi = false;
 let _pendingApiStates = null;
 let _pendingApiTargetIndex = null;
+let _pendingApiNavData = null;  // {topology, allPaths, allPathNodeIds, nodeId}
 
 function initializeSimulationToStart() {
   logInfo('DEBUG: NEW VERSION LOADED (Manual Mode). If you see this message, the code is up to date.');
@@ -1136,6 +1197,19 @@ function initializeSimulationToStart() {
       _statesInjectedViaApi = true;
       _pendingApiStates = null;
       buildProcessToTokenMap();
+      // Restore navigation data saved during deferred loadStates
+      if (_pendingApiNavData) {
+        _treeTopology = _pendingApiNavData.topology;
+        _allPaths = _pendingApiNavData.allPaths;
+        _allPathNodeIds = _pendingApiNavData.allPathNodeIds;
+        _pathNodeIds = (_allPathNodeIds && _pendingApiNavData.nodeId != null)
+          ? _allPathNodeIds[String(_pendingApiNavData.nodeId)] || null : null;
+        _currentNodeId = _pendingApiNavData.nodeId != null
+          ? String(_pendingApiNavData.nodeId) : null;
+        _navigationMode = !!_treeTopology;
+        _pendingApiNavData = null;
+        setNavigationVisible(_navigationMode);
+      }
       console.log('[init] Applied pending API states');
     } else {
       console.log('[init] Pending states do not match current diagram, deferring');
@@ -1200,7 +1274,7 @@ function initializeSimulationToStart() {
   if (_statesInjectedViaApi && _pendingApiTargetIndex !== null) {
     const target = _pendingApiTargetIndex;
     _pendingApiTargetIndex = null;
-    replayToIndex(target);
+    replayToIndex(target).then(() => updateNavigationUI());
   }
 }
 
@@ -1247,7 +1321,9 @@ async function playStates() {
         const nextAgg = aggregateByElement(next);
         const startEventIds = Object.keys(nextAgg).filter(id => {
           const el = registry.get(id);
-          return el && el.type === 'bpmn:StartEvent' && prevAgg[id] === 'waiting' && nextAgg[id] === 'completed';
+          // StartEvent may be 'completed' (instant fire) or 'active' (in execution tree snapshots)
+          return el && el.type === 'bpmn:StartEvent' && prevAgg[id] === 'waiting'
+            && (nextAgg[id] === 'completed' || nextAgg[id] === 'active');
         });
         console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
         if (startEventIds.length > 0) {
@@ -1348,8 +1424,28 @@ playStatesBtn.onclick = () => {
 
 modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
 
-  // Restart from t0 (no tokens)
+  // Restart from t0 (no tokens).
+  // Preserve navigation mode — resetSimulation should not destroy nav state.
+  const savedNavMode = _navigationMode;
+  const savedTopology = _treeTopology;
+  const savedAllPaths = _allPaths;
+  const savedAllPathNodeIds = _allPathNodeIds;
+  const savedPathNodeIds = _pathNodeIds;
+  const savedCurrentNodeId = _currentNodeId;
+
   initializeSimulationToStart();
+
+  if (savedNavMode) {
+    _navigationMode = savedNavMode;
+    _treeTopology = savedTopology;
+    _allPaths = savedAllPaths;
+    _allPathNodeIds = savedAllPathNodeIds;
+    _pathNodeIds = savedPathNodeIds;
+    _currentNodeId = savedCurrentNodeId;
+    currentStateIndex = 0;
+    setNavigationVisible(true);
+    updateNavigationUI();
+  }
 });
 
 
@@ -1409,6 +1505,12 @@ window.addEventListener('message', async (event) => {
       // BPMN not loaded yet — save for deferred application
       _pendingApiStates = states;
       _pendingApiTargetIndex = targetIndex;
+      _pendingApiNavData = {
+        topology: data.topology || null,
+        allPaths: data.allPaths || null,
+        allPathNodeIds: data.allPathNodeIds || null,
+        nodeId: data.nodeId,
+      };
       console.log('[postMessage] Diagram not ready, deferring');
       return;
     }
@@ -1419,6 +1521,564 @@ window.addEventListener('message', async (event) => {
     buildProcessToTokenMap();
     _statesInjectedViaApi = true;
 
+    // Navigation mode: store tree topology and all paths
+    _treeTopology = data.topology || null;
+    _allPaths = data.allPaths || null;
+    _allPathNodeIds = data.allPathNodeIds || null;
+    _pathNodeIds = (_allPathNodeIds && data.nodeId != null)
+      ? _allPathNodeIds[String(data.nodeId)] || null : null;
+    _currentNodeId = data.nodeId != null ? String(data.nodeId) : null;
+    _navigationMode = !!_treeTopology;
+    setNavigationVisible(_navigationMode);
+
     await replayToIndex(targetIndex);
+    updateNavigationUI();
+  }
+
+  // branchStatesResponse: combined.html responds with a child node's path
+  if (data.type === 'branchStatesResponse') {
+    const newStates = Array.isArray(data.states) ? data.states : [];
+    if (!newStates.length) return;
+    stateSequence = newStates;
+    const childKey = String(data.childNodeId);
+    _pathNodeIds = (_allPathNodeIds && _allPathNodeIds[childKey]) || null;
+    _currentNodeId = childKey;
+    executionOrderMap = null;
+    buildProcessToTokenMap();
+    updateNavigationUI();
+  }
+
+  // advanceResponse: server computed the next snapshot (time-step or saturation)
+  if (data.type === 'advanceResponse') {
+    if (data.children_decisions && data.children_decisions.length > 0) {
+      _advanceInProgress = false;
+      showAdvanceDecisionDialog(data.children_decisions);
+      return;
+    }
+    const newState = data.state;
+    if (newState) {
+      newState._snapshot = data.snapshot || null;
+      stateSequence = stateSequence.slice(0, currentStateIndex + 1);
+      stateSequence.push(newState);
+      executionOrderMap = null;
+      buildProcessToTokenMap();
+      const targetIdx = stateSequence.length - 1;
+      replayToIndex(targetIdx).then(() => {
+        _advanceInProgress = false;
+        updateNavigationUI();
+      });
+    } else {
+      _advanceInProgress = false;
+    }
+  }
+});
+
+
+// Update _currentNodeId based on currentStateIndex and _pathNodeIds.
+// step 0 = t0 (initial, no node), step N = pathNodeIds[N-1].
+function _syncCurrentNodeId() {
+  if (!_pathNodeIds || !_pathNodeIds.length) return;
+  if (currentStateIndex <= 0) {
+    // At t0 — use the root node so forward can start
+    _currentNodeId = String(_pathNodeIds[0]);
+  } else {
+    const idx = Math.min(currentStateIndex - 1, _pathNodeIds.length - 1);
+    _currentNodeId = String(_pathNodeIds[idx]);
+  }
+}
+
+// --- Step-by-step navigation (← →) ---
+
+async function navigateForward() {
+  if (isStepping || _replayInProgress) return;
+
+  // Check if user wants time-stepping (dt field has a value > 0)
+  const dtInput = document.getElementById('nav-delta-t');
+  const deltaT = dtInput ? parseFloat(dtInput.value) : NaN;
+  if (deltaT > 0) {
+    if (_advanceInProgress) return;
+    _advanceInProgress = true;
+    const currentSnap = stateSequence[currentStateIndex];
+    window.parent.postMessage({
+      type: 'requestAdvance',
+      snapshot: currentSnap._snapshot || null,
+      deltaT: deltaT,
+    }, '*');
+    return;
+  }
+
+  const nextIndex = currentStateIndex + 1;
+  if (nextIndex < stateSequence.length) {
+    _replayInProgress = true;
+    try {
+      const simulator = modeler.get('simulator');
+      const registry = modeler.get('elementRegistry');
+      const simulationSupport = modeler.get('simulationSupport');
+      const animation = modeler.get('animation');
+      const prevSpeed = animation.getAnimationSpeed();
+
+      // Instant animation — tokens teleport to target position
+      animation.setAnimationSpeed(100);
+
+      // 1. Configure wait flags: completed → wait:false, active/waiting → wait:true.
+      const targetState = stateSequence[nextIndex].state;
+      const completedInTarget = new Set();
+      Object.entries(targetState).forEach(([key, status]) => {
+        const { registryId } = parseStateKey(key);
+        if (status === 'completed') completedInTarget.add(registryId);
+      });
+      console.log('[navFwd] completedInTarget:', [...completedInTarget].join(', '));
+
+      const waitConfig = {};
+      registry.getAll().forEach(el => {
+        if (el.type === 'bpmn:Process' || el.type === 'bpmn:Participant') return;
+        if (el.type === 'bpmn:StartEvent') {
+          simulator.setConfig(el, { wait: false });
+          waitConfig[el.id] = false;
+          return;
+        }
+        let shouldWait = !completedInTarget.has(el.id);
+        const isJoin = (el.type === 'bpmn:ExclusiveGateway' || el.type === 'bpmn:ParallelGateway')
+          && el.incoming && el.incoming.filter(f => f.type === 'bpmn:SequenceFlow').length > 1;
+        if (isJoin) shouldWait = false;
+        simulator.setConfig(el, { wait: shouldWait });
+        waitConfig[el.id] = shouldWait;
+      });
+
+      // 2. Lock exclusive gateway SPLITS based on completedInTarget.
+      // For each split gateway, find which outgoing flow leads to a completed target.
+      registry.getAll().filter(el => el.type === 'bpmn:ExclusiveGateway').forEach(gw => {
+        const outgoing = (gw.outgoing || []).filter(f => f.type === 'bpmn:SequenceFlow');
+        if (outgoing.length < 2) return;
+        const selectedFlow = outgoing.find(f => f.target && completedInTarget.has(f.target.id));
+        if (selectedFlow) {
+          simulator.setConfig(gw, { locked: true, activeOutgoing: selectedFlow });
+          console.log('[navFwd] lock', gw.id, '->', selectedFlow.target.id);
+        } else {
+          simulator.setConfig(gw, { locked: false });
+        }
+      });
+      console.log('[navFwd] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
+
+      // 3. Compute diffs
+      const prev = stateSequence[currentStateIndex].state;
+      const next = stateSequence[nextIndex].state;
+      const prevAgg = aggregateByElement(prev);
+      const nextAgg = aggregateByElement(next);
+
+      // 4. Trigger/signal elements to make tokens advance
+      if (currentStateIndex === 0) {
+        // t0→t1: trigger StartEvents (no tokens exist yet)
+        const startIds = Object.keys(nextAgg).filter(id => {
+          const el = registry.get(id);
+          return el && el.type === 'bpmn:StartEvent'
+            && prevAgg[id] === 'waiting'
+            && (nextAgg[id] === 'completed' || nextAgg[id] === 'active');
+        });
+        console.log('[navFwd] t0->t1 triggerStartEvents:', startIds);
+        for (const id of startIds) {
+          try { simulationSupport.triggerElement(id); } catch(e) { console.warn('[navFwd] triggerElement failed:', id, e.message); }
+          await drainSimulationQueues();
+        }
+      } else {
+        // tN→tN+1: trigger late-starting processes first
+        const lateStarts = Object.keys(nextAgg).filter(id => {
+          const el = registry.get(id);
+          if (!el || el.type !== 'bpmn:StartEvent') return false;
+          if (prevAgg[id] !== 'waiting') return false;
+          return nextAgg[id] === 'completed' || nextAgg[id] === 'active';
+        });
+        if (lateStarts.length) console.log('[navFwd] lateStarts:', lateStarts);
+        for (const id of lateStarts) {
+          try { simulationSupport.triggerElement(id); } catch(e) {}
+          await drainSimulationQueues();
+        }
+
+        // Signal ALL leaf scopes (where tokens are actually waiting).
+        // Don't rely on diffCompletions — tokens may be on different elements
+        // than what the state diff suggests (e.g. tokens flow through wait:false
+        // elements and stop on the first wait:true element).
+        const leafScopes = simulator.findScopes({})
+          .filter(s => !s.destroyed && s.children.length === 0
+                    && s.element?.type !== 'bpmn:Process'
+                    && s.element?.type !== 'bpmn:Participant'
+                    && s.element?.type !== 'bpmn:ParallelGateway');
+        console.log('[navFwd] signaling leaf scopes:', leafScopes.map(s => `${s.element?.id}(${s.id})`).join(', '));
+        // Signal ALL leaf scopes at once so parallel tokens move together
+        // (e.g. both branches reach ParallelJoin simultaneously).
+        for (const scope of leafScopes) {
+          try {
+            simulator.signal({ scope, element: scope.element, initiator: scope.element });
+          } catch(e) { console.warn('[navFwd] signal failed:', scope.element?.id, e.message); }
+        }
+        await drainSimulationQueues();
+      }
+
+      // --- Debug: dump all scopes after navigation ---
+      const allScopesAfter = simulator.findScopes({});
+      console.log(`[navFwd] AFTER: ${allScopesAfter.filter(s => !s.destroyed).length} active scopes`);
+      allScopesAfter.filter(s => !s.destroyed).forEach(s => {
+        console.log(`[navFwd]   scope ${s.id} element=${s.element?.id} type=${s.element?.type} children=${s.children?.length}`);
+      });
+
+      // 5. Restore animation speed and update state
+      animation.setAnimationSpeed(prevSpeed);
+      currentStateIndex = nextIndex;
+      renderStateSnapshot(stateSequence[nextIndex]);
+      await new Promise(r => setTimeout(r, 100));
+      registry.getAll().forEach(el => {
+        modeler.get('eventBus').fire('tokenSimulation.simulator.elementChanged', { element: el });
+      });
+    } finally {
+      _replayInProgress = false;
+    }
+    updateNavigationUI();
+    return;
+  }
+
+  // End of current path — check for children in tree topology
+  if (!_navigationMode || !_treeTopology || !_currentNodeId) return;
+  const nodeInfo = _treeTopology[_currentNodeId];
+  if (!nodeInfo || !nodeInfo.children || nodeInfo.children.length === 0) {
+    logInfo('Reached a leaf node. No further branches.');
+    return;
+  }
+
+  if (nodeInfo.children.length === 1) {
+    // Single child — load new path then advance automatically
+    requestBranchSwitch(nodeInfo.children[0].id);
+    await navigateForward();
+    return;
+  }
+
+  // Multiple children — show decision dialog
+  showBranchDialog(nodeInfo.children);
+}
+
+async function navigateBackward() {
+  if (isStepping || _replayInProgress) return;
+  if (currentStateIndex <= 0) return;
+
+  const targetIndex = currentStateIndex - 1;
+  const canvas = document.querySelector('.djs-container svg');
+  const animation = modeler.get('animation');
+  const prevSpeed = animation.getAnimationSpeed();
+
+  // Fade out canvas to hide the reset flash
+  if (canvas) {
+    canvas.style.transition = 'opacity 120ms ease-out';
+    canvas.style.opacity = '0.15';
+  }
+  // Speed up animations to near-instant
+  animation.setAnimationSpeed(100);
+
+  await replayToIndex(targetIndex, { instant: true });
+
+  // Truncate stateSequence to the current position so that going forward
+  // from a branch point re-asks for the decision instead of replaying
+  // the old branch automatically.
+  if (currentStateIndex + 1 < stateSequence.length) {
+    stateSequence = stateSequence.slice(0, currentStateIndex + 1);
+  }
+
+  // Restore animation speed and fade back in
+  animation.setAnimationSpeed(prevSpeed);
+  if (canvas) {
+    canvas.style.transition = 'opacity 180ms ease-in';
+    canvas.style.opacity = '1';
+    setTimeout(() => { canvas.style.transition = ''; }, 200);
+  }
+  updateNavigationUI();
+}
+
+function requestBranchSwitch(childNodeId) {
+  const childKey = String(childNodeId);
+  if (_allPaths && _allPaths[childKey]) {
+    // Load the child's full path. Shared prefix is identical so tokens
+    // stay where they are. Don't updateNavigationUI here — the caller
+    // (navigateForward) will update after the signal completes,
+    // so the user never sees an intermediate state.
+    stateSequence = _allPaths[childKey];
+    _pathNodeIds = (_allPathNodeIds && _allPathNodeIds[childKey]) || null;
+    _currentNodeId = childKey;
+    executionOrderMap = null;
+    buildProcessToTokenMap();
+    return;
+  }
+  // Fallback: request from parent frame (combined.html)
+  window.parent.postMessage({
+    type: 'requestBranchStates',
+    childNodeId: childNodeId
+  }, '*');
+}
+
+
+// --- Branch decision dialog ---
+
+function showBranchDialog(children) {
+  const dialog = document.getElementById('branch-dialog');
+  if (!dialog) return;
+  const list = dialog.querySelector('.branch-list');
+  if (!list) return;
+  list.innerHTML = '';
+  // Remove stale Confirm button from previous invocation
+  const oldConfirm = dialog.querySelector('#branch-dialog-confirm');
+  if (oldConfirm) oldConfirm.remove();
+
+  // Check if children have structured decisions
+  const hasDecisions = children.some(c => c.decisions && c.decisions.length > 0);
+
+  if (!hasDecisions) {
+    // Fallback: flat list of buttons (old behavior)
+    children.forEach((child) => {
+      const btn = document.createElement('button');
+      btn.className = 'link';
+      btn.textContent = child.label || `Branch`;
+      btn.addEventListener('click', async () => {
+        hideBranchDialog();
+        requestBranchSwitch(child.id);
+        await navigateForward();
+      });
+      list.appendChild(btn);
+    });
+    dialog.style.display = 'flex';
+    return;
+  }
+
+  // Structured dialog: group by gateway, one selection per gateway
+  const gatewayMap = new Map(); // gateway_name → Map(branch_index → target_name)
+  children.forEach(child => {
+    (child.decisions || []).forEach(d => {
+      if (!gatewayMap.has(d.gateway)) gatewayMap.set(d.gateway, new Map());
+      const opts = gatewayMap.get(d.gateway);
+      if (!opts.has(d.branch_index)) {
+        opts.set(d.branch_index, d.target_name || `Option ${d.branch_index + 1}`);
+      }
+    });
+  });
+
+  const selections = {};
+  const SEL = 'background:#005f73;color:white;border-color:#005f73;';
+  const UNSEL = 'background:#fff;color:#1e2a32;border-color:#c9c2b4;';
+
+  function updateBtn(btn, selected) {
+    btn.style.cssText = 'cursor:pointer;padding:5px 12px;font-size:12px;border-radius:6px;border:1px solid;transition:all .15s;'
+      + (selected ? SEL : UNSEL);
+  }
+
+  gatewayMap.forEach((options, gwName) => {
+    selections[gwName] = [...options.keys()][0];
+
+    const group = document.createElement('div');
+    group.style.cssText = 'background:#f8f5ef;border-radius:8px;padding:10px 12px;';
+
+    const label = document.createElement('div');
+    label.style.cssText = 'font-weight:700;font-size:12px;margin-bottom:6px;color:#1e2a32;';
+    label.innerHTML = `<span style="color:#005f73;">\u25C6</span> ${gwName}`;
+    group.appendChild(label);
+
+    const optContainer = document.createElement('div');
+    optContainer.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;';
+
+    options.forEach((targetName, branchIdx) => {
+      const btn = document.createElement('button');
+      btn.textContent = targetName;
+      btn.dataset.branch = branchIdx;
+      updateBtn(btn, branchIdx === selections[gwName]);
+
+      btn.addEventListener('click', () => {
+        selections[gwName] = branchIdx;
+        optContainer.querySelectorAll('button').forEach(b => {
+          updateBtn(b, parseInt(b.dataset.branch) === branchIdx);
+        });
+      });
+      optContainer.appendChild(btn);
+    });
+
+    group.appendChild(optContainer);
+    list.appendChild(group);
+  });
+
+  // Confirm button — appended to the footer area (after branch-list)
+  const footer = dialog.querySelector('#branch-dialog-cancel')?.parentElement;
+  if (footer) {
+    let existingConfirm = footer.querySelector('#branch-dialog-confirm');
+    if (existingConfirm) existingConfirm.remove();
+    const confirmBtn = document.createElement('button');
+    confirmBtn.id = 'branch-dialog-confirm';
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.style.cssText = 'cursor:pointer;font-size:12px;font-weight:600;padding:6px 18px;border-radius:6px;border:none;' + SEL;
+    confirmBtn.addEventListener('click', async () => {
+      const match = children.find(child => {
+        if (!child.decisions || !child.decisions.length) return false;
+        return child.decisions.every(d => selections[d.gateway] === d.branch_index);
+      });
+      hideBranchDialog();
+      if (match) {
+        requestBranchSwitch(match.id);
+        await navigateForward();
+      }
+    });
+    footer.insertBefore(confirmBtn, footer.firstChild);
+  }
+
+  dialog.style.display = 'flex';
+}
+
+function hideBranchDialog() {
+  const dialog = document.getElementById('branch-dialog');
+  if (dialog) dialog.style.display = 'none';
+}
+
+// Show decision dialog for API-driven advance (saturation with multiple children)
+function showAdvanceDecisionDialog(childrenDecisions) {
+  const dialog = document.getElementById('branch-dialog');
+  if (!dialog) return;
+  const list = dialog.querySelector('.branch-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const oldConfirm = dialog.querySelector('#branch-dialog-confirm');
+  if (oldConfirm) oldConfirm.remove();
+
+  // Group by gateway
+  const gatewayMap = new Map();
+  childrenDecisions.forEach(cd => {
+    (cd.decisions || []).forEach(d => {
+      if (!gatewayMap.has(d.gateway)) gatewayMap.set(d.gateway, new Map());
+      const opts = gatewayMap.get(d.gateway);
+      if (!opts.has(d.branch_index)) {
+        opts.set(d.branch_index, d.target_name || `Option ${d.branch_index + 1}`);
+      }
+    });
+  });
+
+  const selections = {};
+  const SEL = 'background:#005f73;color:white;border-color:#005f73;';
+  const UNSEL = 'background:#fff;color:#1e2a32;border-color:#c9c2b4;';
+  function updateBtn(btn, selected) {
+    btn.style.cssText = 'cursor:pointer;padding:5px 12px;font-size:12px;border-radius:6px;border:1px solid;transition:all .15s;'
+      + (selected ? SEL : UNSEL);
+  }
+
+  gatewayMap.forEach((options, gwName) => {
+    selections[gwName] = [...options.keys()][0];
+    const group = document.createElement('div');
+    group.style.cssText = 'background:#f8f5ef;border-radius:8px;padding:10px 12px;';
+    const label = document.createElement('div');
+    label.style.cssText = 'font-weight:700;font-size:12px;margin-bottom:6px;color:#1e2a32;';
+    label.innerHTML = `<span style="color:#005f73;">\u25C6</span> ${gwName}`;
+    group.appendChild(label);
+    const optContainer = document.createElement('div');
+    optContainer.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;';
+    options.forEach((targetName, branchIdx) => {
+      const btn = document.createElement('button');
+      btn.textContent = targetName;
+      btn.dataset.branch = branchIdx;
+      updateBtn(btn, branchIdx === selections[gwName]);
+      btn.addEventListener('click', () => {
+        selections[gwName] = branchIdx;
+        optContainer.querySelectorAll('button').forEach(b => {
+          updateBtn(b, parseInt(b.dataset.branch) === branchIdx);
+        });
+      });
+      optContainer.appendChild(btn);
+    });
+    group.appendChild(optContainer);
+    list.appendChild(group);
+  });
+
+  // Confirm button
+  const footer = dialog.querySelector('#branch-dialog-cancel')?.parentElement;
+  if (footer) {
+    let old = footer.querySelector('#branch-dialog-confirm');
+    if (old) old.remove();
+    const confirmBtn = document.createElement('button');
+    confirmBtn.id = 'branch-dialog-confirm';
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.style.cssText = 'cursor:pointer;font-size:12px;font-weight:600;padding:6px 18px;border-radius:6px;border:none;' + SEL;
+    confirmBtn.addEventListener('click', () => {
+      // Build raw_decisions from selections
+      const match = childrenDecisions.find(cd => {
+        return (cd.decisions || []).every(d => selections[d.gateway] === d.branch_index);
+      });
+      hideBranchDialog();
+      if (match) {
+        // Re-call advance with decisions
+        _replayInProgress = true;
+        const currentSnap = stateSequence[currentStateIndex];
+        window.parent.postMessage({
+          type: 'requestAdvance',
+          snapshot: currentSnap._snapshot || null,
+          decisions: match.raw_decisions,
+        }, '*');
+      }
+    });
+    footer.insertBefore(confirmBtn, footer.firstChild);
+  }
+
+  dialog.style.display = 'flex';
+}
+
+
+// --- Navigation UI helpers ---
+
+function updateNavigationUI() {
+  _syncCurrentNodeId();
+
+  // Ensure nav controls are visible when in navigation mode
+  if (_navigationMode) setNavigationVisible(true);
+
+  const prevBtn = document.getElementById('nav-prev');
+  const nextBtn = document.getElementById('nav-next');
+  const navLabel = document.getElementById('nav-label');
+  if (!prevBtn || !nextBtn) return;
+
+  prevBtn.disabled = currentStateIndex <= 0;
+
+  const hasMoreSteps = (currentStateIndex + 1) < stateSequence.length;
+  const nodeInfo = _treeTopology && _currentNodeId
+    ? _treeTopology[_currentNodeId] : null;
+  const hasChildren = nodeInfo && nodeInfo.children && nodeInfo.children.length > 0;
+  // When dt field has a value, always enable next (time-stepping mode)
+  const dtInput = document.getElementById('nav-delta-t');
+  const hasDeltaT = dtInput && parseFloat(dtInput.value) > 0;
+  nextBtn.disabled = !hasDeltaT && !(hasMoreSteps
+    || (currentStateIndex + 1 >= stateSequence.length && hasChildren));
+
+  // Update time display from current snapshot name (e.g. "t=2.500")
+  const navTime = document.getElementById('nav-time');
+  if (navTime && stateSequence[currentStateIndex]) {
+    const snapName = stateSequence[currentStateIndex].name || '';
+    navTime.textContent = snapName.startsWith('t=') ? snapName : `step ${currentStateIndex}`;
+  }
+}
+
+function setNavigationVisible(visible) {
+  const el = document.getElementById('nav-controls');
+  if (el) el.style.display = visible ? 'block' : 'none';
+}
+
+
+// --- Wire up navigation buttons ---
+
+document.getElementById('nav-prev')?.addEventListener('click', () => navigateBackward());
+document.getElementById('nav-next')?.addEventListener('click', () => navigateForward());
+document.getElementById('branch-dialog-cancel')?.addEventListener('click', () => hideBranchDialog());
+
+
+// --- Keyboard shortcuts for navigation ---
+
+document.addEventListener('keydown', (e) => {
+  if (!_navigationMode) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    navigateBackward();
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    navigateForward();
+  } else if (e.key === 'Escape') {
+    hideBranchDialog();
   }
 });
