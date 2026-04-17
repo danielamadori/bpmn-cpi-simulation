@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="./dist/vendor/bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css" />
     <link rel="stylesheet" href="./dist/vendor/bpmn-js-properties-panel/assets/properties-panel.css" />
     <link rel="stylesheet" href="./dist/vendor/bpmn-js-color-picker/colors/color-picker.css" />
+    <link rel="stylesheet" href="./dist/vendor/bpmn-js-bpmnlint/assets/css/bpmn-js-bpmnlint.css" />
     <link rel="stylesheet" href="./dist/vendor/diagram-js-minimap/assets/diagram-js-minimap.css" />
     <link rel="stylesheet" href="./style.css" />
 
@@ -53,7 +54,26 @@
 
         <div class="group" id="monitor-group">
             <h3>Monitoring</h3>
-            <div id="linting-messages"></div>
+            <div id="lint-panel" class="state-panel visible" aria-live="polite" style="margin-bottom: 15px;">
+                <div class="state-panel-header">
+                    <span id="lint-panel-title">Errori e Warning Linter</span>
+                </div>
+                <div class="state-panel-table-wrapper">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid #ccc; padding: 5px;">ELEMENTO</th>
+                                <th style="border: 1px solid #ccc; padding: 5px;">MESSAGGIO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linting-messages">
+                            <tr>
+                                <td class="state-panel-empty" colspan="2" style="text-align: center; border: 1px solid #ccc; padding: 5px;">Nessun problema rilevato</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <div id="state-panel" class="state-panel" aria-live="polite">
                 <div class="state-panel-header">
                     <span id="state-panel-title">State sequence</span>

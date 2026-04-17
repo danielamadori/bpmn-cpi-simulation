@@ -24,6 +24,7 @@ import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
 import BpmnLintModule from 'bpmn-js-bpmnlint';
+import bpmnlintConfig from '../../.bpmnlintrc';
 
 import exampleXML from '../resources/example.bpmn';
 
@@ -125,7 +126,8 @@ const modeler = new BpmnModeler({
     parent: '#properties-panel'
   },
   linting: {
-    active: true
+    active: true,
+    bpmnlint: bpmnlintConfig
   },
   exporter: {
     name: 'bpmn-js-token-simulation',
@@ -222,15 +224,31 @@ function sanitizeDiagram(modeler, { persist = false } = {}) {
   }
 }
 
-modeler.get('eventBus').on('linting.messages', ({ issues }) => {
-  const messages = Object.keys(issues).reduce((all, id) => {
-    issues[id].forEach(issue => all.push(`${issue.id}: ${issue.message}`));
-    return all;
-  }, []);
+modeler.get('eventBus').on('linting.completed', ({ issues }) => {
+  let hasIssues = false;
+  let rowsHtml = '';
+  const lintPanel = document.getElementById('lint-panel');
+  if (lintPanel) lintPanel.classList.add('visible');
 
-  lintingMessagesEl.innerHTML = messages.length
-    ? `<ul>${messages.map(m => `<li>${m}</li>`).join('')}</ul>`
-    : 'No linting issues';
+  Object.keys(issues).forEach(id => {
+    issues[id].forEach(issue => {
+      hasIssues = true;
+      rowsHtml += `
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em;">
+            ${issue.id || id}
+          </td>
+          <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em;">
+            ${issue.message}
+          </td>
+        </tr>
+      `;
+    });
+  });
+
+  lintingMessagesEl.innerHTML = hasIssues
+    ? rowsHtml
+    : `<tr><td class="state-panel-empty" colspan="2" style="text-align: center; border: 1px solid #ccc; padding: 5px;">Nessun problema rilevato</td></tr>`;
 });
 
 function openDiagram(diagram) {
@@ -366,9 +384,9 @@ function moveSimulationControls() {
   }
 
   // Move linting messages to monitor group
-  const lintingMessages = document.getElementById('linting-messages');
-  if (lintingMessages && monitorGroup && lintingMessages.parentNode !== monitorGroup) {
-    monitorGroup.appendChild(lintingMessages);
+  const lintPanel = document.getElementById('lint-panel');
+  if (lintPanel && monitorGroup && lintPanel.parentNode !== monitorGroup) {
+    monitorGroup.appendChild(lintPanel);
   }
 
   // Move simulation log to monitor group
