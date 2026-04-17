@@ -23,6 +23,14 @@ module.exports = (env, argv) => {
         {
           test: /\.bpmn$/,
           type: 'asset/source'
+        },
+        {
+          test: /\.bpmnlintrc$/,
+          use: [
+            {
+              loader: 'bpmnlint-loader',
+            }
+          ]
         }
       ]
     },
