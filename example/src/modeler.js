@@ -229,14 +229,20 @@ modeler.get('eventBus').on('linting.completed', ({ issues }) => {
   let rowsHtml = '';
   const lintPanel = document.getElementById('lint-panel');
   if (lintPanel) lintPanel.classList.add('visible');
+  
+  const elementRegistry = modeler.get('elementRegistry');
 
   Object.keys(issues).forEach(id => {
+    const element = elementRegistry.get(id);
+    const bo = element ? element.businessObject : null;
+    const displayName = bo && bo.name ? bo.name : id;
+
     issues[id].forEach(issue => {
       hasIssues = true;
       rowsHtml += `
         <tr>
           <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em;">
-            ${issue.id || id}
+            ${displayName}
           </td>
           <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em;">
             ${issue.message}
