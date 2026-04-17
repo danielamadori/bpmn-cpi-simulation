@@ -5,6 +5,8 @@
     "no-implicit-end": "warn",
     "no-inclusive-gateway": "warn",
     "no-implicit-split": "warn",
-    "no-gateway-join-fork": "warn"
+    "no-gateway-join-fork": "warn",
+    "sese/task-has-duration": "error",
+    "sese/task-has-impact": "warn"
   }
 }

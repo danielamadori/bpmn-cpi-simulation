@@ -18,6 +18,11 @@ module.exports = (env, argv) => {
       filename: 'dist/[name].js',
       path: __dirname + '/example'
     },
+    resolve: {
+      alias: {
+        'bpmnlint-plugin-sese': __dirname + '/bpmnlint-plugin-sese'
+      }
+    },
     module: {
       rules: [
         {
