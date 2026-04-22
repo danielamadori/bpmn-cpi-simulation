@@ -6,5 +6,6 @@ tmp
 .idea/
 logs/
 .vscode/
-
+.DS_Store
+*.log
 .claude/
