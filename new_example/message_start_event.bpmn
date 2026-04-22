@@ -5,7 +5,7 @@
   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
   id="Definitions_MessageStart"
-  targetNamespace="http://example.com/bpmn/communication">
+  targetNamespace="http://example.com/bpmn/communication" xmlns:sese="http://example.com/sese/extensions">
   <bpmn:message id="Message_Request" name="Request" />
 
   <bpmn:collaboration id="Collab_MessageStart">
@@ -24,6 +24,9 @@
       <bpmn:outgoing>Flow_C1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sendTask id="Task_SendRequest" name="Send Request" messageRef="Message_Request">
+      <bpmn:extensionElements>
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_C1</bpmn:incoming>
       <bpmn:outgoing>Flow_C2</bpmn:outgoing>
     </bpmn:sendTask>
@@ -40,6 +43,9 @@
       <bpmn:messageEventDefinition messageRef="Message_Request" />
     </bpmn:startEvent>
     <bpmn:task id="Task_Handle" name="Handle Request">
+      <bpmn:extensionElements>
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_SV1</bpmn:incoming>
       <bpmn:outgoing>Flow_SV2</bpmn:outgoing>
     </bpmn:task>

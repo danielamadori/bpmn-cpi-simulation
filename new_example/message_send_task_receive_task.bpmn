@@ -5,7 +5,7 @@
   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
   id="Definitions_MessageSendReceive"
-  targetNamespace="http://example.com/bpmn/communication">
+  targetNamespace="http://example.com/bpmn/communication" xmlns:sese="http://example.com/sese/extensions">
   <bpmn:message id="Message_Order" name="Order" />
 
   <bpmn:collaboration id="Collab_MessageSendReceive">
@@ -24,6 +24,9 @@
       <bpmn:outgoing>Flow_S1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sendTask id="Task_SendOrder" name="Send Order" messageRef="Message_Order">
+      <bpmn:extensionElements>
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_S1</bpmn:incoming>
       <bpmn:outgoing>Flow_S2</bpmn:outgoing>
     </bpmn:sendTask>
@@ -39,6 +42,9 @@
       <bpmn:outgoing>Flow_R1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:receiveTask id="Task_ReceiveOrder" name="Receive Order" messageRef="Message_Order">
+      <bpmn:extensionElements>
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_R1</bpmn:incoming>
       <bpmn:outgoing>Flow_R2</bpmn:outgoing>
     </bpmn:receiveTask>

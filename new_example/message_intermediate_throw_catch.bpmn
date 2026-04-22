@@ -5,7 +5,7 @@
   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
   id="Definitions_MessageThrowCatch"
-  targetNamespace="http://example.com/bpmn/communication">
+  targetNamespace="http://example.com/bpmn/communication" xmlns:sese="http://example.com/sese/extensions">
   <bpmn:message id="Message_Approval" name="Approval" />
 
   <bpmn:collaboration id="Collab_MessageThrowCatch">
@@ -24,6 +24,9 @@
       <bpmn:outgoing>Flow_P1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Task_Prepare" name="Prepare">
+      <bpmn:extensionElements>
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_P1</bpmn:incoming>
       <bpmn:outgoing>Flow_P2</bpmn:outgoing>
     </bpmn:task>
@@ -45,6 +48,9 @@
       <bpmn:outgoing>Flow_CU1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Task_WaitingContext" name="Context">
+      <bpmn:extensionElements>
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_CU1</bpmn:incoming>
       <bpmn:outgoing>Flow_CU2</bpmn:outgoing>
     </bpmn:task>
