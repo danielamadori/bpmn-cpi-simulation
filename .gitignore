@@ -1,8 +1,10 @@
 coverage
 example/dist
-lib/icons/index.js
+lib/icons/
 node_modules
 tmp
 .idea/
 logs/
 .vscode/
+
+.claude/
