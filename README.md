@@ -214,6 +214,13 @@ modeler.on('import.done', () => {
 ```
 
 
+## Heatmap Overlay
+
+The example modeler includes a token frequency heatmap overlay contributed by [@pasarop](https://github.com/pasarop). Click **Toggle Heatmap** in the UI to visualize which elements are visited most often during simulation.
+
+Built with [heatmap.js](https://www.patrick-wied.at/static/heatmapjs/) — source available at [github.com/pa7/heatmap.js](https://github.com/pa7/heatmap.js).
+
+
 ## Exporting Diagrams
 
 The example applications allow you to export the currently loaded BPMN diagram
