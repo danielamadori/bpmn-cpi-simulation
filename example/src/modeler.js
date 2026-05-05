@@ -591,7 +591,7 @@ modeler.get('eventBus').on('tokenSimulation.simulator.destroyScope', 1500, funct
 modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   const { action, element, scope: elementScope } = event;
   if (!element || !elementScope) return;
-  
+
   if (action === 'enter' || action === 'signal') {
     const elementId = element.id || element;
     if (!elementTokenHistory.has(elementId)) {
@@ -600,6 +600,13 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
     const tokenScope = elementScope.parent || elementScope;
     const tokenId = resolveTokenId(element, tokenScope.id);
     elementTokenHistory.get(elementId).set(tokenId, 'active');
+    // Heatmap accumulator: count + cumulative sese:duration / sese:impact.
+    // Folded into this listener (instead of a parallel ``trace`` handler)
+    // so each event hits the bus only once. ``_recordMetricsForElement``
+    // is a hoisted function declared in the heatmap section below; the
+    // ``elementMetrics`` const it touches is initialised at module load
+    // before any simulator event can fire.
+    _recordMetricsForElement(element);
   }
 
   if (action === 'exit') {
@@ -1564,19 +1571,9 @@ function _recordMetricsForElement(element) {
   elementMetrics.set(elementId, m);
 }
 
-modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
-  const { action, element } = event;
-  if (!element) return;
-  // ``enter`` covers task / activity entries; ``signal`` covers
-  // intermediate-catch event activations (message / signal / timer).
-  // Both should accumulate metrics so the heatmap covers communication
-  // fixtures (intermediateCatchEvent has no ``enter`` event but does
-  // get a ``signal`` when its trigger arrives). Mirrors the action
-  // filter the legacy ``elementTokenHistory`` listener uses above.
-  if (action === 'enter' || action === 'signal') {
-    _recordMetricsForElement(element);
-  }
-});
+// (heatmap accumulator merged into the ``tokenSimulation.simulator.trace``
+// listener that already maintains ``elementTokenHistory`` near the top of
+// this file — single dispatch keeps the bus fast under chatty simulations.)
 
 // Wipe heatmap state. Called both on the simulator's reset event AND
 // at the top of ``replayToIndex`` (each snapshot replay should report
