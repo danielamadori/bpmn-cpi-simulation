@@ -1590,6 +1590,35 @@ function _resetHeatmapAccumulators() {
 
 modeler.get('eventBus').on('tokenSimulation.resetSimulation', _resetHeatmapAccumulators);
 
+// On a fresh diagram import the previously-discovered impact names no
+// longer apply: ``cost`` and ``time`` from one BPMN should not haunt
+// the dropdown after switching to a diagram with only ``carbon``.
+// Clear ``impactNamesSeen`` and strip every ``impact:*`` option from
+// the metric dropdown — the lazy-discovery in ``_recordMetricsForElement``
+// re-populates the dropdown as enter/signal events on the new diagram
+// surface their extension elements.
+function _resetHeatmapImpactDiscovery() {
+  impactNamesSeen.clear();
+  const sel = document.getElementById('heatmap-metric');
+  if (!sel) return;
+  const wasImpact = (sel.value || '').startsWith('impact:');
+  for (const opt of Array.from(sel.options)) {
+    if (opt.value.startsWith('impact:')) sel.removeChild(opt);
+  }
+  if (wasImpact) {
+    sel.value = 'count';
+    heatmapMetric = 'count';
+    if (heatmapVisible && heatmapInstance) {
+      updateHeatmapData();
+    }
+  }
+}
+
+modeler.get('eventBus').on('import.done', () => {
+  _resetHeatmapAccumulators();
+  _resetHeatmapImpactDiscovery();
+});
+
 // Selected heatmap metric. Persisted via the ``#heatmap-metric`` select.
 //   'count'           → number of token entries (legacy behaviour)
 //   'duration'        → cumulative sese:duration
