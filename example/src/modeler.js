@@ -1567,7 +1567,13 @@ function _recordMetricsForElement(element) {
 modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   const { action, element } = event;
   if (!element) return;
-  if (action === 'enter') {
+  // ``enter`` covers task / activity entries; ``signal`` covers
+  // intermediate-catch event activations (message / signal / timer).
+  // Both should accumulate metrics so the heatmap covers communication
+  // fixtures (intermediateCatchEvent has no ``enter`` event but does
+  // get a ``signal`` when its trigger arrives). Mirrors the action
+  // filter the legacy ``elementTokenHistory`` listener uses above.
+  if (action === 'enter' || action === 'signal') {
     _recordMetricsForElement(element);
   }
 });
