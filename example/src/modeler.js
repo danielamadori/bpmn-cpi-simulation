@@ -1559,6 +1559,15 @@ function _scheduleDropdownRefresh() {
 }
 
 function _recordMetricsForElement(element) {
+  // When ``replay only`` is on (default), only snapshot-driven playback
+  // feeds the accumulator: ``replayToIndex`` (jump-to-snapshot, sets
+  // ``_replayInProgress``), step-by-step nav forward/back (also sets
+  // ``_replayInProgress``), and ``playStates`` (auto-walks the whole
+  // sequence, sets ``isStepping``). Free-form manual simulation —
+  // clicking tokens directly in the canvas, signalling tasks ad-hoc —
+  // is *not* a snapshot replay and therefore doesn't pollute the
+  // heatmap unless the user opts in by unchecking the box.
+  if (heatmapReplayOnly && !_replayInProgress && !isStepping) return;
   const elementId = element.id || element;
   const m = elementMetrics.get(elementId) || { count: 0, cumDuration: 0, cumImpact: {} };
   m.count += 1;
@@ -1636,6 +1645,14 @@ modeler.get('eventBus').on('import.done', () => {
 //   'duration'        → cumulative sese:duration
 //   'impact:<name>'   → cumulative sese:impact value for that named impact
 let heatmapMetric = 'count';
+
+// When true (default), only snapshot replays — i.e. ``replayToIndex``
+// invocations, identified by ``_replayInProgress`` — feed the heatmap
+// accumulator. Manual user-driven simulation steps are ignored. The
+// ``#heatmap-replay-only`` checkbox flips this; defaulting ON matches
+// the snapshot-driven UX where each click of a snapshot resets the
+// accumulator and replays cumulative cost up to that point.
+let heatmapReplayOnly = true;
 
 function _readMetric(elementId) {
   const m = elementMetrics.get(elementId);
@@ -1795,6 +1812,22 @@ const _heatmapMetricSel = document.getElementById('heatmap-metric');
 if (_heatmapMetricSel) {
   _heatmapMetricSel.addEventListener('change', () => {
     heatmapMetric = _heatmapMetricSel.value || 'count';
+    if (heatmapVisible && heatmapInstance) {
+      updateHeatmapData();
+    }
+  });
+}
+
+// ``replay only`` toggle. Wipe the accumulator on every state change so
+// the user immediately sees the lens they just chose: ON without prior
+// replay → empty heatmap (replay a snapshot to populate); OFF → start
+// fresh from manual sim actions.
+const _heatmapReplayOnlyChk = document.getElementById('heatmap-replay-only');
+if (_heatmapReplayOnlyChk) {
+  heatmapReplayOnly = !!_heatmapReplayOnlyChk.checked;
+  _heatmapReplayOnlyChk.addEventListener('change', () => {
+    heatmapReplayOnly = !!_heatmapReplayOnlyChk.checked;
+    _resetHeatmapAccumulators();
     if (heatmapVisible && heatmapInstance) {
       updateHeatmapData();
     }
