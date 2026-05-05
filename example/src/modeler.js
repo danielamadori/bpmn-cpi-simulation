@@ -861,6 +861,16 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   const simulator = modeler.get('simulator');
   const registry = modeler.get('elementRegistry');
 
+  // Heatmap accumulators must start fresh for each replay session — the
+  // user's mental model is "this snapshot's cumulative cost", not
+  // "everything I've inspected so far". The ``tokenSimulation.resetSimulation``
+  // listener also clears them, but ``simulator.reset()`` below isn't
+  // guaranteed to fire that event in every bpmn-js-token-simulation
+  // version, so wipe directly. The accumulator + heatmap instance are
+  // hoisted ``let``/``const`` declared lower in this file; by the time
+  // the user can trigger a replay they're initialised.
+  _resetHeatmapAccumulators();
+
   // Ensure simulation mode is active
   simulationSupport.toggleSimulation(true);
 
@@ -1562,12 +1572,17 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   }
 });
 
-modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
+// Wipe heatmap state. Called both on the simulator's reset event AND
+// at the top of ``replayToIndex`` (each snapshot replay should report
+// "cost up to this snapshot", not the union with prior replays).
+function _resetHeatmapAccumulators() {
   elementMetrics.clear();
   if (heatmapInstance) {
     heatmapInstance.setData({ max: 1, data: [] });
   }
-});
+}
+
+modeler.get('eventBus').on('tokenSimulation.resetSimulation', _resetHeatmapAccumulators);
 
 // Selected heatmap metric. Persisted via the ``#heatmap-metric`` select.
 //   'count'           → number of token entries (legacy behaviour)
