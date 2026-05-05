@@ -1509,23 +1509,103 @@ let heatmapInstance = null;
 let heatmapContainer = null;
 let heatmapVisible = false;
 
-const elementTokenFrequency = new Map();
+// Per-element accumulators tracked across simulation steps:
+//   count:       number of times a token entered this element (legacy mode)
+//   cumDuration: sum of ``sese:duration`` (max bound) over all entries
+//   cumImpact:   {impactName: sum of sese:impact value over all entries}
+//
+// Tasks that are *currently active* are implicitly included: the
+// ``simulator.trace`` ``enter`` event fires when the token reaches the
+// task's entry, regardless of whether it has already exited. So the
+// completed-and-active set is exactly the set of elements with count >= 1.
+const elementMetrics = new Map();
+
+// Discovered impact names across the loaded diagram. Populated lazily as
+// new ``sese:impact`` extension elements are seen on token enter; used
+// to extend the metric dropdown so the user can pick e.g. ``impact:cost``
+// or ``impact:time`` without re-editing the HTML.
+const impactNamesSeen = new Set();
+
+function _recordMetricsForElement(element) {
+  const elementId = element.id || element;
+  const m = elementMetrics.get(elementId) || { count: 0, cumDuration: 0, cumImpact: {} };
+  m.count += 1;
+  // Pull duration / impacts from the BPMN element's sese: extensions.
+  // bpmn-js stores these under businessObject.extensionElements.values.
+  const bo = element.businessObject;
+  const ext = (bo && bo.extensionElements && bo.extensionElements.values) || [];
+  for (const e of ext) {
+    if (!e || typeof e.$type !== 'string') continue;
+    if (e.$type === 'sese:duration') {
+      const dur = parseFloat(e.max != null ? e.max : (e.min != null ? e.min : 0));
+      if (Number.isFinite(dur)) m.cumDuration += dur;
+    } else if (e.$type === 'sese:impact') {
+      const name = String(e.name || '').trim();
+      const val = parseFloat(e.value);
+      if (name && Number.isFinite(val)) {
+        m.cumImpact[name] = (m.cumImpact[name] || 0) + val;
+        if (!impactNamesSeen.has(name)) {
+          impactNamesSeen.add(name);
+          _refreshHeatmapMetricOptions();
+        }
+      }
+    }
+  }
+  elementMetrics.set(elementId, m);
+}
 
 modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
   const { action, element } = event;
   if (!element) return;
   if (action === 'enter') {
-    const elementId = element.id || element;
-    elementTokenFrequency.set(elementId, (elementTokenFrequency.get(elementId) || 0) + 1);
+    _recordMetricsForElement(element);
   }
 });
 
 modeler.get('eventBus').on('tokenSimulation.resetSimulation', () => {
-  elementTokenFrequency.clear();
+  elementMetrics.clear();
   if (heatmapInstance) {
     heatmapInstance.setData({ max: 1, data: [] });
   }
 });
+
+// Selected heatmap metric. Persisted via the ``#heatmap-metric`` select.
+//   'count'           → number of token entries (legacy behaviour)
+//   'duration'        → cumulative sese:duration
+//   'impact:<name>'   → cumulative sese:impact value for that named impact
+let heatmapMetric = 'count';
+
+function _readMetric(elementId) {
+  const m = elementMetrics.get(elementId);
+  if (!m) return 0;
+  if (heatmapMetric === 'count') return m.count || 0;
+  if (heatmapMetric === 'duration') return m.cumDuration || 0;
+  if (heatmapMetric.startsWith('impact:')) {
+    return m.cumImpact[heatmapMetric.slice(7)] || 0;
+  }
+  return 0;
+}
+
+function _refreshHeatmapMetricOptions() {
+  const sel = document.getElementById('heatmap-metric');
+  if (!sel) return;
+  const current = sel.value || heatmapMetric;
+  const wantImpacts = Array.from(impactNamesSeen).sort();
+  const existingImpacts = new Set();
+  for (const opt of Array.from(sel.options)) {
+    if (opt.value.startsWith('impact:')) existingImpacts.add(opt.value.slice(7));
+  }
+  let added = false;
+  for (const name of wantImpacts) {
+    if (existingImpacts.has(name)) continue;
+    const opt = document.createElement('option');
+    opt.value = `impact:${name}`;
+    opt.textContent = `impact:${name}`;
+    sel.appendChild(opt);
+    added = true;
+  }
+  if (added && current) sel.value = current;
+}
 
 function createHeatmapOverlay() {
   const canvasEl = document.querySelector('#canvas');
@@ -1566,12 +1646,25 @@ function createHeatmapOverlay() {
 }
 
 function getHeatmapFrequencyData() {
-  if (elementTokenFrequency.size > 0) return elementTokenFrequency;
-  const fallback = new Map();
-  elementTokenHistory.forEach((scopeMap, elementId) => {
-    fallback.set(elementId, scopeMap.size || 1);
+  // Build {elementId: value} according to the active metric. When the
+  // simulator hasn't fired any enter event yet (e.g. on a fresh load),
+  // fall back to the per-token history map so the heatmap still shows
+  // *something* for the count metric. Duration / impact metrics need the
+  // actual sese: extensions and have no fallback (the map will be empty).
+  const out = new Map();
+  if (elementMetrics.size === 0) {
+    if (heatmapMetric === 'count') {
+      elementTokenHistory.forEach((scopeMap, elementId) => {
+        out.set(elementId, scopeMap.size || 1);
+      });
+    }
+    return out;
+  }
+  elementMetrics.forEach((_m, elementId) => {
+    const v = _readMetric(elementId);
+    if (v > 0) out.set(elementId, v);
   });
-  return fallback;
+  return out;
 }
 
 function updateHeatmapData() {
@@ -1586,8 +1679,8 @@ function updateHeatmapData() {
     heatmapInstance.setData({ max: 1, data: [] });
     return;
   }
-  freqData.forEach(count => { if (count > max) max = count; });
-  freqData.forEach((count, elementId) => {
+  freqData.forEach(value => { if (value > max) max = value; });
+  freqData.forEach((value, elementId) => {
     const element = registry.get(elementId);
     if (!element) return;
     const gfx = canvas.getGraphics(element);
@@ -1596,7 +1689,7 @@ function updateHeatmapData() {
     const screenX = elemRect.left + elemRect.width / 2 - containerRect.left;
     const screenY = elemRect.top + elemRect.height / 2 - containerRect.top;
     if (screenX >= 0 && screenY >= 0 && screenX <= containerRect.width && screenY <= containerRect.height) {
-      data.push({ x: Math.round(screenX), y: Math.round(screenY), value: count });
+      data.push({ x: Math.round(screenX), y: Math.round(screenY), value });
     }
   });
   heatmapInstance.setData({ max, data });
@@ -1633,6 +1726,18 @@ modeler.get('eventBus').on('canvas.viewbox.changed', () => {
 });
 
 document.getElementById('toggle-heatmap').addEventListener('click', toggleHeatmap);
+
+// React to metric selector changes — re-render with the new value source
+// without re-creating the overlay or re-walking the simulator trace.
+const _heatmapMetricSel = document.getElementById('heatmap-metric');
+if (_heatmapMetricSel) {
+  _heatmapMetricSel.addEventListener('change', () => {
+    heatmapMetric = _heatmapMetricSel.value || 'count';
+    if (heatmapVisible && heatmapInstance) {
+      updateHeatmapData();
+    }
+  });
+}
 
 // Auto-refresh heatmap after playStates completes — wired via existing isStepping flag reset
 const _origPlayStatesEnd = () => {
