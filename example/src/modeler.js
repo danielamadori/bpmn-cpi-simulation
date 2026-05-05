@@ -1543,6 +1543,21 @@ const elementMetrics = new Map();
 // or ``impact:time`` without re-editing the HTML.
 const impactNamesSeen = new Set();
 
+// Coalesce dropdown rebuilds: discovering a new impact name during a
+// dense replay would otherwise call ``_refreshHeatmapMetricOptions``
+// once per name (each call walks every existing option). Mark dirty
+// and flush once at end-of-microtask so a replay that surfaces N new
+// impact names rebuilds the dropdown exactly once.
+let _dropdownDirty = false;
+function _scheduleDropdownRefresh() {
+  if (_dropdownDirty) return;
+  _dropdownDirty = true;
+  Promise.resolve().then(() => {
+    _dropdownDirty = false;
+    _refreshHeatmapMetricOptions();
+  });
+}
+
 function _recordMetricsForElement(element) {
   const elementId = element.id || element;
   const m = elementMetrics.get(elementId) || { count: 0, cumDuration: 0, cumImpact: {} };
@@ -1563,7 +1578,7 @@ function _recordMetricsForElement(element) {
         m.cumImpact[name] = (m.cumImpact[name] || 0) + val;
         if (!impactNamesSeen.has(name)) {
           impactNamesSeen.add(name);
-          _refreshHeatmapMetricOptions();
+          _scheduleDropdownRefresh();
         }
       }
     }
