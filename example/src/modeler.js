@@ -599,7 +599,7 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
     }
     const tokenScope = elementScope.parent || elementScope;
     const tokenId = resolveTokenId(element, tokenScope.id);
-    elementTokenHistory.get(elementId).set(tokenId, 'active');
+    elementTokenHistory.get(elementId).set(tokenId, STATE_ACTIVE);
     // Heatmap accumulator: count + cumulative sese:duration / sese:impact.
     // Folded into this listener (instead of a parallel ``trace`` handler)
     // so each event hits the bus only once. ``_recordMetricsForElement``
@@ -614,7 +614,7 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
     if (elementTokenHistory.has(elementId)) {
        const tokenScope = elementScope.parent || elementScope;
        const tokenId = resolveTokenId(element, tokenScope.id);
-       elementTokenHistory.get(elementId).set(tokenId, 'completed');
+       elementTokenHistory.get(elementId).set(tokenId, STATE_COMPLETED);
     }
 
     if (element.type === 'bpmn:MessageFlow') {
@@ -745,7 +745,10 @@ function showStatePanelMessage(message) {
 }
 
 function normalizeStatusClass(status) {
-  return `state-status-${status.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  // ``status`` is an ActivityState integer code (PACO wire format).
+  // Translate to the display name only here, at the CSS boundary.
+  const name = ACTIVITY_STATE_NAME.get(status) || 'unknown';
+  return `state-status-${name}`;
 }
 
 function renderStateSnapshot(snapshot) {
@@ -803,10 +806,10 @@ function renderStateSnapshot(snapshot) {
       elementEntries.get(elementKey).set(rootToken, status);
     } else {
       // Aggregate: active > completed > waiting
-      if (status === 'active' || prev === 'active') {
-        elementEntries.get(elementKey).set(rootToken, 'active');
-      } else if (status === 'completed') {
-        elementEntries.get(elementKey).set(rootToken, 'completed');
+      if (status === STATE_ACTIVE || prev === STATE_ACTIVE) {
+        elementEntries.get(elementKey).set(rootToken, STATE_ACTIVE);
+      } else if (status === STATE_COMPLETED) {
+        elementEntries.get(elementKey).set(rootToken, STATE_COMPLETED);
       }
     }
   });
@@ -835,14 +838,16 @@ function renderStateSnapshot(snapshot) {
       statusCell.innerHTML = '';
       for (const [tokenId, tokenStatus] of tokenMap.entries()) {
         const div = document.createElement('div');
-        div.textContent = `${tokenId}: "${tokenStatus}"`;
+        const name = ACTIVITY_STATE_NAME.get(tokenStatus) || 'unknown';
+        div.textContent = `${tokenId}: "${name}"`;
         div.classList.add(normalizeStatusClass(tokenStatus));
         statusCell.appendChild(div);
       }
     } else {
       // Single token — show token_id: "status"
       const [tokenId, tokenStatus] = [...tokenMap.entries()][0];
-      statusCell.textContent = `${tokenId}: "${tokenStatus}"`;
+      const name = ACTIVITY_STATE_NAME.get(tokenStatus) || 'unknown';
+      statusCell.textContent = `${tokenId}: "${name}"`;
       statusCell.classList.add(normalizeStatusClass(tokenStatus));
     }
 
@@ -903,7 +908,7 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   const completedInTarget = new Set();
   Object.entries(targetState).forEach(([key, status]) => {
     const { registryId } = parseStateKey(key);
-    if (status === 'completed') completedInTarget.add(registryId);
+    if (status === STATE_COMPLETED) completedInTarget.add(registryId);
   });
 
   const waitConfig = {};
@@ -1006,32 +1011,32 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
 }
 
 function getOverallStatus(status) {
-  if (typeof status === 'string') return status;
+  if (typeof status === 'number') return status;
   if (typeof status === 'object' && status !== null) {
     const values = Object.values(status);
-    if (values.includes('active')) return 'active';
-    if (values.every(v => v === 'completed')) return 'completed';
-    if (values.includes('waiting')) return 'waiting';
-    return 'unknown';
+    if (values.includes(STATE_ACTIVE)) return STATE_ACTIVE;
+    if (values.length && values.every(v => v === STATE_COMPLETED)) return STATE_COMPLETED;
+    if (values.includes(STATE_WAITING)) return STATE_WAITING;
+    return STATE_UNKNOWN;
   }
   return status;
 }
 
 /**
  * Aggregate state by registryId — combines all #token_id keys for the
- * same element into a single overall status.
+ * same element into a single overall status (ActivityState int code).
  */
 function aggregateByElement(state) {
-  const result = {};  // registryId → overall status
+  const result = {};  // registryId → overall status (int)
   for (const [key, status] of Object.entries(state)) {
     const { registryId } = parseStateKey(key);
     const prev = result[registryId];
-    if (!prev) {
+    if (prev === undefined) {
       result[registryId] = status;
     } else {
       // active > completed > waiting (keep the most "progressed" status)
-      if (status === 'active' || prev === 'active') result[registryId] = 'active';
-      else if (status === 'completed' && prev !== 'active') result[registryId] = 'completed';
+      if (status === STATE_ACTIVE || prev === STATE_ACTIVE) result[registryId] = STATE_ACTIVE;
+      else if (status === STATE_COMPLETED && prev !== STATE_ACTIVE) result[registryId] = STATE_COMPLETED;
     }
   }
   return result;
@@ -1040,13 +1045,13 @@ function aggregateByElement(state) {
 function diffCompletions(prev, next) {
   const prevAgg = aggregateByElement(prev);
   const nextAgg = aggregateByElement(next);
-  return Object.keys(nextAgg).filter(id => prevAgg[id] === 'active' && nextAgg[id] === 'completed');
+  return Object.keys(nextAgg).filter(id => prevAgg[id] === STATE_ACTIVE && nextAgg[id] === STATE_COMPLETED);
 }
 
 function diffActivations(prev, next) {
   const prevAgg = aggregateByElement(prev);
   const nextAgg = aggregateByElement(next);
-  return Object.keys(nextAgg).filter(id => prevAgg[id] !== 'active' && nextAgg[id] === 'active');
+  return Object.keys(nextAgg).filter(id => prevAgg[id] !== STATE_ACTIVE && nextAgg[id] === STATE_ACTIVE);
 }
 
 function getSortedTriggers(ids) {
@@ -1180,8 +1185,8 @@ function configureExclusiveGateways(startIndex) {
       const prevAggGw = aggregateByElement(prev);
       const nextAggGw = aggregateByElement(next);
 
-      const wasActive = prevAggGw[gateway.id] === 'active';
-      const isActive = nextAggGw[gateway.id] === 'active';
+      const wasActive = prevAggGw[gateway.id] === STATE_ACTIVE;
+      const isActive = nextAggGw[gateway.id] === STATE_ACTIVE;
 
       if (wasActive && !isActive) {
 
@@ -1363,9 +1368,9 @@ async function playStates() {
         const nextAgg = aggregateByElement(next);
         const startEventIds = Object.keys(nextAgg).filter(id => {
           const el = registry.get(id);
-          // StartEvent may be 'completed' (instant fire) or 'active' (in execution tree snapshots)
-          return el && el.type === 'bpmn:StartEvent' && prevAgg[id] === 'waiting'
-            && (nextAgg[id] === 'completed' || nextAgg[id] === 'active');
+          // StartEvent may be COMPLETED (instant fire) or ACTIVE (in execution tree snapshots)
+          return el && el.type === 'bpmn:StartEvent' && prevAgg[id] === STATE_WAITING
+            && (nextAgg[id] === STATE_COMPLETED || nextAgg[id] === STATE_ACTIVE);
         });
         console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
         if (startEventIds.length > 0) {
@@ -1392,7 +1397,7 @@ async function playStates() {
         const lateStartIds = Object.keys(nextAggN).filter(id => {
           const el = registry.get(id);
           if (!el || el.type !== 'bpmn:StartEvent') return false;
-          if (prevAggN[id] !== 'waiting' || nextAggN[id] !== 'completed') return false;
+          if (prevAggN[id] !== STATE_WAITING || nextAggN[id] !== STATE_COMPLETED) return false;
           // Skip Message Start Events (they have a messageEventDefinition)
           const bo = el.businessObject;
           const hasMessageDef = bo && bo.eventDefinitions && bo.eventDefinitions.some(d => d.$type === 'bpmn:MessageEventDefinition');
@@ -1844,6 +1849,39 @@ modeler.get('eventBus').on('tokenSimulation.simulator.elementChanged', _origPlay
 window.bpmnjs = modeler;
 
 // --- postMessage API for external state injection ---
+// ActivityState wire format (PACO convention): backend sends integer
+// codes — no string transcription. The frontend uses the integers
+// natively for all comparisons; the only translation happens at the
+// CSS-class boundary (`state-status-<name>`), because CSS selectors
+// require a textual identifier.
+//
+// Keep the constants in sync with ``src/parser/activity_state.py``.
+const STATE_UNKNOWN = -2;
+const STATE_WAITING = 0;
+const STATE_ACTIVE = 1;
+const STATE_COMPLETED = 2;
+const STATE_COMPLETING = 3;
+const STATE_FAILING = 4;
+const STATE_FAILED = 5;
+const STATE_TERMINATING = 6;
+const STATE_TERMINATED = 7;
+
+// Used only for ``normalizeStatusClass`` (CSS class derivation). A Map
+// keeps native integer keys — object literal keys are coerced to strings
+// (a misleading asymmetry between the negative sentinel and positive
+// codes).
+const ACTIVITY_STATE_NAME = new Map([
+  [STATE_UNKNOWN, 'unknown'],
+  [STATE_WAITING, 'waiting'],
+  [STATE_ACTIVE, 'active'],
+  [STATE_COMPLETED, 'completed'],
+  [STATE_COMPLETING, 'completing'],
+  [STATE_FAILING, 'failing'],
+  [STATE_FAILED, 'failed'],
+  [STATE_TERMINATING, 'terminating'],
+  [STATE_TERMINATED, 'terminated'],
+]);
+
 // Parent frame (combined.html) sends {type: 'loadStates', states: [...]}
 // when user selects a node in the execution tree. We reset the simulation
 // and replay step by step using the SAME playStates() mechanism.
@@ -1990,7 +2028,7 @@ async function navigateForward() {
       const completedInTarget = new Set();
       Object.entries(targetState).forEach(([key, status]) => {
         const { registryId } = parseStateKey(key);
-        if (status === 'completed') completedInTarget.add(registryId);
+        if (status === STATE_COMPLETED) completedInTarget.add(registryId);
       });
       console.log('[navFwd] completedInTarget:', [...completedInTarget].join(', '));
 
@@ -2037,8 +2075,8 @@ async function navigateForward() {
         const startIds = Object.keys(nextAgg).filter(id => {
           const el = registry.get(id);
           return el && el.type === 'bpmn:StartEvent'
-            && prevAgg[id] === 'waiting'
-            && (nextAgg[id] === 'completed' || nextAgg[id] === 'active');
+            && prevAgg[id] === STATE_WAITING
+            && (nextAgg[id] === STATE_COMPLETED || nextAgg[id] === STATE_ACTIVE);
         });
         console.log('[navFwd] t0->t1 triggerStartEvents:', startIds);
         for (const id of startIds) {
@@ -2050,8 +2088,8 @@ async function navigateForward() {
         const lateStarts = Object.keys(nextAgg).filter(id => {
           const el = registry.get(id);
           if (!el || el.type !== 'bpmn:StartEvent') return false;
-          if (prevAgg[id] !== 'waiting') return false;
-          return nextAgg[id] === 'completed' || nextAgg[id] === 'active';
+          if (prevAgg[id] !== STATE_WAITING) return false;
+          return nextAgg[id] === STATE_COMPLETED || nextAgg[id] === STATE_ACTIVE;
         });
         if (lateStarts.length) console.log('[navFwd] lateStarts:', lateStarts);
         for (const id of lateStarts) {
