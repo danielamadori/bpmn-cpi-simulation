@@ -1,5 +1,11 @@
 export async function executeStep(bpmnXML, currentBackendState = null, timeStep = null, processIndex = null) {
-    const url = 'http://localhost:8765/v1/execution-tree';
+    // The API base MUST be injected by the host page as ``window._apiBaseUrl``
+    // (the combined report sets it per deployment). No fallback: a missing base
+    // is a wiring error and is raised, not silently defaulted to some port.
+    if (typeof window === 'undefined' || !window._apiBaseUrl) {
+        throw new Error('window._apiBaseUrl is not set — the host page must inject the API base URL');
+    }
+    const url = String(window._apiBaseUrl).replace(/\/+$/, '') + '/v1/execution-tree';
 
     // Construct payload
     // If we have a previous state, we use it to populate the context,
