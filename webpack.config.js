@@ -48,6 +48,7 @@ module.exports = (env, argv) => {
           { from: 'bpmn-js-bpmnlint/dist/assets', context: 'node_modules', to: 'dist/vendor/bpmn-js-bpmnlint/assets' },
           { from: 'bpmn-js-color-picker/colors/color-picker.css', context: 'node_modules', to: 'dist/vendor/bpmn-js-color-picker/colors/color-picker.css' },
           { from: 'diagram-js-minimap/assets/diagram-js-minimap.css', context: 'node_modules', to: 'dist/vendor/diagram-js-minimap/assets/diagram-js-minimap.css' },
+          { from: '@bpmn-io/diagram-js-canvas-lock/assets', context: 'node_modules', to: 'dist/vendor/diagram-js-canvas-lock/assets' },
           { from: '.bpmnlintrc', to: '.bpmnlintrc', noErrorOnMissing: true }
         ]
       }),

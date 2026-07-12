@@ -6,6 +6,33 @@ All notable changes to the [bpmn-js-token-simulation](https://github.com/bpmn-io
 
 ___Note:__ Yet to be released changes appear here._
 
+## 0.40.0
+
+* `FEAT`: lock canvas using `@bpmn-io/diagram-js-canvas-lock` ([#272](https://github.com/bpmn-io/bpmn-js-token-simulation/pull/272))
+
+## 0.39.4
+
+* `FIX`: make simulation support init safe for aggressive minification ([#266](https://github.com/bpmn-io/bpmn-js-token-simulation/pull/266))
+
+## 0.39.3
+
+* `FIX`: allow pause/play via space key after clicking on context pad button ([#253](https://github.com/bpmn-io/bpmn-js-token-simulation/issues/253))
+
+## 0.39.2
+
+* `FIX`: improve accessibility for keyboard users ([#252](https://github.com/bpmn-io/bpmn-js-token-simulation/pull/252))
+* `DEPS`: update to ids@3.0.1
+* `DEPS`: update to min-dom@5.3.0
+
+## 0.39.1
+
+* `DEPS`: depend on `ids@3.0.0`
+
+## 0.39.0
+
+* `DEPS`: update to `min-dom@5.2.0`
+* `DEPS`: update to `min-dash@5.0.0`
+
 ## 0.38.2
 
 * `FIX`: correct resetting of flow colors changed by inclusive gateway toggling ([#242](https://github.com/bpmn-io/bpmn-js-token-simulation/issues/242), [#243](https://github.com/bpmn-io/bpmn-js-token-simulation/pull/243))

@@ -1,6 +1,6 @@
 {
   "name": "bpmn-js-token-simulation",
-  "version": "0.38.2",
+  "version": "0.40.0",
   "description": "bpmn-js token simulation extension",
   "module": "lib/index.js",
   "main": "lib/index.js",
@@ -55,31 +55,31 @@
     "index.js"
   ],
   "engines": {
-    "node": ">= 16"
+    "node": ">= 22"
   },
   "sideEffects": [
     "*.css"
   ],
   "devDependencies": {
     "@bpmn-io/add-exporter": "^0.2.0",
-    "@bpmn-io/properties-panel": "^3.33.0",
+    "@bpmn-io/properties-panel": "^3.47.0",
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "babel-loader": "^10.0.0",
-    "babel-plugin-istanbul": "^7.0.1",
-    "bpmn-js": "^18.7.0",
+    "babel-loader": "^10.1.1",
+    "babel-plugin-istanbul": "^8.0.0",
+    "bpmn-js": "^18.19.0",
     "bpmn-js-bpmnlint": "^0.23.0",
-    "bpmn-js-properties-panel": "^5.42.1",
+    "bpmn-js-properties-panel": "^5.60.0",
     "bpmn-to-image": "^0.9.0",
     "bpmnlint": "^11.6.0",
     "bpmnlint-loader": "^0.1.6",
-    "chai": "^6.2.0",
-    "copy-webpack-plugin": "^13.0.1",
+    "chai": "^6.2.2",
+    "copy-webpack-plugin": "^14.0.0",
     "cross-env": "^10.1.0",
     "downloadjs": "^1.4.7",
-    "eslint": "^9.37.0",
-    "eslint-plugin-bpmn-io": "^2.2.0",
-    "file-drops": "^0.6.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-bpmn-io": "^2.3.1",
+    "file-drops": "^0.7.0",
     "file-open": "^0.2.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher-2": "^3.3.0",
@@ -88,18 +88,19 @@
     "karma-env-preprocessor": "^0.1.1",
     "karma-firefox-launcher": "^2.1.3",
     "karma-mocha": "^2.0.1",
+    "karma-tldr-reporter": "^1.0.0",
     "karma-webpack": "^5.0.1",
-    "mocha": "^11.7.4",
+    "mocha": "^11.7.6",
     "mocha-test-container-support": "^0.2.0",
-    "npm-run-all2": "^8.0.4",
+    "npm-run-all2": "^9.0.2",
     "puppeteer": "^24.31.0",
-    "rollup": "^4.32.0",
+    "rollup": "^4.62.2",
     "rollup-plugin-string": "^3.0.0",
-    "sinon": "^21.0.0",
+    "sinon": "^22.0.0",
     "sinon-chai": "^4.0.1",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3",
+    "webpack-dev-server": "^5.2.5"
   },
   "overrides": {
     "puppeteer": "^24.31.0",
@@ -119,13 +120,15 @@
     "test-exclude": "^7.0.1"
   },
   "dependencies": {
+    "@bpmn-io/diagram-js-canvas-lock": "^0.1.0",
     "bpmn-js-color-picker": "^0.7.2",
     "diagram-js-grid": "^1.1.0",
     "diagram-js-minimap": "^5.2.0",
     "heatmap.js": "^2.0.5",
+    "ids": "^3.0.2",
     "inherits-browser": "^0.1.0",
     "min-dash": "^5.0.0",
-    "min-dom": "^4.2.1",
+    "min-dom": "^5.3.0",
     "randomcolor": "^0.6.2"
   }
 }
