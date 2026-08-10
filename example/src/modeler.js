@@ -273,7 +273,7 @@ modeler.get('eventBus').on('linting.completed', ({ issues }) => {
 
   lintingMessagesEl.innerHTML = hasIssues
     ? rowsHtml
-    : `<tr><td class="state-panel-empty" colspan="2" style="text-align: center; border: 1px solid #ccc; padding: 5px;">Nessun problema rilevato</td></tr>`;
+    : `<tr><td class="state-panel-empty" colspan="2" style="text-align: center; border: 1px solid #ccc; padding: 5px;">No problem detected</td></tr>`;
 });
 
 function openDiagram(diagram) {
@@ -514,7 +514,7 @@ function renderMessageLogs() {
   tbody.innerHTML = '';
   if (messageLogs.length === 0) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="state-panel-empty" colspan="4" style="text-align: center; border: 1px solid #ccc; padding: 5px;">Nessun messaggio tracciato</td>`;
+    tr.innerHTML = `<td class="state-panel-empty" colspan="4" style="text-align: center; border: 1px solid #ccc; padding: 5px;">No message traced</td>`;
     tbody.appendChild(tr);
     return;
   }
@@ -636,7 +636,7 @@ modeler.get('eventBus').on('tokenSimulation.simulator.trace', event => {
       const baseMessageId = bo.messageRef ? bo.messageRef.id : element.id;
       const messageId = `${baseMessageId}#${sourceTokenId}:#${targetTokenId}`;
       const messageName = bo.messageRef && bo.messageRef.name ? bo.messageRef.name : element.id;
-      const payloadStr = `contenuto base messaggio ${messageName}`;
+      const payloadStr = `base message content ${messageName}`;
 
       messageLogs.push({
         source: sourceStr,
