@@ -1,0 +1,105 @@
+flowchart LR
+    subgraph Internal
+        animation_Animation["animation.Animation"]
+        animation_behaviors_AnimatedMessageFlowBehavior["animation.behaviors.AnimatedMessageFlowBehavior"]
+        animation_behaviors_AnimatedSequenceFlowBehavior["animation.behaviors.AnimatedSequenceFlowBehavior"]
+        bpmnlint_plugin_sese_rules_task_has_duration["bpmnlint-plugin-sese.rules.task-has-duration"]
+        bpmnlint_plugin_sese_rules_task_has_impact["bpmnlint-plugin-sese.rules.task-has-impact"]
+        context_pads_handler_ExclusiveGatewayHandler["context-pads.handler.ExclusiveGatewayHandler"]
+        context_pads_handler_InclusiveGatewayHandler["context-pads.handler.InclusiveGatewayHandler"]
+        context_pads_handler_PauseHandler["context-pads.handler.PauseHandler"]
+        context_pads_handler_TriggerHandler["context-pads.handler.TriggerHandler"]
+        docker_entrypoint["docker-entrypoint"]
+        example_api_client["example.api-client"]
+        example_bpmn_to_json["example.bpmn-to-json"]
+        example_modeler["example.modeler"]
+        example_sese_properties_provider["example.sese-properties-provider"]
+        example_sese_validator["example.sese-validator"]
+        example_theme_toggle["example.theme-toggle"]
+        example_utils["example.utils"]
+        features_colored_scopes_ColoredScopes["features.colored-scopes.ColoredScopes"]
+        features_context_pads_ContextPads["features.context-pads.ContextPads"]
+        features_context_pads_ContextPadsSpec["features.context-pads.ContextPadsSpec"]
+        features_disable_modeling_DisableModeling["features.disable-modeling.DisableModeling"]
+        features_editor_actions_EditorActions["features.editor-actions.EditorActions"]
+        features_element_colors_ElementColors["features.element-colors.ElementColors"]
+        features_element_notifications_ElementNotifications["features.element-notifications.ElementNotifications"]
+        features_element_support_ElementSupport["features.element-support.ElementSupport"]
+        features_exclusive_gateway_settings_ExclusiveGatewaySettings["features.exclusive-gateway-settings.ExclusiveGatewaySettings"]
+        features_inclusive_gateway_settings_InclusiveGatewaySettings["features.inclusive-gateway-settings.InclusiveGatewaySettings"]
+        features_keyboard_bindings_KeyboardBindings["features.keyboard-bindings.KeyboardBindings"]
+        features_log_Log["features.log.Log"]
+        features_log_LogSpec["features.log.LogSpec"]
+    end
+    subgraph External
+        _unknown_ext[""]
+        _bpmn_io_add_exporter_ext["@bpmn-io/add-exporter"]
+        _bpmn_io_diagram_js_canvas_lock_ext["@bpmn-io/diagram-js-canvas-lock"]
+        _bpmn_io_properties_panel_ext["@bpmn-io/properties-panel"]
+        _rollup_plugin_commonjs_ext["@rollup/plugin-commonjs"]
+        _rollup_plugin_node_resolve_ext["@rollup/plugin-node-resolve"]
+        bpmn_js_bpmnlint_ext["bpmn-js-bpmnlint"]
+        bpmn_js_color_picker_ext["bpmn-js-color-picker"]
+        bpmn_js_properties_panel_ext["bpmn-js-properties-panel"]
+        bpmn_js_lib_Modeler_ext["bpmn-js/lib/Modeler"]
+        bpmn_js_lib_NavigatedViewer_ext["bpmn-js/lib/NavigatedViewer"]
+        bpmn_js_lib_util_DrilldownUtil_ext["bpmn-js/lib/util/DrilldownUtil"]
+        bpmn_js_lib_util_ModelUtil_ext["bpmn-js/lib/util/ModelUtil"]
+        bpmn_js_test_helper_ext["bpmn-js/test/helper"]
+        chai_ext["chai"]
+        diagram_js_grid_ext["diagram-js-grid"]
+        diagram_js_minimap_ext["diagram-js-minimap"]
+        diagram_js_lib_util_EscapeUtil_ext["diagram-js/lib/util/EscapeUtil"]
+        downloadjs_ext["downloadjs"]
+        eslint_plugin_bpmn_io_ext["eslint-plugin-bpmn-io"]
+    end
+    animation_Animation --> _unknown_ext
+    animation_Animation --> min_dom_ext
+    animation_Animation --> tiny_svg_ext
+    animation_behaviors_AnimatedMessageFlowBehavior --> _unknown_ext
+    animation_behaviors_AnimatedMessageFlowBehavior --> inherits_browser_ext
+    animation_behaviors_AnimatedSequenceFlowBehavior --> _unknown_ext
+    animation_behaviors_AnimatedSequenceFlowBehavior --> inherits_browser_ext
+    animation_behaviors_index --> _unknown_ext
+    animation_index --> _unknown_ext
+    base --> _unknown_ext
+    context_pads_handler_ExclusiveGatewayHandler --> _unknown_ext
+    context_pads_handler_ExclusiveGatewayHandler --> bpmn_js_lib_util_ModelUtil_ext
+    context_pads_handler_InclusiveGatewayHandler --> _unknown_ext
+    context_pads_handler_InclusiveGatewayHandler --> bpmn_js_lib_util_ModelUtil_ext
+    context_pads_handler_PauseHandler --> _unknown_ext
+    context_pads_handler_PauseHandler --> bpmn_js_lib_util_ModelUtil_ext
+    context_pads_handler_TriggerHandler --> _unknown_ext
+    eslint_config --> eslint_plugin_bpmn_io_ext
+    example_basic_app --> _unknown_ext
+    example_basic_app --> bpmn_js_lib_NavigatedViewer_ext
+    example_modeler --> _unknown_ext
+    example_modeler --> _bpmn_io_add_exporter_ext
+    example_modeler --> bpmn_js_bpmnlint_ext
+    example_modeler --> bpmn_js_color_picker_ext
+    example_modeler --> bpmn_js_properties_panel_ext
+    example_modeler --> bpmn_js_lib_Modeler_ext
+    example_modeler --> diagram_js_grid_ext
+    example_modeler --> diagram_js_minimap_ext
+    example_modeler --> downloadjs_ext
+    example_modeler --> file_drops_ext
+    example_modeler --> file_open_ext
+    example_modeler --> heatmap_ext
+    example_sese_properties_provider --> _bpmn_io_properties_panel_ext
+    example_sese_properties_provider --> bpmn_js_properties_panel_ext
+    features_colored_scopes_ColoredScopes --> _unknown_ext
+    features_colored_scopes_ColoredScopes --> randomcolor_ext
+    features_colored_scopes_index --> _unknown_ext
+    features_context_pads_ContextPads --> _unknown_ext
+    features_context_pads_ContextPads --> bpmn_js_lib_util_DrilldownUtil_ext
+    features_context_pads_ContextPads --> bpmn_js_lib_util_ModelUtil_ext
+    features_context_pads_ContextPads --> min_dom_ext
+    features_context_pads_ContextPadsSpec --> chai_ext
+    features_context_pads_ContextPadsSpec --> lib_modeler_ext
+    features_context_pads_ContextPadsSpec --> lib_simulation_support_ext
+    features_context_pads_ContextPadsSpec --> test_TestHelper_ext
+    features_context_pads_index --> _unknown_ext
+    features_disable_modeling_DisableModeling --> _unknown_ext
+    features_disable_modeling_index --> _unknown_ext
+    features_editor_actions_EditorActions --> _unknown_ext
+    features_editor_actions_index --> _unknown_ext

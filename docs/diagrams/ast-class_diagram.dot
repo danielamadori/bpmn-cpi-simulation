@@ -1,0 +1,10 @@
+digraph class_diagram {
+  rankdir=TB;
+  node [shape=record,style=filled,fillcolor="#2d2d2d",fontcolor=white,fontname="Helvetica",fontsize=10];
+  edge [color="#888888"];
+  example_src_sese_properties_provider_js_SesePropertiesProvider [label="{SesePropertiesProvider [javascript]|+ constructor()\\l+ getGroups()\\l}",tooltip="example/src/sese-properties-provider.js:6",URL="example/src/sese-properties-provider.js"];
+  test_spec_ModelerSpec_js_FoobarOverlays [label="{FoobarOverlays [javascript]|+ constructor()\\l}",tooltip="test/spec/ModelerSpec.js:247",URL="test/spec/ModelerSpec.js"];
+  test_spec_features_log_LogSpec_js_LogCollector [label="{LogCollector [javascript]|+ constructor()\\l}",tooltip="test/spec/features/log/LogSpec.js:46",URL="test/spec/features/log/LogSpec.js"];
+  lib_simulator_ScopeStates_js_ScopeState [label="{ScopeState [javascript]|+ constructor()\\l+ setTransitions()\\l+ hasTrait()\\l+ complete()\\l+ destroy()\\l+ cancel()\\l+ fail()\\l+ terminate()\\l+ compensable()\\l+ start()\\l}",tooltip="lib/simulator/ScopeStates.js:25",URL="lib/simulator/ScopeStates.js"];
+  lib_simulator_Scope_js_Scope [label="{Scope [javascript]|+ constructor()\\l+ running()\\l+ destroyed()\\l+ completed()\\l+ canceled()\\l+ failed()\\l+ active()\\l+ hasTrait()\\l+ start()\\l+ compensable()\\l}",tooltip="lib/simulator/Scope.js:8",URL="lib/simulator/Scope.js"];
+}

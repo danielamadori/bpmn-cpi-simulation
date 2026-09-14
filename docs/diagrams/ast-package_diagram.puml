@@ -1,0 +1,106 @@
+@startuml
+package "Internal" {
+object "animation.Animation" as animation_Animation
+object "animation.behaviors.AnimatedMessageFlowBehavior" as animation_behaviors_AnimatedMessageFlowBehavior
+object "animation.behaviors.AnimatedSequenceFlowBehavior" as animation_behaviors_AnimatedSequenceFlowBehavior
+object "bpmnlint-plugin-sese.rules.task-has-duration" as bpmnlint_plugin_sese_rules_task_has_duration
+object "bpmnlint-plugin-sese.rules.task-has-impact" as bpmnlint_plugin_sese_rules_task_has_impact
+object "context-pads.handler.ExclusiveGatewayHandler" as context_pads_handler_ExclusiveGatewayHandler
+object "context-pads.handler.InclusiveGatewayHandler" as context_pads_handler_InclusiveGatewayHandler
+object "context-pads.handler.PauseHandler" as context_pads_handler_PauseHandler
+object "context-pads.handler.TriggerHandler" as context_pads_handler_TriggerHandler
+object "docker-entrypoint" as docker_entrypoint
+object "example.api-client" as example_api_client
+object "example.bpmn-to-json" as example_bpmn_to_json
+object "example.modeler" as example_modeler
+object "example.sese-properties-provider" as example_sese_properties_provider
+object "example.sese-validator" as example_sese_validator
+object "example.theme-toggle" as example_theme_toggle
+object "example.utils" as example_utils
+object "features.colored-scopes.ColoredScopes" as features_colored_scopes_ColoredScopes
+object "features.context-pads.ContextPads" as features_context_pads_ContextPads
+object "features.context-pads.ContextPadsSpec" as features_context_pads_ContextPadsSpec
+object "features.disable-modeling.DisableModeling" as features_disable_modeling_DisableModeling
+object "features.editor-actions.EditorActions" as features_editor_actions_EditorActions
+object "features.element-colors.ElementColors" as features_element_colors_ElementColors
+object "features.element-notifications.ElementNotifications" as features_element_notifications_ElementNotifications
+object "features.element-support.ElementSupport" as features_element_support_ElementSupport
+object "features.exclusive-gateway-settings.ExclusiveGatewaySettings" as features_exclusive_gateway_settings_ExclusiveGatewaySettings
+object "features.inclusive-gateway-settings.InclusiveGatewaySettings" as features_inclusive_gateway_settings_InclusiveGatewaySettings
+object "features.keyboard-bindings.KeyboardBindings" as features_keyboard_bindings_KeyboardBindings
+object "features.log.Log" as features_log_Log
+object "features.log.LogSpec" as features_log_LogSpec
+}
+package "External" {
+' _unknown_ext[""]
+object "@bpmn-io/add-exporter" as _bpmn_io_add_exporter_ext
+object "@bpmn-io/diagram-js-canvas-lock" as _bpmn_io_diagram_js_canvas_lock_ext
+object "@bpmn-io/properties-panel" as _bpmn_io_properties_panel_ext
+object "@rollup/plugin-commonjs" as _rollup_plugin_commonjs_ext
+object "@rollup/plugin-node-resolve" as _rollup_plugin_node_resolve_ext
+object "bpmn-js-bpmnlint" as bpmn_js_bpmnlint_ext
+object "bpmn-js-color-picker" as bpmn_js_color_picker_ext
+object "bpmn-js-properties-panel" as bpmn_js_properties_panel_ext
+object "bpmn-js/lib/Modeler" as bpmn_js_lib_Modeler_ext
+object "bpmn-js/lib/NavigatedViewer" as bpmn_js_lib_NavigatedViewer_ext
+object "bpmn-js/lib/util/DrilldownUtil" as bpmn_js_lib_util_DrilldownUtil_ext
+object "bpmn-js/lib/util/ModelUtil" as bpmn_js_lib_util_ModelUtil_ext
+object "bpmn-js/test/helper" as bpmn_js_test_helper_ext
+object "chai" as chai_ext
+object "diagram-js-grid" as diagram_js_grid_ext
+object "diagram-js-minimap" as diagram_js_minimap_ext
+object "diagram-js/lib/util/EscapeUtil" as diagram_js_lib_util_EscapeUtil_ext
+object "downloadjs" as downloadjs_ext
+object "eslint-plugin-bpmn-io" as eslint_plugin_bpmn_io_ext
+}
+animation_Animation --> _unknown_ext
+animation_Animation --> min_dom_ext
+animation_Animation --> tiny_svg_ext
+animation_behaviors_AnimatedMessageFlowBehavior --> _unknown_ext
+animation_behaviors_AnimatedMessageFlowBehavior --> inherits_browser_ext
+animation_behaviors_AnimatedSequenceFlowBehavior --> _unknown_ext
+animation_behaviors_AnimatedSequenceFlowBehavior --> inherits_browser_ext
+animation_behaviors_index --> _unknown_ext
+animation_index --> _unknown_ext
+base --> _unknown_ext
+context_pads_handler_ExclusiveGatewayHandler --> _unknown_ext
+context_pads_handler_ExclusiveGatewayHandler --> bpmn_js_lib_util_ModelUtil_ext
+context_pads_handler_InclusiveGatewayHandler --> _unknown_ext
+context_pads_handler_InclusiveGatewayHandler --> bpmn_js_lib_util_ModelUtil_ext
+context_pads_handler_PauseHandler --> _unknown_ext
+context_pads_handler_PauseHandler --> bpmn_js_lib_util_ModelUtil_ext
+context_pads_handler_TriggerHandler --> _unknown_ext
+eslint_config --> eslint_plugin_bpmn_io_ext
+example_basic_app --> _unknown_ext
+example_basic_app --> bpmn_js_lib_NavigatedViewer_ext
+example_modeler --> _unknown_ext
+example_modeler --> _bpmn_io_add_exporter_ext
+example_modeler --> bpmn_js_bpmnlint_ext
+example_modeler --> bpmn_js_color_picker_ext
+example_modeler --> bpmn_js_properties_panel_ext
+example_modeler --> bpmn_js_lib_Modeler_ext
+example_modeler --> diagram_js_grid_ext
+example_modeler --> diagram_js_minimap_ext
+example_modeler --> downloadjs_ext
+example_modeler --> file_drops_ext
+example_modeler --> file_open_ext
+example_modeler --> heatmap_ext
+example_sese_properties_provider --> _bpmn_io_properties_panel_ext
+example_sese_properties_provider --> bpmn_js_properties_panel_ext
+features_colored_scopes_ColoredScopes --> _unknown_ext
+features_colored_scopes_ColoredScopes --> randomcolor_ext
+features_colored_scopes_index --> _unknown_ext
+features_context_pads_ContextPads --> _unknown_ext
+features_context_pads_ContextPads --> bpmn_js_lib_util_DrilldownUtil_ext
+features_context_pads_ContextPads --> bpmn_js_lib_util_ModelUtil_ext
+features_context_pads_ContextPads --> min_dom_ext
+features_context_pads_ContextPadsSpec --> chai_ext
+features_context_pads_ContextPadsSpec --> lib_modeler_ext
+features_context_pads_ContextPadsSpec --> lib_simulation_support_ext
+features_context_pads_ContextPadsSpec --> test_TestHelper_ext
+features_context_pads_index --> _unknown_ext
+features_disable_modeling_DisableModeling --> _unknown_ext
+features_disable_modeling_index --> _unknown_ext
+features_editor_actions_EditorActions --> _unknown_ext
+features_editor_actions_index --> _unknown_ext
+@enduml
