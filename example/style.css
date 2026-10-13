@@ -1667,3 +1667,91 @@ body:not(.presentation-mode) .bts-notifications {
   clear: both;
   /* Ensure groups stack */
 }
+/* ===================================================================== *
+ * DARK MODE FOR THE CHROME, NOT ONLY THE CANVAS
+ *
+ * `html.dark-mode` redefines the --token-simulation-* variables, so every
+ * rule that READS one follows the theme -- which is why the canvas goes
+ * dark. The side panels do not read them: they hardcode
+ * `rgba(255, 255, 255, 0.9)`, `#fff`, `#666`, `#eee`, `#ccc`. Measured in
+ * the live page with the report in dark mode:
+ *
+ *     .djs-container   bg rgb(46, 46, 46)              <- follows the theme
+ *     .group           bg rgba(255, 255, 255, 0.9)     <- does not
+ *                      color rgb(241, 241, 241)        <- but the TEXT does
+ *
+ * So the panels were white while their inherited text colour had already
+ * gone near-white: anything inside `.group` that does not set a colour of
+ * its own was light-on-light. The canvas being right is what made it look
+ * like a sync problem rather than a missing rule.
+ *
+ * WHY THIS BLOCK IS AT THE END OF THE FILE. `style.css` carries SEVEN
+ * near-identical copies of the same ~190-line section (lines 389, 579,
+ * 769, 962, 1151, 1340, 1529 before this block), differing by about six
+ * lines each. The last definition wins, so an override placed anywhere
+ * else is silently outranked by a later copy. Appending is also why this
+ * does not try to deduplicate them: they are not identical, so collapsing
+ * them would change behaviour, and that is its own task.
+ *
+ * The panels are made slightly LIGHTER than the canvas, not darker: in the
+ * light theme they are white-on-white with a shadow, i.e. raised surfaces,
+ * and raising them the same way keeps that reading.
+ * ===================================================================== */
+html.dark-mode,
+body.dark-mode {
+  --sim-panel-surface: #3a3a3a;
+  --sim-panel-surface-hover: #464646;
+  --sim-panel-border: #555555;
+  --sim-panel-border-strong: #777777;
+  --sim-panel-rule: #4a4a4a;
+  --sim-panel-muted: #a8a8a8;
+}
+
+.dark-mode .group {
+  background: rgba(58, 58, 58, 0.92);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+}
+
+.dark-mode .group h3 {
+  color: var(--sim-panel-muted);
+  border-bottom: 1px solid var(--sim-panel-rule);
+}
+
+.dark-mode .link {
+  background: var(--sim-panel-surface);
+  border: 1px solid var(--sim-panel-border);
+  color: var(--token-simulation-grey-darken-30);
+}
+
+.dark-mode .link:hover {
+  background: var(--sim-panel-surface-hover);
+  border-color: var(--sim-panel-border-strong);
+}
+
+.dark-mode .state-status-waiting {
+  color: var(--sim-panel-muted);
+}
+
+.dark-mode .drop-overlay {
+  background: rgba(46, 46, 46, 0.9);
+}
+
+.dark-mode .drop-overlay .box {
+  border: dashed 4px var(--sim-panel-border-strong);
+}
+
+.dark-mode .bts-set-animation-speed .bts-animation-speed-button {
+  background: var(--sim-panel-surface);
+  border: 1px solid var(--sim-panel-border);
+  color: var(--token-simulation-grey-darken-30);
+}
+
+.dark-mode .bts-set-animation-speed .bts-animation-speed-button:hover {
+  background: var(--sim-panel-surface-hover);
+}
+
+/* Form controls inherit the OS light palette unless told otherwise; one
+ * declaration does what a dozen background/color pairs would. */
+.dark-mode {
+  color-scheme: dark;
+}
