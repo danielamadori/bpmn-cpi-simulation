@@ -46,6 +46,67 @@ body.dark-mode {
   fill: var(--diagram-js-secondary-color);
 }
 
+/*
+ * THE RULE ABOVE DOES NOT REACH THE SHAPE. ``.djs-element`` is the GROUP;
+ * the rectangle, circle or polygon that is actually painted lives inside
+ * ``.djs-visual`` and takes its fill from bpmn-js's own stylesheet, which
+ * wins. Measured in Chrome with the dark theme on: the task body computed
+ * fill rgb(255,255,255) and stroke rgb(33,33,33) on a canvas of
+ * rgb(46,46,46) -- white boxes with near-black labels on a dark page.
+ *
+ * ``:nth-child(1)`` is bpmn-js's own convention for "the body of this
+ * element": what follows it is markers and icons -- a gateway's cross, an
+ * event's symbol -- and those must stay the FOREGROUND colour, not the fill,
+ * or they vanish into the body they are drawn on.
+ */
+/*
+ * ``!important`` IS NOT DECORATION HERE. bpmn-js writes the colours as an
+ * INLINE style on the shape -- measured: ``fill: rgb(255,255,255);
+ * stroke: rgb(33,33,33); fill-opacity: 0.95`` on the task body -- and an
+ * inline style beats any stylesheet rule that does not say otherwise. The
+ * first version of this block was correct CSS that could never win, and the
+ * shapes stayed white on the dark canvas. diagram-js's own overrides, a few
+ * rules above in the same cascade, use !important for exactly this reason.
+ */
+.dark-mode .djs-container .djs-visual > :nth-child(1) {
+  fill: var(--diagram-js-secondary-color) !important;
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
+/*
+ * REMOVED, AND THE REASON MATTERS. Filling every visual child after the first
+ * with the foreground colour painted large white wedges across the diagram:
+ * some of those children are not small markers but paths that cover the
+ * element's whole area, and a fill the renderer never asked for becomes a
+ * shape. The gateway crosses and event symbols are STROKED, so giving them a
+ * stroke is enough and a fill is what broke it.
+ */
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2) {
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
+.dark-mode .djs-container .djs-visual text,
+.dark-mode .djs-container .djs-visual tspan {
+  fill: var(--diagram-js-primary-color) !important;
+  stroke: none !important;
+}
+
+/*
+ * A CONNECTION HAS NO BODY TO FILL. Its first visual child is the path of
+ * the line itself, so the rule above would flood the diagram with filled
+ * polygons wherever a sequence flow bends. The arrowhead is a separate
+ * marker and keeps the foreground colour.
+ */
+.dark-mode .djs-container .djs-connection .djs-visual > :nth-child(1) {
+  fill: none !important;
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
+.dark-mode .djs-container .djs-visual > .djs-hit {
+  fill: none !important;
+  stroke: none !important;
+}
+
 body:not(.presentation-mode) .bts-notifications {
   bottom: 60px;
 }
