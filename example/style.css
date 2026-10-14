@@ -45,7 +45,6 @@ body.dark-mode {
 .dark-mode .djs-container .djs-element {
   fill: var(--diagram-js-secondary-color);
 }
-
 /*
  * THE RULE ABOVE DOES NOT REACH THE SHAPE. ``.djs-element`` is the GROUP;
  * the rectangle, circle or polygon that is actually painted lives inside
@@ -106,6 +105,8 @@ body.dark-mode {
   fill: none !important;
   stroke: none !important;
 }
+
+
 
 body:not(.presentation-mode) .bts-notifications {
   bottom: 60px;
