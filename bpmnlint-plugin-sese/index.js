@@ -1,5 +1,6 @@
 /**
- * bpmnlint plugin: the two SESE rules the modeller enforces.
+ * bpmnlint plugin: the SESE rules the modeller enforces -- the two on a task's
+ * duration and impact, and `no-diagram-overlaps` on the drawing itself.
  *
  * THIS IS THE COPY THAT SHIPS. `Dockerfile.simulator` in the Simulator repo
  * does `FROM bpmn-cpi-simulation AS modeller` and then
@@ -39,6 +40,7 @@
 module.exports = {
   rules: {
     'task-has-duration': 'bpmnlint-plugin-sese/rules/task-has-duration',
-    'task-has-impact': 'bpmnlint-plugin-sese/rules/task-has-impact'
+    'task-has-impact': 'bpmnlint-plugin-sese/rules/task-has-impact',
+    'no-diagram-overlaps': 'bpmnlint-plugin-sese/rules/no-diagram-overlaps'
   }
 };

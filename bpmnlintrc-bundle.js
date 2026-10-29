@@ -7,6 +7,7 @@
 
 import taskHasDuration from './bpmnlint-plugin-sese/rules/task-has-duration.js'
 import taskHasImpact from './bpmnlint-plugin-sese/rules/task-has-impact.js'
+import noDiagramOverlaps from './bpmnlint-plugin-sese/rules/no-diagram-overlaps.js';
 
 import ruleAdHocSubProcess from 'bpmnlint/rules/ad-hoc-sub-process'
 import ruleConditionalFlows from 'bpmnlint/rules/conditional-flows'
@@ -62,8 +63,10 @@ const cache = {
   'bpmnlint/superfluous-termination': ruleSuperfluousTermination,
   'sese/task-has-duration': taskHasDuration,
   'sese/task-has-impact': taskHasImpact,
+  'sese/no-diagram-overlaps': noDiagramOverlaps,
   'bpmnlint-plugin-sese/task-has-duration': taskHasDuration,
   'bpmnlint-plugin-sese/task-has-impact': taskHasImpact,
+  'bpmnlint-plugin-sese/no-diagram-overlaps': noDiagramOverlaps,
 }
 
 const resolver = {
@@ -106,6 +109,7 @@ const config = {
     'bpmnlint/superfluous-termination': 'warn',
     'sese/task-has-duration': 'error',
     'sese/task-has-impact': 'warn',
+    'sese/no-diagram-overlaps': 'error',
   }
 }
 
