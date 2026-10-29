@@ -7,9 +7,9 @@
  * read from the DI alone: `bpmndi:BPMNShape` bounds, the `bpmndi:BPMNLabel`
  * bounds inside shapes and edges, and `bpmndi:BPMNEdge` waypoints. Five kinds:
  *
- *   1. two flow-node shapes that overlap, unless one contains the other in
- *      the model (a subprocess and its children) or one is a boundary event
- *      on the other;
+ *   1. two shapes that overlap, unless one is a frame (a pool, a lane, a
+ *      group), one contains the other in the model (a subprocess and its
+ *      children) or one is a boundary event on the other;
  *   2. a label that overlaps a shape (its own included: text drawn over the
  *      symbol it names) or another label, or that crosses the border of a
  *      pool, a lane, a group or an expanded subprocess;
@@ -21,20 +21,50 @@
  * Each finding names both elements and where they meet, in diagram
  * coordinates. It is reported on one of the two: the first shape in DI order
  * in (1), the element whose label it is in (2), the edge in (3) and (4), the
- * first edge in DI order in (5).
+ * first edge in DI order in (5) -- the other one when the first has no model
+ * element to report on.
+ *
+ * WHAT IS CHECKED IS DECIDED BY THE DI, NOT BY THE MODEL. Every BPMNShape with
+ * bounds and every BPMNEdge with two waypoints is something a reader sees, so
+ * every one takes part, whatever its element is:
+ *
+ *   - an EXTENSION element such as BOS's `sese:assetShape` (a `bpmn:Artifact`
+ *     in BOS's `sese.json`), which BOS draws at its DI bounds. Picking shapes
+ *     by BPMN type is exactly how bpmnlint's `no-overlapping-elements` misses
+ *     such a box drawn over a task: measured on 2026-10-29, 0 findings on the
+ *     box with its schema loaded and resolving, 2 on a start event moved onto
+ *     the same task in the same run;
+ *   - a DI entry whose `bpmnElement` did NOT RESOLVE, because the moddle
+ *     reading the file lacks the extension's schema -- as the bpmnlint CLI
+ *     does with this repository's `.bpmnlintrc` (no `moddleExtensions`), and
+ *     this repository's modeller, which registers no `sese` schema; the one in
+ *     `example/resources/sese.json` describes `Duration` only. The box is
+ *     still in the file and BOS still draws it there; a diagram is judged by
+ *     what it draws, not by what one reader of it can parse. Such a shape is
+ *     named by its DI id. An edge drawn to it has no model end on that side,
+ *     so the shape under the edge's first or last waypoint is taken as that
+ *     end.
+ *
+ * Labels are the exception, and on evidence: an external label is drawn only
+ * for the element types bpmn-js draws one for (`BpmnImporter.add`), and BOS
+ * draws an asset box's text from the box's own bounds, inside it or under it
+ * (`drawAssetFigure` in BOS's `assetShapeRenderer.ts`), never at DI label
+ * bounds.
  *
  * WHAT IT DOES NOT SEE. A label is checked only where the DI gives its bounds;
  * one without them is placed by the modeller at render time, and nothing here
- * guesses where. Shapes are compared as their bounding boxes, which is how
+ * guesses where. The same holds for text a renderer draws outside its own
+ * shape, as BOS does under an asset box drawn as a file page. Shapes are compared as their bounding boxes, which is how
  * bpmn-js itself lays them out, so a label tucked into the corner of a
  * gateway's box counts even where the diamond leaves that corner empty.
  * Pools, lanes and groups are frames, not obstacles: an edge may cross them
  * (a message flow must), and only a label straddling their border is reported.
  *
  * bpmnlint's own `no-overlapping-elements` (in `bpmnlint:recommended`) also
- * reports (1) between siblings, as "Element overlaps with other element"
- * without naming the other one. This rule names both, compares nodes across
- * nesting levels, and adds (2) to (5).
+ * reports (1) between sibling flow elements and pools, as "Element overlaps
+ * with other element" without naming the other one. This rule names both,
+ * compares shapes across nesting levels and element types, and adds (2) to
+ * (5).
  */
 
 
@@ -85,18 +115,13 @@ module.exports = function() {
 
 function reportShapeOverlaps(drawing, reporter) {
 
-  const nodes = drawing.shapes.filter(function(shape) {
-    return is(shape.element, 'bpmn:FlowNode');
+  const obstacles = drawing.shapes.filter(function(shape) {
+    return !shape.frame;
   });
 
-  forEachPair(nodes, function(a, b) {
+  forEachPair(obstacles, function(a, b) {
 
-    if (
-      isAncestor(a.element, b.element) ||
-      isAncestor(b.element, a.element) ||
-      isAttachedTo(a.element, b.element) ||
-      isAttachedTo(b.element, a.element)
-    ) {
+    if (belongTogether(a.element, b.element)) {
       return;
     }
 
@@ -104,8 +129,8 @@ function reportShapeOverlaps(drawing, reporter) {
 
     if (overlap) {
       reporter.report(
-        a.element.id,
-        `Shape ${ describe(a.element) } overlaps shape ${ describe(b.element) } at ${ area(overlap) }`
+        reportedId(a, b),
+        `Shape ${ name(a) } overlaps shape ${ name(b) } at ${ area(overlap) }`
       );
     }
   });
@@ -127,7 +152,7 @@ function reportLabelOverlaps(drawing, reporter) {
         if (intersection(label.box, shape.box) && !contains(shape.box, label.box)) {
           reporter.report(
             label.element.id,
-            `Label of ${ describe(label.element) } at ${ area(label.box) } crosses the border of ${ describe(shape.element) }`
+            `Label of ${ describe(label.element) } at ${ area(label.box) } crosses the border of ${ name(shape) }`
           );
         }
 
@@ -139,7 +164,7 @@ function reportLabelOverlaps(drawing, reporter) {
       if (overlap) {
         reporter.report(
           label.element.id,
-          `Label of ${ describe(label.element) } overlaps shape ${ describe(shape.element) } at ${ area(overlap) }`
+          `Label of ${ describe(label.element) } overlaps shape ${ name(shape) } at ${ area(overlap) }`
         );
       }
     });
@@ -164,21 +189,17 @@ function reportEdgesThroughShapes(drawing, reporter) {
 
     drawing.shapes.forEach(function(shape) {
 
-      if (edge.ends.indexOf(shape.element) !== -1) {
+      // pools, lanes and groups are frames an edge may cross
+      if (edge.ends.indexOf(shape) !== -1 || shape.frame) {
         return;
       }
 
+      // an expanded subprocess is crossed legitimately only by edges that
+      // start or end inside it
       if (shape.container) {
 
-        // pools, lanes and groups are frames an edge may cross; an expanded
-        // subprocess is crossed legitimately only by edges that start or end
-        // inside it
-        if (!is(shape.element, 'bpmn:SubProcess')) {
-          return;
-        }
-
         const endsInside = edge.ends.some(function(end) {
-          return isAncestor(shape.element, end);
+          return end.element !== undefined && isAncestor(shape.element, end.element);
         });
 
         if (endsInside) {
@@ -190,8 +211,8 @@ function reportEdgesThroughShapes(drawing, reporter) {
 
       if (crossings.length) {
         reporter.report(
-          edge.element.id,
-          `Edge ${ describe(edge.element) } passes through shape ${ describe(shape.element) } ${ stretches(crossings) }`
+          reportedId(edge, shape),
+          `Edge ${ name(edge) } passes through shape ${ name(shape) } ${ stretches(crossings) }`
         );
       }
     });
@@ -212,8 +233,8 @@ function reportEdgesOverLabels(drawing, reporter) {
 
       if (crossings.length) {
         reporter.report(
-          edge.element.id,
-          `Edge ${ describe(edge.element) } runs over the label of ${ describe(label.element) } ${ stretches(crossings) }`
+          reportedId(edge, label),
+          `Edge ${ name(edge) } runs over the label of ${ describe(label.element) } ${ stretches(crossings) }`
         );
       }
     });
@@ -249,8 +270,8 @@ function reportSharedLines(drawing, reporter) {
       }, 0);
 
       reporter.report(
-        a.element.id,
-        `Edge ${ describe(a.element) } and edge ${ describe(b.element) } run along the same line for ` +
+        reportedId(a, b),
+        `Edge ${ name(a) } and edge ${ name(b) } run along the same line for ` +
         `${ Math.round(length) }px ${ stretches(shared) }`
       );
     }
@@ -263,7 +284,8 @@ function reportSharedLines(drawing, reporter) {
 /**
  * The shapes, labels and edges one plane draws.
  *
- * A DI entry that points at no model element, a shape without bounds and an
+ * Every shape with bounds and every edge with two waypoints, whether or not
+ * its `bpmnElement` resolved (see the header). A shape without bounds and an
  * edge with fewer than two waypoints draw nothing, so they are left out.
  */
 function readPlane(plane) {
@@ -274,27 +296,26 @@ function readPlane(plane) {
 
   plane.get('planeElement').forEach(function(di) {
 
+    // undefined when the reference did not resolve
     const element = di.bpmnElement;
-
-    if (!element) {
-      return;
-    }
 
     if (is(di, 'bpmndi:BPMNShape') && di.bounds) {
       shapes.push({
+        di: di,
         element: element,
         box: toBox(di.bounds),
-        container: isContainer(element, di)
+        frame: isFrame(element),
+        container: isFrame(element) || isExpandedSubProcess(element, di)
       });
     }
 
     if (is(di, 'bpmndi:BPMNEdge') && di.get('waypoint').length > 1) {
       edges.push({
+        di: di,
         element: element,
         points: di.get('waypoint').map(function(waypoint) {
           return { x: waypoint.x, y: waypoint.y };
-        }),
-        ends: endsOf(element)
+        })
       });
     }
 
@@ -302,10 +323,15 @@ function readPlane(plane) {
     // only for the element types below and only when there is text to draw
     if (di.label && di.label.bounds && isLabelExternal(element) && labelText(element)) {
       labels.push({
+        di: di,
         element: element,
         box: toBox(di.label.bounds)
       });
     }
+  });
+
+  edges.forEach(function(edge) {
+    edge.ends = endShapes(edge, shapes);
   });
 
   return {
@@ -316,43 +342,75 @@ function readPlane(plane) {
 }
 
 /**
- * Pools, lanes, groups and expanded subprocesses: shapes drawn as a frame
- * around others rather than as an obstacle.
+ * Pools, lanes and groups: shapes drawn as a frame around others rather than
+ * as an obstacle.
  */
-function isContainer(element, di) {
+function isFrame(element) {
   return is(element, 'bpmn:Participant') ||
     is(element, 'bpmn:Lane') ||
-    is(element, 'bpmn:Group') ||
-    (is(element, 'bpmn:SubProcess') && di.isExpanded === true);
+    is(element, 'bpmn:Group');
+}
+
+function isExpandedSubProcess(element, di) {
+  return is(element, 'bpmn:SubProcess') && di.isExpanded === true;
 }
 
 /**
- * The elements an edge connects. A data association's activity is not among
- * its references: bpmn-js draws it to or from the association's parent.
+ * The shapes an edge is drawn between.
+ *
+ * The model's references say which, and a data association's activity is
+ * not among them: bpmn-js draws a data association to or from its parent. A
+ * side the model cannot name -- its reference unresolved, or the edge's own
+ * element unresolved -- is the shape under the edge's waypoint on that side,
+ * which is where the DI draws the edge to.
  */
-function endsOf(connection) {
+function endShapes(edge, shapes) {
 
-  const ends = [];
+  const connection = edge.element;
 
-  [ 'sourceRef', 'targetRef' ].forEach(function(name) {
+  const sources = references(connection, 'sourceRef');
+  const targets = references(connection, 'targetRef');
 
-    // a list on data associations, a single reference elsewhere
-    const value = connection.get(name);
-
-    if (Array.isArray(value)) {
-      value.forEach(function(end) {
-        ends.push(end);
-      });
-    } else if (value !== undefined) {
-      ends.push(value);
-    }
-  });
-
-  if (is(connection, 'bpmn:DataInputAssociation') || is(connection, 'bpmn:DataOutputAssociation')) {
-    ends.push(connection.$parent);
+  if (is(connection, 'bpmn:DataOutputAssociation')) {
+    sources.push(connection.$parent);
   }
 
-  return ends;
+  if (is(connection, 'bpmn:DataInputAssociation')) {
+    targets.push(connection.$parent);
+  }
+
+  const first = edge.points[0];
+  const last = edge.points[edge.points.length - 1];
+
+  return shapes.filter(function(shape) {
+
+    if (shape.element !== undefined && (sources.indexOf(shape.element) !== -1 || targets.indexOf(shape.element) !== -1)) {
+      return true;
+    }
+
+    return (sources.length === 0 && covers(shape.box, first)) ||
+      (targets.length === 0 && covers(shape.box, last));
+  });
+}
+
+/**
+ * The elements a connection's reference resolved to: a list on data
+ * associations, a single element elsewhere, nothing when it did not resolve
+ * or the edge's element itself did not.
+ */
+function references(connection, name) {
+
+  if (connection === undefined) {
+    return [];
+  }
+
+  const value = connection.get(name);
+
+  if (Array.isArray(value)) {
+    return value.slice();
+  }
+
+  return value === undefined ? [] : [ value ];
 }
 
 /**
@@ -425,6 +483,14 @@ function contains(outer, inner) {
     inner.top >= outer.top - STROKE_PX &&
     inner.right <= outer.right + STROKE_PX &&
     inner.bottom <= outer.bottom + STROKE_PX;
+}
+
+/**
+ * Whether a point lies in a box or on its border, give or take a stroke.
+ */
+function covers(box, point) {
+  return point.x >= box.left - STROKE_PX && point.x <= box.right + STROKE_PX &&
+    point.y >= box.top - STROKE_PX && point.y <= box.bottom + STROKE_PX;
 }
 
 function segments(points) {
@@ -667,8 +733,26 @@ function isAttachedTo(boundaryEvent, host) {
   return is(boundaryEvent, 'bpmn:BoundaryEvent') && boundaryEvent.attachedToRef === host;
 }
 
+/**
+ * Whether two shapes' elements are drawn on each other by design: a
+ * subprocess and what it contains, a boundary event and its host. A shape
+ * whose element did not resolve belongs with nothing.
+ */
+function belongTogether(a, b) {
+
+  if (a === undefined || b === undefined) {
+    return false;
+  }
+
+  return isAncestor(a, b) || isAncestor(b, a) || isAttachedTo(a, b) || isAttachedTo(b, a);
+}
+
+/**
+ * Whether an element is of a type. An unresolved element, `undefined`, is of
+ * none.
+ */
 function is(element, type) {
-  return typeof element.$instanceOf === 'function' && element.$instanceOf(type);
+  return element !== undefined && typeof element.$instanceOf === 'function' && element.$instanceOf(type);
 }
 
 function forEachPair(items, fn) {
@@ -682,6 +766,37 @@ function forEachPair(items, fn) {
 
 
 // messages ///////////////
+
+/**
+ * A shape or an edge, as a finding names it: by its element, or by its DI id
+ * when the element did not resolve.
+ */
+function name(item) {
+
+  if (item.element !== undefined) {
+    return describe(item.element);
+  }
+
+  return `${ item.di.id } (drawn in the DI; its bpmnElement did not resolve)`;
+}
+
+/**
+ * The id a finding is reported on: the first of the two that has a model
+ * element, which is what bpmn-js-bpmnlint can attach it to; the first one's
+ * DI id when neither has.
+ */
+function reportedId(first, second) {
+
+  if (first.element !== undefined) {
+    return first.element.id;
+  }
+
+  if (second.element !== undefined) {
+    return second.element.id;
+  }
+
+  return first.di.id;
+}
 
 function describe(element) {
 

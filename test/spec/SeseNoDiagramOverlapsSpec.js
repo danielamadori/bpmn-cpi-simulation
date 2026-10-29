@@ -14,11 +14,14 @@ const bpmnlintrc = require('../../bpmnlintrc.json');
 /**
  * A BPMN document for a fixture.
  *
- * `shapes` are `{ type, id, name, bounds, label, parent, attachedTo, expanded }`
- * and `flows` `{ id, name, source, target, waypoints, label }`, where
- * `bounds` and `label` are `[ x, y, width, height ]` and `parent` is the id
- * of the expanded subprocess a shape belongs to. `pool`, when given, is
- * `{ id, name, bounds, lanes: [ { id, name, bounds, nodes } ] }`.
+ * `shapes` are `{ type, id, name, bounds, label, parent, attachedTo, expanded,
+ * attrs }` and `flows` `{ type, id, name, source, target, waypoints, label }`,
+ * where `bounds` and `label` are `[ x, y, width, height ]`, `parent` is the id
+ * of the expanded subprocess a shape belongs to, a shape `type` with a prefix
+ * (`sese:assetShape`) is written as given and any other in the `bpmn`
+ * namespace, and a flow's `type` is `sequenceFlow` unless it says otherwise.
+ * `pool`, when given, is `{ id, name, bounds, lanes: [ { id, name, bounds,
+ * nodes } ] }`.
  */
 function definitions({ pool, shapes, flows }) {
 
@@ -39,18 +42,20 @@ function definitions({ pool, shapes, flows }) {
 
   function elementXml(shape) {
 
-    const own = attributes({
+    const own = attributes(Object.assign({
       id: shape.id,
       name: shape.name,
       attachedToRef: shape.attachedTo
-    });
+    }, shape.attrs));
 
     const children = shapes
       .filter(child => child.parent === shape.id)
       .map(elementXml)
       .join('');
 
-    return `<bpmn:${ shape.type }${ own }>${ children }</bpmn:${ shape.type }>`;
+    const tag = shape.type.includes(':') ? shape.type : `bpmn:${ shape.type }`;
+
+    return `<${ tag }${ own }>${ children }</${ tag }>`;
   }
 
   const processXml = [
@@ -60,7 +65,8 @@ function definitions({ pool, shapes, flows }) {
     ).join('') }</bpmn:laneSet>` : '',
     shapes.filter(shape => shape.parent === undefined).map(elementXml).join(''),
     flows.map(flow =>
-      `<bpmn:sequenceFlow${ attributes({ id: flow.id, name: flow.name, sourceRef: flow.source, targetRef: flow.target }) } />`
+      `<bpmn:${ flow.type === undefined ? 'sequenceFlow' : flow.type }${
+        attributes({ id: flow.id, name: flow.name, sourceRef: flow.source, targetRef: flow.target }) } />`
     ).join('')
   ].join('');
 
@@ -82,6 +88,7 @@ function definitions({ pool, shapes, flows }) {
     'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
     'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
     'xmlns:di="http://www.omg.org/spec/DD/20100524/DI" ' +
+    'xmlns:sese="http://example.com/sese/import" ' +
     'id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">' +
     (pool ? `<bpmn:collaboration id="Collaboration_1"><bpmn:participant id="${ pool.id }" name="${ pool.name }" processRef="Process_1" /></bpmn:collaboration>` : '') +
     `<bpmn:process id="Process_1">${ processXml }</bpmn:process>` +
@@ -92,17 +99,76 @@ function definitions({ pool, shapes, flows }) {
 }
 
 /**
- * The messages the rule reports on a fixture, in reporting order.
+ * The messages the rule reports on a fixture read with the given moddle
+ * extensions, in reporting order, and the warnings the reading raised.
+ */
+async function lintWith(fixture, extensions) {
+
+  const { rootElement, warnings } = await new BpmnModdle(extensions).fromXML(definitions(fixture));
+
+  return {
+    messages: testRule({ moddleRoot: rootElement, rule: noDiagramOverlaps() }).map(report => report.message),
+    warnings: warnings.map(warning => warning.message)
+  };
+}
+
+/**
+ * The messages the rule reports on a plain BPMN fixture, in reporting order.
  */
 async function lint(fixture) {
 
-  const { rootElement, warnings } = await new BpmnModdle().fromXML(definitions(fixture));
+  const { messages, warnings } = await lintWith(fixture, {});
 
   // a fixture the parser had to repair would test something else
   expect(warnings).to.be.empty;
 
-  return testRule({ moddleRoot: rootElement, rule: noDiagramOverlaps() }).map(report => report.message);
+  return messages;
 }
+
+/**
+ * What BOS's `server/gui/src/schemi/sese.json` declares about the asset box,
+ * and nothing else of that schema.
+ */
+const ASSET_SCHEMA = {
+  name: 'SESE',
+  uri: 'http://example.com/sese/import',
+  prefix: 'sese',
+  xml: { tagAlias: 'lowerCase' },
+  types: [
+    {
+      name: 'AssetShape',
+      superClass: [ 'bpmn:Artifact' ],
+      meta: { allowedIn: [ 'bpmn:Process', 'bpmn:SubProcess' ] },
+      properties: [
+        { name: 'resourceRef', isAttr: true, type: 'String' },
+        { name: 'roleRef', isAttr: true, type: 'String' },
+        { name: 'pattern', isAttr: true, type: 'String' }
+      ]
+    }
+  ]
+};
+
+/**
+ * An asset box drawn over task A, allocated to task B by an association that
+ * starts at the box's centre and crosses task C on its way.
+ */
+const ASSET_BOX_OVER_A_TASK = {
+  shapes: [
+    task('Task_A', 'A', [ 100, 100, 100, 80 ]),
+    {
+      type: 'sese:assetShape', id: 'Asset_1', bounds: [ 150, 150, 170, 64 ],
+      attrs: { pattern: '/**/Officina/FresaCNC/*' }
+    },
+    task('Task_B', 'B', [ 500, 100, 100, 80 ]),
+    task('Task_C', 'C', [ 340, 150, 60, 60 ])
+  ],
+  flows: [
+    {
+      type: 'association', id: 'Allocation_1', source: 'Asset_1', target: 'Task_B',
+      waypoints: [ [ 235, 182 ], [ 420, 182 ], [ 420, 140 ], [ 500, 140 ] ]
+    }
+  ]
+};
 
 function task(id, name, bounds, extra) {
   return Object.assign({ type: 'task', id, name, bounds }, extra);
@@ -334,6 +400,61 @@ describe('sese/no-diagram-overlaps', function() {
       'Edge Flow_21 and edge Flow_31 run along the same line for 250px ' +
       'from (350, 230) to (150, 230); from (150, 230) to (150, 180)'
     ]);
+  });
+
+
+  describe('a shape is judged by being drawn, not by its type', function() {
+
+    it('should report a text annotation over a task', async function() {
+
+      const messages = await lint({
+        shapes: [
+          task('Task_A', 'A', [ 100, 100, 100, 80 ]),
+          { type: 'textAnnotation', id: 'Note_1', bounds: [ 150, 60, 100, 60 ] }
+        ],
+        flows: []
+      });
+
+      expect(messages).to.eql([
+        'Shape "A" (Task_A) overlaps shape Note_1 at x 150..200, y 100..120'
+      ]);
+    });
+
+
+    it('should report an extension box over a task, its schema loaded', async function() {
+
+      const { messages, warnings } = await lintWith(ASSET_BOX_OVER_A_TASK, { sese: ASSET_SCHEMA });
+
+      // assume -- the box is a model element: nothing failed to resolve
+      expect(warnings).to.be.empty;
+
+      // then -- the box over A, and the association's crossing of C as the
+      // control that the rule ran; not the association leaving its own box
+      expect(messages).to.eql([
+        'Shape "A" (Task_A) overlaps shape Asset_1 at x 150..200, y 150..180',
+        'Edge Allocation_1 passes through shape "C" (Task_C) from (340, 182) to (400, 182)'
+      ]);
+    });
+
+
+    it('should report an extension box over a task, its schema missing', async function() {
+
+      const { messages, warnings } = await lintWith(ASSET_BOX_OVER_A_TASK, {});
+
+      // assume -- the box is not in the model, and its DI points at nothing
+      expect(warnings.some(warning => warning.startsWith('unparsable content <sese:assetShape>'))).to.be.true;
+      expect(warnings).to.include('unresolved reference <Asset_1>');
+
+      // then -- the same two findings, the box named by its DI id; the
+      // association, whose source did not resolve, ends at the box under its
+      // first waypoint and does not pass through it
+      expect(messages).to.eql([
+        'Shape "A" (Task_A) overlaps shape Asset_1_di (drawn in the DI; its bpmnElement did not resolve) ' +
+        'at x 150..200, y 150..180',
+        'Edge Allocation_1 passes through shape "C" (Task_C) from (340, 182) to (400, 182)'
+      ]);
+    });
+
   });
 
 });
