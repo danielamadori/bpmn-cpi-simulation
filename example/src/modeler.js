@@ -20,6 +20,7 @@ import fileOpen from 'file-open';
 
 import download from 'downloadjs';
 import { svgToPng } from './utils';
+import { fitViewportClearOfPalette } from './fit-viewport';
 import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
@@ -289,7 +290,15 @@ function openDiagram(diagram) {
         localStorage['diagram-xml'] = diagram;
       }
 
-      try { modeler.get('canvas').zoom('fit-viewport'); } catch(_) { /* iframe may not be visible yet */ }
+      // Not `canvas.zoom('fit-viewport')`: that fit draws the leftmost elements
+      // under the palette (see fit-viewport.js). A canvas with no size yet --
+      // an iframe that is not visible -- cannot be fitted; say so instead of
+      // dropping the reason.
+      try {
+        fitViewportClearOfPalette(modeler.get('canvas'));
+      } catch (err) {
+        console.warn('[openDiagram] diagram not fitted to the canvas:', err.message);
+      }
 
       // Force ALL tasks to behave as wait states so tokens stay visible on them
       const registry = modeler.get('elementRegistry');

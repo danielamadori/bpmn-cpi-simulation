@@ -1696,39 +1696,6 @@ body:not(.presentation-mode) .bts-notifications {
   height: auto !important;
 }
 
-.djs-palette .djs-group {
-  clear: both;
-  /* Ensure groups stack */
-}
-
-/* Hide scrollbar styles as they are no longer needed */
-.djs-palette::-webkit-scrollbar {
-  display: none;
-}
-
-/* Force palette to be wider to fit all icons (two columns) */
-.djs-palette {
-  /*width: 100px !important; */
-  /* Wider for two columns */
-  height: fit-content !important;
-  /* Only take necessary space */
-  max-height: 90vh !important;
-  /* Prevent going off-screen */
-  overflow-y: auto !important;
-  /* Scroll if absolutely necessary */
-  overflow-x: hidden !important;
-}
-
-.djs-palette .entry {
-  width: 46px !important;
-  float: left;
-  /* Ensure they float side by side */
-}
-
-.djs-palette .djs-group {
-  clear: both;
-  /* Ensure groups stack */
-}
 /* ===================================================================== *
  * DARK MODE FOR THE CHROME, NOT ONLY THE CANVAS
  *
@@ -1816,4 +1783,87 @@ body.dark-mode {
  * declaration does what a dozen background/color pairs would. */
 .dark-mode {
   color-scheme: dark;
+}
+
+/* ===================================================================== *
+ * THE PALETTE, AND THE CONTEXT PAD BESIDE IT
+ *
+ * 1. THE SIDE PANELS' `.group` RULE REACHED INTO BOTH. The panels on the
+ *    left are `<div class="group">`, styled above as a flex column with a
+ *    10px gap, a white rounded tile and a shadow (`.group`, in all seven
+ *    copies, and `.dark-mode .group`). diagram-js wraps the palette's
+ *    entries AND the context pad's entries in `<div class="group">` as well,
+ *    so the same rule laid both out like panels. Measured in Chrome on
+ *    `example/resources/all.bpmn`, edit mode, before this block:
+ *
+ *      1600x900     entries of one group 56px apart instead of 46 (hand 61,
+ *                   lasso 117, space 173, connect 229), a 10px gap above the
+ *                   separator, the palette 732px tall for 14 entries
+ *      1280x700     diagram-js switches to `two-column` (94px wide) when the
+ *                   canvas is too short, but each group stayed one flex
+ *                   column: the right half empty, the content 730px tall in a
+ *                   628px box, data store, pool and group past its edge and
+ *                   reachable only by a scroll whose scrollbar is hidden
+ *      context pad  a task's nine entries stacked in ONE column 276px tall,
+ *                   each group a white shadowed tile, instead of three a row
+ *      dark theme   every palette group painted rgba(58,58,58,0.92) under
+ *                   icons of rgb(34,36,42): the icons all but vanish
+ *
+ *    The reset gives the two widgets back diagram-js's own layout -- plain
+ *    block groups, floated entries -- and touches nothing else. Scoping the
+ *    panel rule instead would cut closer to the cause, but that rule exists
+ *    seven times over and BOS's GUI imports a copy of this file for its own
+ *    `.group` panels. The `.dark-mode` selectors are listed because
+ *    `.dark-mode .group` has the same specificity as `.djs-palette .group`:
+ *    without them the winner would be whichever rule comes later.
+ *
+ * 2. `max-height: 90vh` MEASURED THE WRONG BOX. The palette starts 60px down
+ *    the canvas (`.bjs-container .djs-palette` in
+ *    bpmn-js-token-simulation.css), so on any canvas shorter than 600px a
+ *    limit of 90% of the VIEWPORT lay below the canvas's bottom edge. At
+ *    1280x380 the palette ended at y 395 in a 380px canvas: its last row cut
+ *    off, and not reachable by scrolling either, because the palette itself
+ *    did not overflow. A percentage of the containing block -- the canvas --
+ *    keeps 20px below it at every height.
+ *
+ *    REMOVED with it, from the previous palette block: two
+ *    `.djs-palette .djs-group` rules (the palette has no `.djs-group`: that
+ *    class is diagram-js's SVG `<g>`, so they matched nothing), `height:
+ *    fit-content` and `.entry { width: 46px; float: left }` (diagram-js's
+ *    own values already), and a comment promising two columns over a width
+ *    that was commented out.
+ *
+ * 3. THE PALETTE IGNORED THE DARK THEME. diagram-js colours it from the
+ *    `--palette-*` variables it declares on `.djs-parent`; nothing here
+ *    redefined them, so in dark mode it stayed rgb(247,247,248) with
+ *    rgb(34,36,42) icons on the rgb(46,46,46) canvas. It now takes the side
+ *    panels' raised surface, as they do. Hover and selection keep diagram-js's
+ *    blue.
+ * ===================================================================== */
+.djs-palette .group,
+.djs-context-pad .group,
+.dark-mode .djs-palette .group,
+.dark-mode .djs-context-pad .group {
+  display: block;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.djs-palette {
+  max-height: calc(100% - 80px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.djs-palette::-webkit-scrollbar {
+  display: none;
+}
+
+.dark-mode .djs-parent {
+  --palette-background-color: var(--sim-panel-surface);
+  --palette-border-color: var(--sim-panel-border);
+  --palette-separator-color: var(--sim-panel-border);
+  --palette-entry-color: var(--token-simulation-grey-darken-30);
+  --palette-toggle-hover-background-color: var(--sim-panel-surface-hover);
 }
