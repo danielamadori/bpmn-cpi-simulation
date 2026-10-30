@@ -457,4 +457,53 @@ describe('sese/no-diagram-overlaps', function() {
 
   });
 
+
+  it('should judge a large diagram by what lies near each thing, not by every pair', async function() {
+
+    // reading 10 001 shapes takes the browser seconds; the rule may not
+    this.timeout(60000);
+
+    // given -- 100 rows of 100 tasks, each joined to the next in its row,
+    // and one task drawn over the last of them
+    const shapes = [];
+    const flows = [];
+
+    for (let row = 0; row < 100; row++) {
+      for (let column = 0; column < 100; column++) {
+
+        shapes.push(task(`Task_${ row }_${ column }`, `T${ row }_${ column }`, [ column * 150, row * 120, 100, 80 ]));
+
+        if (column > 0) {
+          flows.push({
+            id: `Flow_${ row }_${ column }`,
+            source: `Task_${ row }_${ column - 1 }`,
+            target: `Task_${ row }_${ column }`,
+            waypoints: [ [ column * 150 - 50, row * 120 + 40 ], [ column * 150, row * 120 + 40 ] ]
+          });
+        }
+      }
+    }
+
+    shapes.push(task('Task_X', 'X', [ 99 * 150 + 20, 99 * 120 + 10, 100, 80 ]));
+
+    const { rootElement, warnings } = await new BpmnModdle().fromXML(definitions({ shapes, flows }));
+
+    expect(warnings).to.be.empty;
+
+    // when
+    const started = Date.now();
+
+    const messages = testRule({ moddleRoot: rootElement, rule: noDiagramOverlaps() }).map(report => report.message);
+
+    const seconds = (Date.now() - started) / 1000;
+
+    // then -- the one overlap, found among some 2 x 10^8 pairs of shapes and
+    // as many of edges and shapes, in a time that compares only neighbours
+    expect(messages).to.eql([
+      'Shape "T99_99" (Task_99_99) overlaps shape "X" (Task_X) at x 14870..14950, y 11890..11960'
+    ]);
+
+    expect(seconds).to.be.below(5);
+  });
+
 });

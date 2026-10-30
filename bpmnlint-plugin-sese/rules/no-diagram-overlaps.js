@@ -89,6 +89,27 @@ const STROKE_PX = 2;
  */
 const MIN_SHARED_LENGTH_PX = 5;
 
+/**
+ * The side of the square cells the checks look drawn things up in.
+ *
+ * Two things can meet only where their boxes meet, and comparing every pair
+ * made each check quadratic in the size of the plane: on a diagram of 64 114
+ * shapes, 73 344 edges and 25 411 labels in one plane -- a whole repository
+ * drawn as one collaboration -- the rule had not finished after 40 minutes,
+ * and the modeller lints a diagram as it opens it. Every thing is registered
+ * in the cells its box covers and is compared only with what shares a cell.
+ * A cell is two task widths: it holds a handful of shapes, and a shape covers
+ * a handful of cells.
+ */
+const CELL_PX = 200;
+
+/**
+ * How many cells one box may cover before it is compared with everything
+ * instead of being registered: a frame around a whole diagram would fill more
+ * cells than there are things to compare it with.
+ */
+const MAX_CELLS = 1024;
+
 
 module.exports = function() {
 
@@ -119,7 +140,10 @@ function reportShapeOverlaps(drawing, reporter) {
     return !shape.frame;
   });
 
-  forEachPair(obstacles, function(a, b) {
+  forEachNearPair(boxesOf(obstacles), function(i, j) {
+
+    const a = obstacles[i];
+    const b = obstacles[j];
 
     if (belongTogether(a.element, b.element)) {
       return;
@@ -138,39 +162,42 @@ function reportShapeOverlaps(drawing, reporter) {
 
 function reportLabelOverlaps(drawing, reporter) {
 
-  drawing.labels.forEach(function(label) {
+  forEachNearCrossPair(boxesOf(drawing.labels), boxesOf(drawing.shapes), function(i, j) {
 
-    drawing.shapes.forEach(function(shape) {
+    const label = drawing.labels[i];
+    const shape = drawing.shapes[j];
 
-      if (shape.container) {
+    if (shape.container) {
 
-        // a frame's own label sits on the frame by design
-        if (shape.element === label.element) {
-          return;
-        }
-
-        if (intersection(label.box, shape.box) && !contains(shape.box, label.box)) {
-          reporter.report(
-            label.element.id,
-            `Label of ${ describe(label.element) } at ${ area(label.box) } crosses the border of ${ name(shape) }`
-          );
-        }
-
+      // a frame's own label sits on the frame by design
+      if (shape.element === label.element) {
         return;
       }
 
-      const overlap = intersection(label.box, shape.box);
-
-      if (overlap) {
+      if (intersection(label.box, shape.box) && !contains(shape.box, label.box)) {
         reporter.report(
           label.element.id,
-          `Label of ${ describe(label.element) } overlaps shape ${ name(shape) } at ${ area(overlap) }`
+          `Label of ${ describe(label.element) } at ${ area(label.box) } crosses the border of ${ name(shape) }`
         );
       }
-    });
+
+      return;
+    }
+
+    const overlap = intersection(label.box, shape.box);
+
+    if (overlap) {
+      reporter.report(
+        label.element.id,
+        `Label of ${ describe(label.element) } overlaps shape ${ name(shape) } at ${ area(overlap) }`
+      );
+    }
   });
 
-  forEachPair(drawing.labels, function(a, b) {
+  forEachNearPair(boxesOf(drawing.labels), function(i, j) {
+
+    const a = drawing.labels[i];
+    const b = drawing.labels[j];
 
     const overlap = intersection(a.box, b.box);
 
@@ -185,65 +212,68 @@ function reportLabelOverlaps(drawing, reporter) {
 
 function reportEdgesThroughShapes(drawing, reporter) {
 
-  drawing.edges.forEach(function(edge) {
+  forEachNearCrossPair(boxesOf(drawing.edges), boxesOf(drawing.shapes), function(i, j) {
 
-    drawing.shapes.forEach(function(shape) {
+    const edge = drawing.edges[i];
+    const shape = drawing.shapes[j];
 
-      // pools, lanes and groups are frames an edge may cross
-      if (edge.ends.indexOf(shape) !== -1 || shape.frame) {
+    // pools, lanes and groups are frames an edge may cross
+    if (edge.ends.indexOf(shape) !== -1 || shape.frame) {
+      return;
+    }
+
+    // an expanded subprocess is crossed legitimately only by edges that
+    // start or end inside it
+    if (shape.container) {
+
+      const endsInside = edge.ends.some(function(end) {
+        return end.element !== undefined && isAncestor(shape.element, end.element);
+      });
+
+      if (endsInside) {
         return;
       }
+    }
 
-      // an expanded subprocess is crossed legitimately only by edges that
-      // start or end inside it
-      if (shape.container) {
+    const crossings = clipPolyline(edge.points, shape.box);
 
-        const endsInside = edge.ends.some(function(end) {
-          return end.element !== undefined && isAncestor(shape.element, end.element);
-        });
-
-        if (endsInside) {
-          return;
-        }
-      }
-
-      const crossings = clipPolyline(edge.points, shape.box);
-
-      if (crossings.length) {
-        reporter.report(
-          reportedId(edge, shape),
-          `Edge ${ name(edge) } passes through shape ${ name(shape) } ${ stretches(crossings) }`
-        );
-      }
-    });
+    if (crossings.length) {
+      reporter.report(
+        reportedId(edge, shape),
+        `Edge ${ name(edge) } passes through shape ${ name(shape) } ${ stretches(crossings) }`
+      );
+    }
   });
 }
 
 function reportEdgesOverLabels(drawing, reporter) {
 
-  drawing.edges.forEach(function(edge) {
+  forEachNearCrossPair(boxesOf(drawing.edges), boxesOf(drawing.labels), function(i, j) {
 
-    drawing.labels.forEach(function(label) {
+    const edge = drawing.edges[i];
+    const label = drawing.labels[j];
 
-      if (label.element === edge.element) {
-        return;
-      }
+    if (label.element === edge.element) {
+      return;
+    }
 
-      const crossings = clipPolyline(edge.points, label.box);
+    const crossings = clipPolyline(edge.points, label.box);
 
-      if (crossings.length) {
-        reporter.report(
-          reportedId(edge, label),
-          `Edge ${ name(edge) } runs over the label of ${ describe(label.element) } ${ stretches(crossings) }`
-        );
-      }
-    });
+    if (crossings.length) {
+      reporter.report(
+        reportedId(edge, label),
+        `Edge ${ name(edge) } runs over the label of ${ describe(label.element) } ${ stretches(crossings) }`
+      );
+    }
   });
 }
 
 function reportSharedLines(drawing, reporter) {
 
-  forEachPair(drawing.edges, function(a, b) {
+  forEachNearPair(boxesOf(drawing.edges), function(i, j) {
+
+    const a = drawing.edges[i];
+    const b = drawing.edges[j];
 
     const pieces = [];
 
@@ -310,12 +340,16 @@ function readPlane(plane) {
     }
 
     if (is(di, 'bpmndi:BPMNEdge') && di.get('waypoint').length > 1) {
+
+      const points = di.get('waypoint').map(function(waypoint) {
+        return { x: waypoint.x, y: waypoint.y };
+      });
+
       edges.push({
         di: di,
         element: element,
-        points: di.get('waypoint').map(function(waypoint) {
-          return { x: waypoint.x, y: waypoint.y };
-        })
+        points: points,
+        box: boundsOf(points)
       });
     }
 
@@ -330,8 +364,10 @@ function readPlane(plane) {
     }
   });
 
+  const index = indexShapes(shapes);
+
   edges.forEach(function(edge) {
-    edge.ends = endShapes(edge, shapes);
+    edge.ends = endShapes(edge, shapes, index);
   });
 
   return {
@@ -363,8 +399,11 @@ function isExpandedSubProcess(element, di) {
  * side the model cannot name -- its reference unresolved, or the edge's own
  * element unresolved -- is the shape under the edge's waypoint on that side,
  * which is where the DI draws the edge to.
+ *
+ * The shapes come back in DI order, as a filter over every shape would return
+ * them; `index` finds them without reading every shape for every edge.
  */
-function endShapes(edge, shapes) {
+function endShapes(edge, shapes, index) {
 
   const connection = edge.element;
 
@@ -382,14 +421,83 @@ function endShapes(edge, shapes) {
   const first = edge.points[0];
   const last = edge.points[edge.points.length - 1];
 
-  return shapes.filter(function(shape) {
+  const picked = new Set();
 
-    if (shape.element !== undefined && (sources.indexOf(shape.element) !== -1 || targets.indexOf(shape.element) !== -1)) {
-      return true;
+  sources.concat(targets).forEach(function(element) {
+
+    const positions = index.byElement.get(element);
+
+    if (positions !== undefined) {
+      positions.forEach(function(position) {
+        picked.add(position);
+      });
+    }
+  });
+
+  if (sources.length === 0) {
+    shapesCovering(first, shapes, index).forEach(function(position) {
+      picked.add(position);
+    });
+  }
+
+  if (targets.length === 0) {
+    shapesCovering(last, shapes, index).forEach(function(position) {
+      picked.add(position);
+    });
+  }
+
+  return Array.from(picked).sort(ascending).map(function(position) {
+    return shapes[position];
+  });
+}
+
+/**
+ * The positions of the shapes of each resolved element, and the grid of all
+ * the shapes' boxes, with the shapes too wide for it kept apart.
+ */
+function indexShapes(shapes) {
+
+  const byElement = new Map();
+
+  shapes.forEach(function(shape, position) {
+
+    if (shape.element === undefined) {
+      return;
     }
 
-    return (sources.length === 0 && covers(shape.box, first)) ||
-      (targets.length === 0 && covers(shape.box, last));
+    const positions = byElement.get(shape.element);
+
+    if (positions === undefined) {
+      byElement.set(shape.element, [ position ]);
+    } else {
+      positions.push(position);
+    }
+  });
+
+  const ranges = shapes.map(function(shape) {
+    return cellsOf(shape.box);
+  });
+
+  return {
+    byElement: byElement,
+    grid: gridOf(ranges),
+    wide: widePositions(ranges)
+  };
+}
+
+/**
+ * The positions of the shapes whose box covers `point`, give or take a
+ * stroke: those registered in the point's cell, and the wide ones.
+ */
+function shapesCovering(point, shapes, index) {
+
+  const items = index.grid.get(cellKey(Math.floor(point.x / CELL_PX), Math.floor(point.y / CELL_PX)));
+
+  // a cell that no shape covers is not in the grid
+  const candidates = items === undefined ? index.wide : items.concat(index.wide);
+
+  return candidates.filter(function(position) {
+    return covers(shapes[position].box, point);
   });
 }
 
@@ -715,6 +823,205 @@ function distance(p, q) {
   return Math.hypot(q.x - p.x, q.y - p.y);
 }
 
+/**
+ * The box around a polyline's points.
+ */
+function boundsOf(points) {
+  return points.reduce(function(box, point) {
+    return {
+      left: Math.min(box.left, point.x),
+      top: Math.min(box.top, point.y),
+      right: Math.max(box.right, point.x),
+      bottom: Math.max(box.bottom, point.y)
+    };
+  }, { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity });
+}
+
+
+// the grid ///////////////
+
+/**
+ * The cells a box covers once it is stretched by a stroke on every side: two
+ * things that come within a stroke of each other then share a cell, and no
+ * check here reaches further than that.
+ */
+function cellsOf(box) {
+  return {
+    left: Math.floor((box.left - STROKE_PX) / CELL_PX),
+    top: Math.floor((box.top - STROKE_PX) / CELL_PX),
+    right: Math.floor((box.right + STROKE_PX) / CELL_PX),
+    bottom: Math.floor((box.bottom + STROKE_PX) / CELL_PX)
+  };
+}
+
+/**
+ * Whether a range of cells is compared with everything instead of being
+ * registered: it covers more than `MAX_CELLS`, or its box has a coordinate
+ * that is not a finite number, which no count of cells can hold and which
+ * the comparisons of every pair did not leave out either.
+ */
+function isWide(range) {
+
+  const count = (range.right - range.left + 1) * (range.bottom - range.top + 1);
+
+  return !(count <= MAX_CELLS);
+}
+
+function widePositions(ranges) {
+
+  const wide = [];
+
+  ranges.forEach(function(range, position) {
+    if (isWide(range)) {
+      wide.push(position);
+    }
+  });
+
+  return wide;
+}
+
+function cellKey(column, row) {
+  return column + ',' + row;
+}
+
+/**
+ * Calls `fn` with the key of every cell a range covers.
+ */
+function forEachCellKey(range, fn) {
+
+  for (let column = range.left; column <= range.right; column++) {
+    for (let row = range.top; row <= range.bottom; row++) {
+      fn(cellKey(column, row));
+    }
+  }
+}
+
+/**
+ * Every cell a range that is not wide covers, with the positions of the
+ * ranges covering it in ascending order.
+ */
+function gridOf(ranges) {
+
+  const grid = new Map();
+
+  ranges.forEach(function(range, position) {
+
+    if (isWide(range)) {
+      return;
+    }
+
+    forEachCellKey(range, function(key) {
+
+      const items = grid.get(key);
+
+      if (items === undefined) {
+        grid.set(key, [ position ]);
+      } else {
+        items.push(position);
+      }
+    });
+  });
+
+  return grid;
+}
+
+/**
+ * Calls `fn(i, j)` for every pair of `boxes` that can meet, `i < j`, in the
+ * order a loop over every pair visits them: the pairs sharing a cell, and
+ * every pair with a wide box. The partners of one position are gathered at a
+ * time, so no list of every pair is held: a plane whose edges really do run
+ * over each other by the thousand has that many pairs to report, and only
+ * those.
+ */
+function forEachNearPair(boxes, fn) {
+
+  const ranges = boxes.map(cellsOf);
+  const grid = gridOf(ranges);
+  const wide = widePositions(ranges);
+
+  ranges.forEach(function(range, i) {
+
+    const partners = new Set();
+
+    if (isWide(range)) {
+      for (let j = i + 1; j < ranges.length; j++) {
+        partners.add(j);
+      }
+    } else {
+      forEachCellKey(range, function(key) {
+
+        const items = grid.get(key);
+
+        if (items !== undefined) {
+          items.forEach(function(j) {
+            if (j > i) {
+              partners.add(j);
+            }
+          });
+        }
+      });
+
+      wide.forEach(function(j) {
+        if (j > i) {
+          partners.add(j);
+        }
+      });
+    }
+
+    Array.from(partners).sort(ascending).forEach(function(j) {
+      fn(i, j);
+    });
+  });
+}
+
+/**
+ * Calls `fn(i, j)` for every box `i` of `firsts` and box `j` of `seconds`
+ * that can meet, in the order two nested loops over them visit them.
+ */
+function forEachNearCrossPair(firsts, seconds, fn) {
+
+  const secondRanges = seconds.map(cellsOf);
+  const grid = gridOf(secondRanges);
+  const wideSeconds = widePositions(secondRanges);
+
+  firsts.forEach(function(box, i) {
+
+    const range = cellsOf(box);
+    const partners = new Set(wideSeconds);
+
+    if (isWide(range)) {
+      seconds.forEach(function(second, j) {
+        partners.add(j);
+      });
+    } else {
+      forEachCellKey(range, function(key) {
+
+        const items = grid.get(key);
+
+        if (items !== undefined) {
+          items.forEach(function(j) {
+            partners.add(j);
+          });
+        }
+      });
+    }
+
+    Array.from(partners).sort(ascending).forEach(function(j) {
+      fn(i, j);
+    });
+  });
+}
+
+function boxesOf(items) {
+  return items.map(function(item) {
+    return item.box;
+  });
+}
+
+function ascending(a, b) {
+  return a - b;
+}
+
 
 // the model ///////////////
 
@@ -753,15 +1060,6 @@ function belongTogether(a, b) {
  */
 function is(element, type) {
   return element !== undefined && typeof element.$instanceOf === 'function' && element.$instanceOf(type);
-}
-
-function forEachPair(items, fn) {
-
-  for (let i = 0; i < items.length; i++) {
-    for (let j = i + 1; j < items.length; j++) {
-      fn(items[i], items[j]);
-    }
-  }
 }
 
 
