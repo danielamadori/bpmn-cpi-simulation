@@ -16,7 +16,17 @@
  *   3. an edge segment that passes through a shape other than the edge's own
  *      source or target;
  *   4. an edge segment that runs over a label other than the edge's own;
- *   5. two edges drawn along the same line for more than a few pixels.
+ *   5. two edges drawn along the same line for more than a few pixels, except
+ *      the TRUNK two edges share where they leave one GATEWAY from one point,
+ *      or enter it at one point: the stretch that starts there and runs on
+ *      while they are still together. That is how a gateway's arms are drawn,
+ *      and a reader sees one line splitting, not one line hiding another
+ *      (Daniel, 2026-11-02: «Tronco ammesso», for the trunk next to the
+ *      gateway). Measured on bpmnpy's model the same day: 11 109 of the
+ *      11 159 pairs of sequence flows this check reported were such trunks.
+ *      Two edges into one task or one event at one point are still reported,
+ *      and so are two edges with both their source and their target in
+ *      common: drawn together they are two flows that look like one.
  *
  * Each finding names both elements and where they meet, in diagram
  * coordinates. It is reported on one of the two: the first shape in DI order
@@ -289,8 +299,9 @@ function reportSharedLines(drawing, reporter) {
     });
 
     // a waypoint in the middle of a straight run splits one shared stretch
-    // into pieces: they are joined before they are measured
-    const shared = joinPieces(pieces).filter(function(stretch) {
+    // into pieces: they are joined before they are measured, and a trunk the
+    // two edges share where they leave or enter one shape is taken out
+    const shared = withoutTrunks(joinPieces(pieces), sharedDockings(a, b)).filter(function(stretch) {
       return distance(stretch.from, stretch.to) > MIN_SHARED_LENGTH_PX;
     });
 
@@ -306,6 +317,87 @@ function reportSharedLines(drawing, reporter) {
       );
     }
   });
+}
+
+
+/**
+ * The points where two edges leave one gateway together, or enter it together.
+ *
+ * A start they share when they have a gateway as source in common and begin
+ * within a stroke of each other; an end likewise. None when they have both a
+ * source and a target in common: two flows between the same two shapes drawn
+ * on one line read as one flow, and that is what this rule is for.
+ */
+function sharedDockings(a, b) {
+
+  function common(shapesA, shapesB) {
+    return shapesA.some(function(shape) {
+      return shapesB.indexOf(shape) !== -1;
+    });
+  }
+
+  function commonGateway(shapesA, shapesB) {
+    return shapesA.some(function(shape) {
+      return shapesB.indexOf(shape) !== -1 && is(shape.element, 'bpmn:Gateway');
+    });
+  }
+
+  if (common(a.from, b.from) && common(a.to, b.to)) {
+    return [];
+  }
+
+  const sameSource = commonGateway(a.from, b.from);
+  const sameTarget = commonGateway(a.to, b.to);
+
+  const lastA = a.points[a.points.length - 1];
+  const lastB = b.points[b.points.length - 1];
+
+  const docks = [];
+
+  if (sameSource && distance(a.points[0], b.points[0]) <= STROKE_PX) {
+    docks.push(a.points[0]);
+  }
+
+  if (sameTarget && distance(lastA, lastB) <= STROKE_PX) {
+    docks.push(lastA);
+  }
+
+  return docks;
+}
+
+/**
+ * The shared stretches left once each trunk is taken out.
+ *
+ * A trunk is the chain of stretches that starts at a gateway's docking point
+ * the two edges share and runs on from the far end of one stretch to the next: the
+ * line a gateway's arms draw together until they part. Whatever they share
+ * after parting is not part of it, and stays.
+ */
+function withoutTrunks(stretches, docks) {
+
+  const left = stretches.slice();
+
+  docks.forEach(function(dock) {
+
+    let at = dock;
+
+    for (;;) {
+      const next = left.findIndex(function(stretch) {
+        return distance(stretch.from, at) <= STROKE_PX || distance(stretch.to, at) <= STROKE_PX;
+      });
+
+      if (next === -1) {
+        break;
+      }
+
+      const stretch = left[next];
+
+      at = distance(stretch.from, at) <= STROKE_PX ? stretch.to : stretch.from;
+      left.splice(next, 1);
+    }
+  });
+
+  return left;
 }
 
 
@@ -367,7 +459,14 @@ function readPlane(plane) {
   const index = indexShapes(shapes);
 
   edges.forEach(function(edge) {
-    edge.ends = endShapes(edge, shapes, index);
+    const from = sidePositions(edge, 'sourceRef', shapes, index);
+    const to = sidePositions(edge, 'targetRef', shapes, index);
+
+    edge.from = from.map(function(position) { return shapes[position]; });
+    edge.to = to.map(function(position) { return shapes[position]; });
+    edge.ends = Array.from(new Set(from.concat(to))).sort(ascending).map(function(position) {
+      return shapes[position];
+    });
   });
 
   return {
@@ -392,7 +491,8 @@ function isExpandedSubProcess(element, di) {
 }
 
 /**
- * The shapes an edge is drawn between.
+ * The positions of the shapes an edge is drawn FROM (`sourceRef`) or TO
+ * (`targetRef`), in DI order.
  *
  * The model's references say which, and a data association's activity is
  * not among them: bpmn-js draws a data association to or from its parent. A
@@ -400,30 +500,27 @@ function isExpandedSubProcess(element, di) {
  * element unresolved -- is the shape under the edge's waypoint on that side,
  * which is where the DI draws the edge to.
  *
- * The shapes come back in DI order, as a filter over every shape would return
- * them; `index` finds them without reading every shape for every edge.
+ * `index` finds the shapes without reading every shape for every edge. An
+ * edge's `ends`, the two sides together, are what it may cross; its `from`
+ * and `to` apart are what it may share a trunk on.
  */
-function endShapes(edge, shapes, index) {
+function sidePositions(edge, name, shapes, index) {
 
   const connection = edge.element;
 
-  const sources = references(connection, 'sourceRef');
-  const targets = references(connection, 'targetRef');
+  const elements = references(connection, name);
 
-  if (is(connection, 'bpmn:DataOutputAssociation')) {
-    sources.push(connection.$parent);
+  if (name === 'sourceRef' && is(connection, 'bpmn:DataOutputAssociation')) {
+    elements.push(connection.$parent);
   }
 
-  if (is(connection, 'bpmn:DataInputAssociation')) {
-    targets.push(connection.$parent);
+  if (name === 'targetRef' && is(connection, 'bpmn:DataInputAssociation')) {
+    elements.push(connection.$parent);
   }
-
-  const first = edge.points[0];
-  const last = edge.points[edge.points.length - 1];
 
   const picked = new Set();
 
-  sources.concat(targets).forEach(function(element) {
+  elements.forEach(function(element) {
 
     const positions = index.byElement.get(element);
 
@@ -434,21 +531,16 @@ function endShapes(edge, shapes, index) {
     }
   });
 
-  if (sources.length === 0) {
-    shapesCovering(first, shapes, index).forEach(function(position) {
+  if (elements.length === 0) {
+
+    const point = name === 'sourceRef' ? edge.points[0] : edge.points[edge.points.length - 1];
+
+    shapesCovering(point, shapes, index).forEach(function(position) {
       picked.add(position);
     });
   }
 
-  if (targets.length === 0) {
-    shapesCovering(last, shapes, index).forEach(function(position) {
-      picked.add(position);
-    });
-  }
-
-  return Array.from(picked).sort(ascending).map(function(position) {
-    return shapes[position];
-  });
+  return Array.from(picked).sort(ascending);
 }
 
 /**

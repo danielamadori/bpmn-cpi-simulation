@@ -374,6 +374,7 @@ describe('sese/no-diagram-overlaps', function() {
           id: 'Flow_21', source: 'Task_L2', target: 'Task_L1',
           waypoints: [ [ 350, 180 ], [ 350, 230 ], [ 250, 230 ], [ 150, 230 ], [ 150, 180 ] ]
         },
+        // into the same task at the same point: no trunk, a task is no gateway
         {
           id: 'Flow_31', source: 'Task_L3', target: 'Task_L1',
           waypoints: [ [ 550, 180 ], [ 550, 230 ], [ 150, 230 ], [ 150, 180 ] ]
@@ -399,6 +400,57 @@ describe('sese/no-diagram-overlaps', function() {
     expect(messages).to.eql([
       'Edge Flow_21 and edge Flow_31 run along the same line for 250px ' +
       'from (350, 230) to (150, 230); from (150, 230) to (150, 180)'
+    ]);
+  });
+
+
+  it('should accept the trunk of a gateway\'s fan, not what its arms share after parting', async function() {
+
+    const messages = await lint({
+      shapes: [
+
+        // three arms out of a split's bottom vertex, two into a join's
+        { type: 'exclusiveGateway', id: 'Gateway_F', bounds: [ 300, 400, 50, 50 ] },
+        task('Task_A', 'A', [ 450, 480, 100, 80 ]),
+        task('Task_B', 'B', [ 450, 580, 100, 80 ]),
+        task('Task_C', 'C', [ 450, 680, 100, 80 ]),
+        { type: 'exclusiveGateway', id: 'Gateway_J', bounds: [ 300, 900, 50, 50 ] },
+        task('Task_D', 'D', [ 100, 960, 100, 80 ]),
+        task('Task_E', 'E', [ 100, 1060, 100, 80 ]),
+
+        // two arms that part, then run together again
+        { type: 'exclusiveGateway', id: 'Gateway_G', bounds: [ 300, 1300, 50, 50 ] },
+        task('Task_X', 'X', [ 700, 1460, 100, 80 ]),
+        task('Task_Y', 'Y', [ 700, 1560, 100, 80 ]),
+
+        // two flows between the same two shapes
+        task('Task_P', 'P', [ 100, 1700, 100, 80 ]),
+        task('Task_Q', 'Q', [ 400, 1700, 100, 80 ])
+      ],
+      flows: [
+        { id: 'Flow_FA', source: 'Gateway_F', target: 'Task_A', waypoints: [ [ 325, 450 ], [ 325, 520 ], [ 450, 520 ] ] },
+        { id: 'Flow_FB', source: 'Gateway_F', target: 'Task_B', waypoints: [ [ 325, 450 ], [ 325, 620 ], [ 450, 620 ] ] },
+        { id: 'Flow_FC', source: 'Gateway_F', target: 'Task_C', waypoints: [ [ 325, 450 ], [ 325, 720 ], [ 450, 720 ] ] },
+        { id: 'Flow_DJ', source: 'Task_D', target: 'Gateway_J', waypoints: [ [ 200, 1000 ], [ 325, 1000 ], [ 325, 950 ] ] },
+        { id: 'Flow_EJ', source: 'Task_E', target: 'Gateway_J', waypoints: [ [ 200, 1100 ], [ 325, 1100 ], [ 325, 950 ] ] },
+        {
+          id: 'Flow_GX', source: 'Gateway_G', target: 'Task_X',
+          waypoints: [ [ 325, 1350 ], [ 325, 1400 ], [ 600, 1400 ], [ 600, 1500 ], [ 700, 1500 ] ]
+        },
+        {
+          id: 'Flow_GY', source: 'Gateway_G', target: 'Task_Y',
+          waypoints: [ [ 325, 1350 ], [ 325, 1450 ], [ 600, 1450 ], [ 600, 1600 ], [ 700, 1600 ] ]
+        },
+        { id: 'Flow_PQ1', source: 'Task_P', target: 'Task_Q', waypoints: [ [ 200, 1740 ], [ 400, 1740 ] ] },
+        { id: 'Flow_PQ2', source: 'Task_P', target: 'Task_Q', waypoints: [ [ 200, 1740 ], [ 400, 1740 ] ] }
+      ]
+    });
+
+    expect(messages).to.eql([
+      'Edge Flow_GX and edge Flow_GY run along the same line for 50px ' +
+      'from (600, 1450) to (600, 1500)',
+      'Edge Flow_PQ1 and edge Flow_PQ2 run along the same line for 200px ' +
+      'from (200, 1740) to (400, 1740)'
     ]);
   });
 
