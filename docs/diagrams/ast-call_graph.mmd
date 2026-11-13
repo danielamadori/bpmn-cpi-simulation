@@ -1,302 +1,2362 @@
+%% OVER MERMAID'S DEFAULT LIMIT: 125225 characters of diagram, plus 861 for these two lines, is 126086 against a 50000-character default (over by 76086, x2.5). THE NOTE COUNTS: mermaid measures the whole file, so a figure that left these lines out would understate the length of the very file carrying it. At the default config a renderer DISCARDS this entire file and draws 'Maximum text size in diagram exceeded' instead -- and exits 0, because that placeholder is itself a valid diagram.
+%% THIS FILE CANNOT RAISE THE LIMIT ITSELF. `maxTextSize` is in mermaid's `secure` list (config.schema.yaml: "can only be changed via call to mermaid.initialize"), so an init directive written into the diagram is deleted by `sanitize()` before it is read. The host must pass it -- for mmdc, `-c` with a config setting maxTextSize -- or the diagram must be made smaller.
 flowchart TD
-%% truncated: showing 100 of 743 nodes, 200 of 1021 edges (top-degree induced subgraph)
+    _bo_name________trim["(bo.name || '').trim"]
+    _cd_decisions________every["(cd.decisions || []).every"]
+    _cd_decisions________forEach["(cd.decisions || []).forEach"]
+    _child_decisions________forEach["(child.decisions || []).forEach"]
+    _element_type________replace["(element.type || '').replace"]
+    _gateway_outgoing________filter["(gateway.outgoing || []).filter"]
+    _gw_outgoing________filter["(gw.outgoing || []).filter"]
+    _pool_____pool___concat_pool_lanes________concat["(pool ? [ pool ].concat(pool.lanes) : []).concat"]
+    _pool_____pool___concat_pool_lanes________concat_shapes__map["(pool ? [ pool ].concat(pool.lanes) : []).concat(shapes).map"]
+    _pool_____pool___concat_pool_lanes________concat_shapes__map_shape__________bpmndi_BPMNShape___attributes_________id______shape_id___di_________bpmnElement__shape_id________isExpanded__shape_expanded____true____undefined_____________boundsXml_shape_bounds______labelXml_shape_label_____bpmndi_BPMNShape_______join["(pool ? [ pool ].concat(pool.lanes) : []).concat(shapes).map(shape =#gt;
+    `#lt;bpmndi:BPMNShape${ attributes({
+      id: `${ shape.id }_di`,
+      bpmnElement: shape.id,
+      isExpanded: shape.expanded ? 'true' : undefined
+    }) }#gt;${ boundsXml(shape.bounds) }${ labelXml(shape.label) }#lt;/bpmndi:BPMNShape#gt;`
+  ).join"]
+    _rawName________element_type________replace__bpmn____________Element_____bo_id____________replace["(rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`)
+      .replace"]
+    _sel_value________startsWith["(sel.value || '').startsWith"]
+    _Cannot_find_module______Simulator___________json___exec["/Cannot find module '\\.\\/Simulator\\.([^.]*)\\.json'/.exec"]
+    _expected_trace____________exec["/expected trace #lt;([^#gt;]+)#gt;/.exec"]
+    ACTIVITY_STATE_NAME_get["ACTIVITY_STATE_NAME.get"]
+    ActivityBehavior["ActivityBehavior<br/><small>javascript function</small>"]
+    AnimatedMessageFlowBehavior["AnimatedMessageFlowBehavior<br/><small>javascript function</small>"]
+    AnimatedSequenceFlowBehavior["AnimatedSequenceFlowBehavior<br/><small>javascript function</small>"]
     Animation["Animation<br/><small>javascript function</small>"]
+    BoundaryEventBehavior["BoundaryEventBehavior<br/><small>javascript function</small>"]
+    CheckCircleIcon["CheckCircleIcon"]
     ColoredScopes["ColoredScopes<br/><small>javascript function</small>"]
     ContextPads["ContextPads<br/><small>javascript function</small>"]
+    DisableModeling["DisableModeling<br/><small>javascript function</small>"]
+    DurationProps["DurationProps<br/><small>javascript function</small>"]
     EditorActions["EditorActions<br/><small>javascript function</small>"]
     ElementColors["ElementColors<br/><small>javascript function</small>"]
+    ElementNotifications["ElementNotifications<br/><small>javascript function</small>"]
+    ElementSupport["ElementSupport<br/><small>javascript function</small>"]
+    EndEventBehavior["EndEventBehavior<br/><small>javascript function</small>"]
+    EventBasedGatewayBehavior["EventBasedGatewayBehavior<br/><small>javascript function</small>"]
+    EventBehaviors["EventBehaviors<br/><small>javascript function</small>"]
+    ExclusiveGatewayBehavior["ExclusiveGatewayBehavior<br/><small>javascript function</small>"]
+    ExclusiveGatewaySettings["ExclusiveGatewaySettings<br/><small>javascript function</small>"]
+    FixtureReporter["FixtureReporter<br/><small>javascript function</small>"]
+    InclusiveGatewayBehavior["InclusiveGatewayBehavior<br/><small>javascript function</small>"]
+    InclusiveGatewaySettings["InclusiveGatewaySettings<br/><small>javascript function</small>"]
+    IntermediateCatchEventBehavior["IntermediateCatchEventBehavior<br/><small>javascript function</small>"]
+    IntermediateThrowEventBehavior["IntermediateThrowEventBehavior<br/><small>javascript function</small>"]
+    KeyboardBindings["KeyboardBindings<br/><small>javascript function</small>"]
     Log["Log<br/><small>javascript function</small>"]
+    MessageFlowBehavior["MessageFlowBehavior<br/><small>javascript function</small>"]
+    NeutralElementColors["NeutralElementColors<br/><small>javascript function</small>"]
+    Notifications["Notifications<br/><small>javascript function</small>"]
     Palette["Palette<br/><small>javascript function</small>"]
+    ParallelGatewayBehavior["ParallelGatewayBehavior<br/><small>javascript function</small>"]
     PauseSimulation["PauseSimulation<br/><small>javascript function</small>"]
+    ProcessBehavior["ProcessBehavior<br/><small>javascript function</small>"]
     ResetSimulation["ResetSimulation<br/><small>javascript function</small>"]
+    SIMULATION_EDITOR_ACTIONS_includes["SIMULATION_EDITOR_ACTIONS.includes"]
+    ScopeFilter["ScopeFilter<br/><small>javascript function</small>"]
+    SelectionAPI["SelectionAPI<br/><small>javascript function</small>"]
+    SequenceFlowBehavior["SequenceFlowBehavior<br/><small>javascript function</small>"]
     SetAnimationSpeed["SetAnimationSpeed<br/><small>javascript function</small>"]
     ShowScopes["ShowScopes<br/><small>javascript function</small>"]
+    SimulationState["SimulationState<br/><small>javascript function</small>"]
+    SimulationTrace["SimulationTrace<br/><small>javascript function</small>"]
+    SimulationTraceEvents["SimulationTraceEvents<br/><small>javascript function</small>"]
+    Simulator["Simulator<br/><small>javascript function</small>"]
+    StartEventBehavior["StartEventBehavior<br/><small>javascript function</small>"]
+    String_e_name________trim["String(e.name || '').trim"]
+    String_window__apiBaseUrl__replace["String(window._apiBaseUrl).replace"]
+    SubProcessBehavior["SubProcessBehavior<br/><small>javascript function</small>"]
+    TextFieldEntry["TextFieldEntry"]
+    TimesCircleIcon["TimesCircleIcon"]
     ToggleMode["ToggleMode<br/><small>javascript function</small>"]
+    TokenAnimation["TokenAnimation<br/><small>javascript function</small>"]
     TokenCount["TokenCount<br/><small>javascript function</small>"]
+    URL_createObjectURL["URL.createObjectURL"]
+    URL_revokeObjectURL["URL.revokeObjectURL"]
+    ____________t_action____________t_element____t_element_id_____null_____________t_scope____t_scope_id_____null____________join["[
+          t.action,
+          t.element && t.element.id || 'null',
+          t.scope && t.scope.id || 'null'
+        ].join"]
+    ______pool_____bpmn_laneSet_id__LaneSet_1_____pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join________bpmn_laneSet_____________shapes_filter_shape____shape_parent_____undefined__map_elementXml__join__________flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join_________join["[
+    pool ? `#lt;bpmn:laneSet id=#quot;LaneSet_1#quot;#gt;${ pool.lanes.map(lane =#gt;
+      `#lt;bpmn:lane id=#quot;${ lane.id }#quot; name=#quot;${ lane.name }#quot;#gt;${ lane.nodes.map(node =#gt;
+        `#lt;bpmn:flowNodeRef#gt;${ node }#lt;/bpmn:flowNodeRef#gt;`).join('') }#lt;/bpmn:lane#gt;`
+    ).join('') }#lt;/bpmn:laneSet#gt;` : '',
+    shapes.filter(shape =#gt; shape.parent === undefined).map(elementXml).join(''),
+    flows.map(flow =#gt;
+      `#lt;bpmn:${ flow.type === undefined ? 'sequenceFlow' : flow.type }${
+        attributes({ id: flow.id, name: flow.name, sourceRef: flow.source, targetRef: flow.target }) } /#gt;`
+    ).join('')
+  ].join"]
+    ___Enter_________Spacebar____includes["[ 'Enter', ' ', 'Spacebar' ].includes"]
+    ___type____name____iref____every["[ 'type', 'name', 'iref' ].every"]
+    _____intersection___filter["[ ...intersection ].filter"]
+    __interrupt_triggerFn_initiator____flat["[ interrupt.triggerFn(initiator) ].flat"]
+    __interrupt_triggerFn_initiator____flat___filter["[ interrupt.triggerFn(initiator) ].flat().filter"]
+    __pool___concat["[ pool ].concat"]
+    __split__0____split__1____scopes__scope_____join["[ split[ 0 ], split[ 1 ], scopes[ scope ] ].join"]
+    ____activations_____completions__filter["[...activations, ...completions].filter"]
+    ____completedInTarget__join["[...completedInTarget].join"]
+    ____history_keys____pop["[...history.keys()].pop"]
+    _action["_action"]
+    _bootstrapModeler["_bootstrapModeler"]
+    _contexts["_contexts"]
+    _contexts___filter["_contexts().filter"]
+    _origPlayStatesEnd["_origPlayStatesEnd<br/><small>javascript function</small>"]
+    _readMetric["_readMetric<br/><small>javascript function</small>"]
     _recordMetricsForElement["_recordMetricsForElement<br/><small>javascript function</small>"]
     _refreshHeatmapMetricOptions["_refreshHeatmapMetricOptions<br/><small>javascript function</small>"]
+    _resetHeatmapAccumulators["_resetHeatmapAccumulators<br/><small>javascript function</small>"]
     _resetHeatmapImpactDiscovery["_resetHeatmapImpactDiscovery<br/><small>javascript function</small>"]
+    _scheduleDropdownRefresh["_scheduleDropdownRefresh<br/><small>javascript function</small>"]
+    _scopeProcessId["_scopeProcessId<br/><small>javascript function</small>"]
+    _setDisplayId["_setDisplayId<br/><small>javascript function</small>"]
+    _syncCurrentNodeId["_syncCurrentNodeId<br/><small>javascript function</small>"]
+    action["action<br/><small>javascript function</small>"]
+    activations_find["activations.find"]
+    active["active<br/><small>javascript method</small>"]
+    adjustedExpectedTrace_push["adjustedExpectedTrace.push"]
     aggregateByElement["aggregateByElement<br/><small>javascript function</small>"]
+    allElements_forEach["allElements.forEach"]
+    allKeys_filter["allKeys.filter"]
+    allScopes_map["allScopes.map"]
+    allScopesAfter_filter["allScopesAfter.filter"]
+    allScopesAfter_filter_s_____s_destroyed__forEach["allScopesAfter.filter(s =#gt; !s.destroyed).forEach"]
+    along["along<br/><small>javascript function</small>"]
+    animation_getAnimationSpeed["animation.getAnimationSpeed"]
+    animation_hide["animation.hide"]
+    animation_setAnimationSpeed["animation.setAnimationSpeed"]
+    animation_show["animation.show"]
     applyTheme["applyTheme<br/><small>javascript function</small>"]
+    area["area<br/><small>javascript function</small>"]
+    array_filter["array.filter"]
+    attributes["attributes<br/><small>javascript function</small>"]
+    baseReporterDecorator["baseReporterDecorator"]
+    belongTogether["belongTogether<br/><small>javascript function</small>"]
+    bo__instanceOf["bo.$instanceOf"]
+    bo_eventDefinitions_some["bo.eventDefinitions.some"]
+    bo_get["bo.get"]
+    bootstrapModeler["bootstrapModeler<br/><small>javascript function</small>"]
+    bootstrapModeler_diagram__________additionalModules____________SimulatorModule________________________init__________________function_simulator__simulationTrace__________________simulator_on__trace___function_event____________________simulationTrace_push_event________________________________________________function_eventBus__simulator__________________eventBus_once__import_done___________________________simulator_reset___________________________________________________________scopeIds_____factory___function__________________let_idx___0_______________const_alphabet___Array_from__ABCDEFGHIJKLMNOPQRSTUVWXYZ____________________generate_IDs_in_alphabetic_order_________________when_overflowing_the_alphabet__attach_a_numeric_runner_suffix________________________________A_B_C_D_E_____Z_A1_B1_C1_________________function_next___________________const_i___idx___________________const_runner___Math_trunc_i___alphabet_length_________________const_char___i___alphabet_length_________________return_alphabet_char_____runner____________________________________return_________________next_________________________________________simulationScopes_____value___________________simulationTrace_____value_________________________________call["bootstrapModeler(diagram, {
+      additionalModules: [
+        SimulatorModule,
+        {
+          __init__: [
+            function(simulator, simulationTrace) {
+              simulator.on('trace', function(event) {
+                simulationTrace.push(event);
+              });
+            },
+            function(eventBus, simulator) {
+              eventBus.once('import.done', () =#gt; {
+                simulator.reset();
+              });
+            }
+          ],
+          scopeIds: [ 'factory', function() {
+
+            let idx = 0;
+
+            const alphabet = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
+            // generate IDs in alphabetic order;
+            // when overflowing the alphabet, attach a numeric runner suffix:
+            //
+            // A B C D E ... Z A1 B1 C1 ...
+            function next() {
+              const i = idx++;
+
+              const runner = Math.trunc(i / alphabet.length);
+              const char = i % alphabet.length;
+
+              return alphabet[char] + (runner || '');
+            }
+
+            return {
+              next
+            };
+          } ],
+          simulationScopes: [ 'value', {} ],
+          simulationTrace: [ 'value', [] ]
+        }
+      ]
+    }).call"]
+    boundsOf["boundsOf<br/><small>javascript function</small>"]
+    boundsXml["boundsXml<br/><small>javascript function</small>"]
+    boxes_map["boxes.map"]
+    boxesOf["boxesOf<br/><small>javascript function</small>"]
+    bpmnFactory_create["bpmnFactory.create"]
+    bpmnJsSatisfies["bpmnJsSatisfies<br/><small>javascript function</small>"]
+    bpmnjs_get["bpmnjs.get"]
+    branches_map["branches.map"]
+    btn_addEventListener["btn.addEventListener"]
     buildProcessToTokenMap["buildProcessToTokenMap<br/><small>javascript function</small>"]
+    byElement_get["byElement.get"]
+    byElement_set["byElement.set"]
+    c_substring["c.substring"]
+    canTriggerElement["canTriggerElement<br/><small>javascript function</small>"]
+    cancel["cancel<br/><small>javascript method</small>"]
+    canceled["canceled<br/><small>javascript method</small>"]
+    candidates_filter["candidates.filter"]
+    canvas_getContainer["canvas.getContainer"]
+    canvas_getContainer___querySelector["canvas.getContainer().querySelector"]
+    canvas_getContainer___querySelector___djs_palette___getBoundingClientRect["canvas.getContainer().querySelector('.djs-palette').getBoundingClientRect"]
+    canvas_getContext["canvas.getContext"]
+    canvas_getGraphics["canvas.getGraphics"]
+    canvas_getGraphics_element__getBoundingClientRect["canvas.getGraphics(element).getBoundingClientRect"]
+    canvas_getRootElement["canvas.getRootElement"]
+    canvas_toBlob["canvas.toBlob"]
+    canvas_viewbox["canvas.viewbox"]
+    canvasEl_appendChild["canvasEl.appendChild"]
+    canvasLock_lock["canvasLock.lock"]
+    canvasLock_unlock["canvasLock.unlock"]
+    cellKey["cellKey<br/><small>javascript function</small>"]
+    cellsOf["cellsOf<br/><small>javascript function</small>"]
+    changedElements_add["changedElements.add"]
+    changedElements_clear["changedElements.clear"]
+    check["check<br/><small>javascript function</small>"]
+    checkDrain["checkDrain<br/><small>javascript function</small>"]
+    child_decisions_every["child.decisions.every"]
+    child_incoming_find["child.incoming.find"]
+    child_incoming_some["child.incoming.some"]
+    children_find["children.find"]
+    children_forEach["children.forEach"]
+    children_push["children.push"]
+    children_some["children.some"]
+    childrenDecisions_find["childrenDecisions.find"]
+    childrenDecisions_forEach["childrenDecisions.forEach"]
+    clipPolyline["clipPolyline<br/><small>javascript function</small>"]
+    clipSegment["clipSegment<br/><small>javascript function</small>"]
+    command["command"]
+    common["common<br/><small>javascript function</small>"]
+    commonGateway["commonGateway<br/><small>javascript function</small>"]
+    compensable["compensable<br/><small>javascript method</small>"]
+    complete["complete<br/><small>javascript method</small>"]
+    completed["completed<br/><small>javascript method</small>"]
+    completedInTarget_add["completedInTarget.add"]
+    completedInTarget_has["completedInTarget.has"]
     configureExclusiveGateways["configureExclusiveGateways<br/><small>javascript function</small>"]
+    confirmBtn_addEventListener["confirmBtn.addEventListener"]
+    connection_get["connection.get"]
+    constructor["constructor<br/><small>javascript method</small>"]
+    container_querySelector["container.querySelector"]
+    contains["contains<br/><small>javascript function</small>"]
+    context_drawImage["context.drawImage"]
+    contextId_split["contextId.split"]
+    contexts["contexts<br/><small>javascript function</small>"]
+    controlGroup_appendChild["controlGroup.appendChild"]
+    controlsObserver_disconnect["controlsObserver.disconnect"]
+    controlsObserver_observe["controlsObserver.observe"]
+    covers["covers<br/><small>javascript function</small>"]
+    createDurationGroup["createDurationGroup<br/><small>javascript function</small>"]
     createHeatmapOverlay["createHeatmapOverlay<br/><small>javascript function</small>"]
+    createInternalRef["createInternalRef<br/><small>javascript function</small>"]
     createScope["createScope<br/><small>javascript function</small>"]
+    data_push["data.push"]
+    definitions["definitions<br/><small>javascript function</small>"]
+    describe["describe<br/><small>javascript function</small>"]
+    destroy["destroy<br/><small>javascript method</small>"]
+    destroyListener["destroyListener<br/><small>javascript function</small>"]
     destroyScope["destroyScope<br/><small>javascript function</small>"]
+    destroyed["destroyed<br/><small>javascript method</small>"]
+    di_get["di.get"]
+    di_get__waypoint___map["di.get('waypoint').map"]
+    diagramKeys_sort["diagramKeys.sort"]
+    diagramKeys_sort__a__b____________const_getNumber____str______________const_match___str_match__t__d____json____________return_match___parseInt_match_1___10____0_______________return_getNumber_a____getNumber_b_________map["diagramKeys.sort((a, b) =#gt; {
+    const getNumber = (str) =#gt; {
+      const match = str.match(/t(\\d+)\\.json$/);
+      return match ? parseInt(match[1], 10) : 0;
+    };
+    return getNumber(a) - getNumber(b);
+  }).map"]
+    dialog_querySelector["dialog.querySelector"]
+    diffActivations["diffActivations<br/><small>javascript function</small>"]
+    diffActivations_prev__next__filter["diffActivations(prev, next).filter"]
+    diffCompletions["diffCompletions<br/><small>javascript function</small>"]
+    dirname["dirname"]
+    distance["distance<br/><small>javascript function</small>"]
+    div_classList_add["div.classList.add"]
+    docker["docker"]
     docker_entrypoint["docker-entrypoint<br/><small>bash module</small>"]
+    docks_forEach["docks.forEach"]
+    docks_push["docks.push"]
+    document_body_appendChild["document.body.appendChild"]
     document_createElement["document.createElement"]
+    document_documentElement_classList_contains["document.documentElement.classList.contains"]
+    document_documentElement_classList_toggle["document.documentElement.classList.toggle"]
     document_getElementById["document.getElementById"]
     document_querySelector["document.querySelector"]
+    document_querySelector_selector__getBoundingClientRect["document.querySelector(selector).getBoundingClientRect"]
     domClasses["domClasses"]
+    domClasses_element__toggle["domClasses(element).toggle"]
+    domClasses_self_container__add["domClasses(self.container).add"]
+    domClasses_self_container__remove["domClasses(self.container).remove"]
+    domClasses_this__container__add["domClasses(this._container).add"]
+    domClasses_this__container__remove["domClasses(this._container).remove"]
+    domClasses_this__paletteEntry__remove["domClasses(this._paletteEntry).remove"]
+    domClear["domClear"]
+    domQuery["domQuery"]
+    domQueryAll["domQueryAll"]
+    done["done"]
+    download["download"]
+    downloadDiagram["downloadDiagram<br/><small>javascript function</small>"]
     drainSimulationQueues["drainSimulationQueues<br/><small>javascript function</small>"]
+    drawing_shapes_filter["drawing.shapes.filter"]
+    echo["echo"]
+    edge_ends_indexOf["edge.ends.indexOf"]
+    edge_ends_some["edge.ends.some"]
+    edges_forEach["edges.forEach"]
+    edges_push["edges.push"]
+    editorActions_register["editorActions.register"]
+    editorActions_trigger["editorActions.trigger"]
+    el_incoming_filter["el.incoming.filter"]
+    element["element<br/><small>javascript function</small>"]
+    element__instanceOf["element.$instanceOf"]
+    element_businessObject_get["element.businessObject.get"]
+    element_children_filter["element.children.filter"]
+    element_dataset_hideScopeIds_split["element.dataset.hideScopeIds.split"]
+    element_dataset_scopeIds_split["element.dataset.scopeIds.split"]
+    element_incoming_find["element.incoming.find"]
+    element_incoming_some["element.incoming.some"]
+    element_outgoing_map["element.outgoing.map"]
+    element_outgoing_map______outgoing____outgoing_target_____filter["element.outgoing.map(
+    outgoing =#gt; outgoing.target
+  ).filter"]
+    element_setAttribute["element.setAttribute"]
     elementChanged["elementChanged<br/><small>javascript function</small>"]
+    elementColors__get["elementColors._get"]
+    elementColors_add["elementColors.add"]
+    elementEnter["elementEnter<br/><small>javascript function</small>"]
+    elementEntries_get["elementEntries.get"]
+    elementEntries_get_elementKey__get["elementEntries.get(elementKey).get"]
+    elementEntries_get_elementKey__set["elementEntries.get(elementKey).set"]
+    elementEntries_has["elementEntries.has"]
+    elementEntries_set["elementEntries.set"]
+    elementExit["elementExit<br/><small>javascript function</small>"]
+    elementMetrics_clear["elementMetrics.clear"]
+    elementMetrics_forEach["elementMetrics.forEach"]
+    elementMetrics_get["elementMetrics.get"]
+    elementMetrics_set["elementMetrics.set"]
+    elementNotifications_addElementNotification["elementNotifications.addElementNotification"]
+    elementOrder_forEach["elementOrder.forEach"]
+    elementOrder_push["elementOrder.push"]
     elementRegistry["elementRegistry<br/><small>javascript function</small>"]
+    elementRegistry___get["elementRegistry().get"]
+    elementRegistry_filter["elementRegistry.filter"]
+    elementRegistry_filter_function_element__________if__element_____root____________return_false_________________const_box___canvas_getGraphics_element__getBoundingClientRect___________return_box_width___0____box_height___0____________box_right___palette_left____box_left___palette_right____________box_bottom___palette_top____box_top___palette_bottom_________map["elementRegistry.filter(function(element) {
+      if (element === root) {
+        return false;
+      }
+
+      const box = canvas.getGraphics(element).getBoundingClientRect();
+
+      return box.width #gt; 0 && box.height #gt; 0 &&
+        box.right #gt; palette.left && box.left #lt; palette.right &&
+        box.bottom #gt; palette.top && box.top #lt; palette.bottom;
+    }).map"]
+    elementRegistry_forEach["elementRegistry.forEach"]
+    elementRegistry_get["elementRegistry.get"]
+    elementRegistry_getAll["elementRegistry.getAll"]
+    elementRegistry_getAll___forEach["elementRegistry.getAll().forEach"]
+    elementTokenHistory_clear["elementTokenHistory.clear"]
+    elementTokenHistory_forEach["elementTokenHistory.forEach"]
+    elementTokenHistory_get["elementTokenHistory.get"]
+    elementTokenHistory_has["elementTokenHistory.has"]
+    elementXml["elementXml<br/><small>javascript function</small>"]
+    elements_filter["elements.filter"]
+    elements_forEach["elements.forEach"]
+    elements_includes["elements.includes"]
+    elements_push["elements.push"]
+    elementsUnderPalette["elementsUnderPalette<br/><small>javascript function</small>"]
     emit["emit<br/><small>javascript function</small>"]
+    end_parse["end_parse<br/><small>batch function</small>"]
     enter["enter<br/><small>javascript function</small>"]
+    entries_forEach["entries.forEach"]
+    error_actual_replace["error.actual.replace"]
+    errors_push["errors.push"]
+    escapeHTML["escapeHTML"]
+    event_preventDefault["event.preventDefault"]
+    event_split["event.split"]
+    event_stopPropagation["event.stopPropagation"]
+    eventBus_fire["eventBus.fire"]
+    eventBus_off["eventBus.off"]
     eventBus_on["eventBus.on"]
+    eventBus_once["eventBus.once"]
+    eventsMatch["eventsMatch<br/><small>javascript function</small>"]
+    executeStep["executeStep<br/><small>javascript function</small>"]
+    executionOrder_map["executionOrder.map"]
+    executionOrder_push["executionOrder.push"]
+    existingConfirm_remove["existingConfirm.remove"]
+    existingImpacts_add["existingImpacts.add"]
+    existingImpacts_has["existingImpacts.has"]
     exit["exit<br/><small>javascript function</small>"]
     expect["expect"]
+    expect_colors__to_eql["expect(colors).to.eql"]
+    expect_display__to_equal["expect(display).to.equal"]
+    expect_history___history_equals___to_eql["expect(history, 'history equals').to.eql"]
+    expect_log__elementLog___log_equals___to_eql["expect(log._elementLog, 'log equals').to.eql"]
+    expect_trace__to_eql["expect(trace).to.eql"]
     expectColors["expectColors<br/><small>javascript function</small>"]
+    expectDestroyed["expectDestroyed<br/><small>javascript function</small>"]
+    expectElementTrigger["expectElementTrigger<br/><small>javascript function</small>"]
+    expectHistory["expectHistory<br/><small>javascript function</small>"]
+    expectLog["expectLog<br/><small>javascript function</small>"]
+    expectNoElementTrigger["expectNoElementTrigger<br/><small>javascript function</small>"]
+    expectPanelRuleInForce["expectPanelRuleInForce<br/><small>javascript function</small>"]
+    expectScopeTrigger["expectScopeTrigger<br/><small>javascript function</small>"]
     expectTrace["expectTrace<br/><small>javascript function</small>"]
+    expectedTrace_forEach["expectedTrace.forEach"]
     exportPNG["exportPNG<br/><small>javascript function</small>"]
+    exportSVG["exportSVG<br/><small>javascript function</small>"]
+    ext__type_endsWith["ext.$type.endsWith"]
+    extensionElements_values_filter["extensionElements.values.filter"]
+    extensionElements_values_find["extensionElements.values.find"]
+    extensionElements_values_some["extensionElements.values.some"]
+    fail["fail<br/><small>javascript method</small>"]
+    failed["failed<br/><small>javascript method</small>"]
+    fileName_replace["fileName.replace"]
+    filterLinkThrowEvents["filterLinkThrowEvents<br/><small>javascript function</small>"]
+    filterSequenceFlows["filterSequenceFlows<br/><small>javascript function</small>"]
     filterSet["filterSet<br/><small>javascript function</small>"]
+    find["find"]
     findGenericJoin["findGenericJoin<br/><small>javascript function</small>"]
+    findJoin["findJoin<br/><small>javascript function</small>"]
     findScope["findScope<br/><small>javascript function</small>"]
+    findScopes["findScopes<br/><small>javascript function</small>"]
+    findSet["findSet<br/><small>javascript function</small>"]
+    findSubscription["findSubscription<br/><small>javascript function</small>"]
+    findSubscriptionScope["findSubscriptionScope<br/><small>javascript function</small>"]
+    findSubscriptions["findSubscriptions<br/><small>javascript function</small>"]
+    firsts_forEach["firsts.forEach"]
+    fitViewportClearOfPalette["fitViewportClearOfPalette<br/><small>javascript function</small>"]
+    flow_waypoints_map["flow.waypoints.map"]
+    flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join["flow.waypoints.map(point =#gt;
+      `#lt;di:waypoint x=#quot;${ point[0] }#quot; y=#quot;${ point[1] }#quot; /#gt;`).join"]
+    flows_filter["flows.filter"]
+    flows_map["flows.map"]
+    flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join["flows.map(flow =#gt;
+      `#lt;bpmn:${ flow.type === undefined ? 'sequenceFlow' : flow.type }${
+        attributes({ id: flow.id, name: flow.name, sourceRef: flow.source, targetRef: flow.target }) } /#gt;`
+    ).join"]
+    flows_map_flow__________bpmndi_BPMNEdge_id_____flow_id___di__bpmnElement_____flow_id_______flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join_________labelXml_flow_label_____bpmndi_BPMNEdge_______join["flows.map(flow =#gt;
+    `#lt;bpmndi:BPMNEdge id=#quot;${ flow.id }_di#quot; bpmnElement=#quot;${ flow.id }#quot;#gt;${ flow.waypoints.map(point =#gt;
+      `#lt;di:waypoint x=#quot;${ point[0] }#quot; y=#quot;${ point[1] }#quot; /#gt;`).join('') }${ labelXml(flow.label) }#lt;/bpmndi:BPMNEdge#gt;`
+  ).join"]
+    fn["fn"]
+    footer_insertBefore["footer.insertBefore"]
+    footer_querySelector["footer.querySelector"]
+    forEachCellKey["forEachCellKey<br/><small>javascript function</small>"]
+    forEachNearCrossPair["forEachNearCrossPair<br/><small>javascript function</small>"]
+    forEachNearPair["forEachNearPair<br/><small>javascript function</small>"]
+    freqData_forEach["freqData.forEach"]
+    from_concat["from.concat"]
+    from_map["from.map"]
+    fs_readFileSync["fs.readFileSync"]
+    fs_writeFileSync["fs.writeFileSync"]
+    gateway_outgoing_filter["gateway.outgoing.filter"]
+    gateway_outgoing_find["gateway.outgoing.find"]
+    gatewayMap_forEach["gatewayMap.forEach"]
+    gatewayMap_get["gatewayMap.get"]
+    gatewayMap_has["gatewayMap.has"]
+    gatewayMap_set["gatewayMap.set"]
+    gateways_forEach["gateways.forEach"]
     getAllReachable["getAllReachable<br/><small>javascript function</small>"]
+    getAnimationDuration["getAnimationDuration<br/><small>javascript function</small>"]
+    getBehavior["getBehavior<br/><small>javascript function</small>"]
+    getBehavior_element__enter["getBehavior(element).enter"]
+    getBehavior_element__exit["getBehavior(element).exit"]
+    getBehavior_element__signal["getBehavior(element).signal"]
     getBpmnJS["getBpmnJS"]
+    getBpmnJS___get["getBpmnJS().get"]
     getBpmnJS___invoke["getBpmnJS().invoke"]
     getBusinessObject["getBusinessObject"]
+    getChildren["getChildren<br/><small>javascript function</small>"]
+    getChildren_childElement__elementRegistry__filter["getChildren(childElement, elementRegistry).filter"]
+    getColors["getColors<br/><small>javascript function</small>"]
+    getConfig["getConfig<br/><small>javascript function</small>"]
+    getContrastYIQ["getContrastYIQ<br/><small>javascript function</small>"]
+    getDefaultFlow["getDefaultFlow<br/><small>javascript function</small>"]
+    getElementName["getElementName<br/><small>javascript function</small>"]
     getEvent["getEvent<br/><small>javascript function</small>"]
     getEventDefinition["getEventDefinition<br/><small>javascript function</small>"]
+    getEventDefinitions["getEventDefinitions<br/><small>javascript function</small>"]
     getEventTypeString["getEventTypeString<br/><small>javascript function</small>"]
     getExecutionOrderMap["getExecutionOrderMap<br/><small>javascript function</small>"]
+    getGroups["getGroups<br/><small>javascript method</small>"]
     getHeatmapFrequencyData["getHeatmapFrequencyData<br/><small>javascript function</small>"]
+    getIconForIntermediateEvent["getIconForIntermediateEvent<br/><small>javascript function</small>"]
+    getIntId["getIntId<br/><small>javascript function</small>"]
+    getLatestScopeId["getLatestScopeId<br/><small>javascript function</small>"]
+    getLinkDefinition["getLinkDefinition<br/><small>javascript function</small>"]
+    getLinkName["getLinkName<br/><small>javascript function</small>"]
+    getNext["getNext<br/><small>javascript function</small>"]
+    getNonDefaultFlows["getNonDefaultFlows<br/><small>javascript function</small>"]
+    getNoneEvent["getNoneEvent<br/><small>javascript function</small>"]
+    getNumber["getNumber<br/><small>javascript function</small>"]
+    getOverallStatus["getOverallStatus<br/><small>javascript function</small>"]
+    getPlaneIdFromShape["getPlaneIdFromShape"]
+    getProcessId["getProcessId<br/><small>javascript function</small>"]
+    getScopeElements["getScopeElements<br/><small>javascript function</small>"]
     getSimulationSupport["getSimulationSupport<br/><small>javascript function</small>"]
+    getSimulationSupport___elementEnter["getSimulationSupport().elementEnter"]
+    getSimulationSupport___elementExit["getSimulationSupport().elementExit"]
+    getSimulationSupport___getElementTrigger["getSimulationSupport().getElementTrigger"]
+    getSimulationSupport___getHistory["getSimulationSupport().getHistory"]
+    getSimulationSupport___getScopeTrigger["getSimulationSupport().getScopeTrigger"]
+    getSimulationSupport___scopeDestroyed["getSimulationSupport().scopeDestroyed"]
+    getSimulationSupport___triggerElement["getSimulationSupport().triggerElement"]
+    getSimulationSupport___triggerScope["getSimulationSupport().triggerScope"]
+    getSortedTriggers["getSortedTriggers<br/><small>javascript function</small>"]
+    getTokens["getTokens<br/><small>javascript method</small>"]
+    getTokensByElement["getTokensByElement<br/><small>javascript method</small>"]
+    getTriggers["getTriggers<br/><small>javascript function</small>"]
+    getType["getType<br/><small>javascript function</small>"]
+    getValue["getValue<br/><small>javascript function</small>"]
+    gfx_getBoundingClientRect["gfx.getBoundingClientRect"]
+    grid_get["grid.get"]
+    grid_set["grid.set"]
+    gridOf["gridOf<br/><small>javascript function</small>"]
+    group_appendChild["group.appendChild"]
+    groups_push["groups.push"]
+    h337_create["h337.create"]
+    handleKeyEvent["handleKeyEvent<br/><small>javascript function</small>"]
+    hasTrait["hasTrait<br/><small>javascript method</small>"]
+    heatmapContainer_getBoundingClientRect["heatmapContainer.getBoundingClientRect"]
+    heatmapContainer_parentNode_removeChild["heatmapContainer.parentNode.removeChild"]
+    heatmapInstance_setData["heatmapInstance.setData"]
+    heatmapMetric_slice["heatmapMetric.slice"]
+    heatmapMetric_startsWith["heatmapMetric.startsWith"]
+    hexcolor_substr["hexcolor.substr"]
+    hideBranchDialog["hideBranchDialog<br/><small>javascript function</small>"]
+    hideMessage["hideMessage<br/><small>javascript function</small>"]
+    history_keys["history.keys"]
+    idMap_entries["idMap.entries"]
+    idMap_get["idMap.get"]
+    idMap_has["idMap.has"]
+    idMap_set["idMap.set"]
+    ids_next["ids.next"]
+    ids_sort["ids.sort"]
+    ifElement["ifElement<br/><small>javascript function</small>"]
+    iit["iit"]
+    illegalTransition["illegalTransition<br/><small>javascript function</small>"]
+    impactNamesSeen_add["impactNamesSeen.add"]
+    impactNamesSeen_clear["impactNamesSeen.clear"]
+    impactNamesSeen_has["impactNamesSeen.has"]
+    index_byElement_get["index.byElement.get"]
+    index_grid_get["index.grid.get"]
+    indexShapes["indexShapes<br/><small>javascript function</small>"]
     init["init<br/><small>javascript function</small>"]
     initializeRootScopes["initializeRootScopes<br/><small>javascript function</small>"]
     initializeScope["initializeScope<br/><small>javascript function</small>"]
     initializeSimulationToStart["initializeSimulationToStart<br/><small>javascript function</small>"]
-    is["is"]
+    injectStyles["injectStyles<br/><small>javascript function</small>"]
+    injector_get["injector.get"]
+    injector_invoke["injector.invoke"]
+    insertCSS["insertCSS"]
+    interrupt_triggerFn["interrupt.triggerFn"]
+    interrupting_find["interrupting.find"]
+    intersection["intersection<br/><small>javascript function</small>"]
+    ioGroup_appendChild["ioGroup.appendChild"]
+    is["is<br/><small>javascript function</small>"]
+    isAncestor["isAncestor<br/><small>javascript function</small>"]
     isAny["isAny<br/><small>javascript function</small>"]
+    isAttachedTo["isAttachedTo<br/><small>javascript function</small>"]
     isBoundaryEvent["isBoundaryEvent<br/><small>javascript function</small>"]
     isCatchEvent["isCatchEvent<br/><small>javascript function</small>"]
+    isCompensationActivity["isCompensationActivity<br/><small>javascript function</small>"]
+    isCompensationEvent["isCompensationEvent<br/><small>javascript function</small>"]
+    isEventSubProcess["isEventSubProcess<br/><small>javascript function</small>"]
+    isExpandedSubProcess["isExpandedSubProcess<br/><small>javascript function</small>"]
+    isFrame["isFrame<br/><small>javascript function</small>"]
+    isImplicitMessageCatch["isImplicitMessageCatch<br/><small>javascript function</small>"]
     isImplicitStartEvent["isImplicitStartEvent<br/><small>javascript function</small>"]
+    isInterrupting["isInterrupting<br/><small>javascript function</small>"]
+    isKey["isKey<br/><small>javascript function</small>"]
+    isKeyboardTrigger["isKeyboardTrigger<br/><small>javascript function</small>"]
+    isLabel["isLabel<br/><small>javascript function</small>"]
+    isLabelExternal["isLabelExternal<br/><small>javascript function</small>"]
+    isLinkCatch["isLinkCatch<br/><small>javascript function</small>"]
+    isLinkThrow["isLinkThrow<br/><small>javascript function</small>"]
+    isMessageCatch["isMessageCatch<br/><small>javascript function</small>"]
+    isMessageFlow["isMessageFlow<br/><small>javascript function</small>"]
+    isNoneStartEvent["isNoneStartEvent<br/><small>javascript function</small>"]
+    isOnLine["isOnLine<br/><small>javascript function</small>"]
+    isRethrow["isRethrow<br/><small>javascript function</small>"]
+    isSequenceFlow["isSequenceFlow<br/><small>javascript function</small>"]
+    isSpecialBoundaryEvent["isSpecialBoundaryEvent<br/><small>javascript function</small>"]
+    isStartEvent["isStartEvent<br/><small>javascript function</small>"]
+    isSubscribed["isSubscribed"]
+    isTask["isTask<br/><small>javascript function</small>"]
+    isTransaction["isTransaction<br/><small>javascript function</small>"]
     isTypedEvent["isTypedEvent<br/><small>javascript function</small>"]
+    isWide["isWide<br/><small>javascript function</small>"]
+    items_concat["items.concat"]
+    items_forEach["items.forEach"]
+    items_map["items.map"]
+    items_push["items.push"]
+    items_slice["items.slice"]
+    jobs_push["jobs.push"]
+    jobs_shift["jobs.shift"]
+    joinPieces["joinPieces<br/><small>javascript function</small>"]
+    joined_splice["joined.splice"]
+    k_startsWith["k.startsWith"]
+    key_indexOf["key.indexOf"]
+    key_replace["key.replace"]
+    key_replace______baseName_________replace["key.replace(`./${baseName}/`, '').replace"]
+    key_substring["key.substring"]
+    keyWithoutToken_split["keyWithoutToken.split"]
+    keyboard_addListener["keyboard.addListener"]
+    keys_indexOf["keys.indexOf"]
+    labelText["labelText<br/><small>javascript function</small>"]
+    labelXml["labelXml<br/><small>javascript function</small>"]
+    labels_push["labels.push"]
+    lane_nodes_map["lane.nodes.map"]
+    lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join["lane.nodes.map(node =#gt;
+        `#lt;bpmn:flowNodeRef#gt;${ node }#lt;/bpmn:flowNodeRef#gt;`).join"]
+    lateStartIds_forEach["lateStartIds.forEach"]
+    leafScopes_map["leafScopes.map"]
+    leafScopes_map_s_______s_element__id____s_id_____join["leafScopes.map(s =#gt; `${s.element?.id}(${s.id})`).join"]
+    left_findIndex["left.findIndex"]
+    left_splice["left.splice"]
+    lint["lint<br/><small>javascript function</small>"]
+    lintWith["lintWith<br/><small>javascript function</small>"]
+    list_appendChild["list.appendChild"]
+    listToBinarySequence["listToBinarySequence<br/><small>javascript function</small>"]
+    listener["listener<br/><small>javascript function</small>"]
     loadStateSequenceForCurrentDiagram["loadStateSequenceForCurrentDiagram<br/><small>javascript function</small>"]
+    localStorage_setItem["localStorage.setItem"]
+    log_info["log.info"]
+    log_log["log.log"]
+    log_toggle["log.toggle"]
+    logError["logError<br/><small>javascript function</small>"]
+    logInfo["logInfo<br/><small>javascript function</small>"]
+    logMessage["logMessage<br/><small>javascript function</small>"]
+    logger_create["logger.create"]
+    matchFn["matchFn"]
+    matched_push["matched.push"]
+    matchingSubscriptions_every["matchingSubscriptions.every"]
+    matchingSubscriptions_filter["matchingSubscriptions.filter"]
+    messageLogs_forEach["messageLogs.forEach"]
+    mkdir["mkdir"]
     modeler_get["modeler.get"]
+    modeler_get__eventBus___fire["modeler.get('eventBus').fire"]
+    modeler_importXML["modeler.importXML"]
+    modeler_importXML_diagram________then["modeler.importXML(diagram)
+    .then"]
+    modeler_importXML_diagram________then____warnings________________if__warnings_length_____________console_warn_warnings_____________________sanitizeDiagram_modeler____persist__persistent______________if__persistent_____________localStorage__diagram_xml_____diagram_______________________Not__canvas_zoom__fit_viewport_____that_fit_draws_the_leftmost_elements___________under_the_palette__see_fit_viewport_js___A_canvas_with_no_size_yet______________an_iframe_that_is_not_visible____cannot_be_fitted__say_so_instead_of___________dropping_the_reason_________try____________fitViewportClearOfPalette_modeler_get__canvas______________catch__err_____________console_warn___openDiagram__diagram_not_fitted_to_the_canvas____err_message________________________Force_ALL_tasks_to_behave_as_wait_states_so_tokens_stay_visible_on_them________const_registry___modeler_get__elementRegistry___________const_simulator___modeler_get__simulator___________registry_getAll___forEach_el_______________if__el_type______bpmn_Task_____el_type______bpmn_UserTask_____el_type______bpmn_ServiceTask________________simulator_waitAtElement_el__true_____________________________________Auto_start_simulation_at_t0________initializeSimulationToStart________________Retry_pending_API_states___they_may_have_arrived_before_importXML___________completed_and_been_deferred_because_the_diagram_wasn_t_ready_yet_________if___pendingApiStates_____________const_retryKey___Object_keys__pendingApiStates_length____pendingApiStates_0__state_______0____________const_retryId___retryKey___parseStateKey_retryKey__registryId___null___________if__retryId____registry_get_retryId________________console_log___openDiagram__Retrying_deferred_API_states_______________stateSequence____pendingApiStates______________statesInjectedViaApi___true______________pendingApiStates___null_____________buildProcessToTokenMap_______________if___pendingApiNavData__________________treeTopology____pendingApiNavData_topology________________allPaths____pendingApiNavData_allPaths________________allPathNodeIds____pendingApiNavData_allPathNodeIds________________pathNodeIds_____allPathNodeIds_____pendingApiNavData_nodeId____null____________________allPathNodeIds_String__pendingApiNavData_nodeId______null___null________________currentNodeId____pendingApiNavData_nodeId____null__________________String__pendingApiNavData_nodeId____null________________navigationMode______treeTopology________________pendingApiNavData___null_______________setNavigationVisible__navigationMode___________________________if___pendingApiTargetIndex_____null_________________const_target____pendingApiTargetIndex________________pendingApiTargetIndex___null_______________replayToIndex_target__then_______updateNavigationUI____________________________________________________catch["modeler.importXML(diagram)
+    .then(({ warnings }) =#gt; {
+      if (warnings.length) {
+        console.warn(warnings);
+      }
+
+      sanitizeDiagram(modeler, { persist: persistent });
+
+      if (persistent) {
+        localStorage['diagram-xml'] = diagram;
+      }
+
+      // Not `canvas.zoom('fit-viewport')`: that fit draws the leftmost elements
+      // under the palette (see fit-viewport.js). A canvas with no size yet --
+      // an iframe that is not visible -- cannot be fitted; say so instead of
+      // dropping the reason.
+      try {
+        fitViewportClearOfPalette(modeler.get('canvas'));
+      } catch (err) {
+        console.warn('[openDiagram] diagram not fitted to the canvas:', err.message);
+      }
+
+      // Force ALL tasks to behave as wait states so tokens stay visible on them
+      const registry = modeler.get('elementRegistry');
+      const simulator = modeler.get('simulator');
+      registry.getAll().forEach(el =#gt; {
+        if (el.type === 'bpmn:Task' || el.type === 'bpmn:UserTask' || el.type === 'bpmn:ServiceTask') {
+          simulator.waitAtElement(el, true);
+        }
+      });
+
+      // Auto-start simulation at t0
+      initializeSimulationToStart();
+
+      // Retry pending API states — they may have arrived before importXML
+      // completed and been deferred because the diagram wasn't ready yet.
+      if (_pendingApiStates) {
+        const retryKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
+        const retryId = retryKey ? parseStateKey(retryKey).registryId : null;
+        if (retryId && registry.get(retryId)) {
+          console.log('[openDiagram] Retrying deferred API states');
+          stateSequence = _pendingApiStates;
+          _statesInjectedViaApi = true;
+          _pendingApiStates = null;
+          buildProcessToTokenMap();
+          if (_pendingApiNavData) {
+            _treeTopology = _pendingApiNavData.topology;
+            _allPaths = _pendingApiNavData.allPaths;
+            _allPathNodeIds = _pendingApiNavData.allPathNodeIds;
+            _pathNodeIds = (_allPathNodeIds && _pendingApiNavData.nodeId != null)
+              ? _allPathNodeIds[String(_pendingApiNavData.nodeId)] || null : null;
+            _currentNodeId = _pendingApiNavData.nodeId != null
+              ? String(_pendingApiNavData.nodeId) : null;
+            _navigationMode = !!_treeTopology;
+            _pendingApiNavData = null;
+            setNavigationVisible(_navigationMode);
+          }
+          if (_pendingApiTargetIndex !== null) {
+            const target = _pendingApiTargetIndex;
+            _pendingApiTargetIndex = null;
+            replayToIndex(target).then(() =#gt; updateNavigationUI());
+          }
+        }
+      }
+    })
+    .catch"]
+    modeler_saveSVG["modeler.saveSVG"]
+    modeler_saveSVG___then["modeler.saveSVG().then"]
+    modeler_saveXML["modeler.saveXML"]
+    modeler_saveXML___format__true____then["modeler.saveXML({ format: true }).then"]
+    modeler_saveXML___format__true____then____xml________________localStorage__diagram_xml_____xml__________catch["modeler.saveXML({ format: true }).then(({ xml }) =#gt; {
+      localStorage['diagram-xml'] = xml;
+    }).catch"]
+    modeling_updateModdleProperties["modeling.updateModdleProperties"]
+    modeling_updateProperties["modeling.updateProperties"]
+    monitorGroup_appendChild["monitorGroup.appendChild"]
     moveSimulationControls["moveSimulationControls<br/><small>javascript function</small>"]
+    n_outgoing_forEach["n.outgoing.forEach"]
+    name["name<br/><small>javascript function</small>"]
     navigateBackward["navigateBackward<br/><small>javascript function</small>"]
     navigateForward["navigateForward<br/><small>javascript function</small>"]
+    nc["nc"]
+    new_BpmnModdle_extensions__fromXML["new BpmnModdle(extensions).fromXML"]
+    new_Date___toLocaleTimeString["new Date().toLocaleTimeString"]
+    new_URL_window_location_href__searchParams_get["new URL(window.location.href).searchParams.get"]
+    nextName["nextName<br/><small>javascript function</small>"]
+    noDiagramOverlaps["noDiagramOverlaps"]
+    nonInterrupting_map["nonInterrupting.map"]
+    nonInterrupting_map__________subscription____subscription_triggerFn_initiator__________flat["nonInterrupting.map(
+        subscription =#gt; subscription.triggerFn(initiator)
+      ).flat"]
+    normalizeStatusClass["normalizeStatusClass<br/><small>javascript function</small>"]
+    npm["npm"]
+    off["off<br/><small>javascript function</small>"]
+    old_remove["old.remove"]
+    oldConfirm_remove["oldConfirm.remove"]
+    on["on<br/><small>javascript function</small>"]
     openDiagram["openDiagram<br/><small>javascript function</small>"]
+    openFile["openFile<br/><small>javascript function</small>"]
+    opt_value_slice["opt.value.slice"]
+    opt_value_startsWith["opt.value.startsWith"]
+    optContainer_appendChild["optContainer.appendChild"]
+    optContainer_querySelectorAll["optContainer.querySelectorAll"]
+    optContainer_querySelectorAll__button___forEach["optContainer.querySelectorAll('button').forEach"]
+    options_forEach["options.forEach"]
+    options_keys["options.keys"]
+    opts_has["opts.has"]
+    opts_set["opts.set"]
+    orSelf["orSelf<br/><small>javascript function</small>"]
+    orderMap_get["orderMap.get"]
+    orderMap_has["orderMap.has"]
+    out_set["out.set"]
+    outgoing_find["outgoing.find"]
+    outgoing_forEach["outgoing.forEach"]
+    outgoing_indexOf["outgoing.indexOf"]
+    overlays_add["overlays.add"]
+    paletteFootprint["paletteFootprint<br/><small>javascript function</small>"]
+    panel_classList_add["panel.classList.add"]
+    panel_remove["panel.remove"]
+    parentScope_children_push["parentScope.children.push"]
     parseBPMN["parseBPMN<br/><small>javascript function</small>"]
     parseSequence["parseSequence<br/><small>javascript function</small>"]
     parseStateKey["parseStateKey<br/><small>javascript function</small>"]
+    parse_args["parse_args<br/><small>batch function</small>"]
+    partners_add["partners.add"]
+    parts_slice["parts.slice"]
+    parts_slice_0__2__join["parts.slice(0, 2).join"]
+    path_join["path.join"]
+    pauseSimulation_toggle["pauseSimulation.toggle"]
+    picked_add["picked.add"]
+    pieces_map["pieces.map"]
+    pieces_map_function_piece________return__from____point_piece_from____to____point_piece_to___________join["pieces.map(function(piece) {
+    return `from ${ point(piece.from) } to ${ point(piece.to) }`;
+  }).join"]
+    pieces_push["pieces.push"]
+    pieces_slice["pieces.slice"]
+    pkg_devDependencies_rollup_replace["pkg.devDependencies.rollup.replace"]
+    plane_get["plane.get"]
+    plane_get__planeElement___forEach["plane.get('planeElement').forEach"]
     playStates["playStates<br/><small>javascript function</small>"]
+    point["point<br/><small>javascript function</small>"]
+    pointAlong["pointAlong<br/><small>javascript function</small>"]
+    points_reduce["points.reduce"]
+    pool_lanes_map["pool.lanes.map"]
+    pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join["pool.lanes.map(lane =#gt;
+      `#lt;bpmn:lane id=#quot;${ lane.id }#quot; name=#quot;${ lane.name }#quot;#gt;${ lane.nodes.map(node =#gt;
+        `#lt;bpmn:flowNodeRef#gt;${ node }#lt;/bpmn:flowNodeRef#gt;`).join('') }#lt;/bpmn:lane#gt;`
+    ).join"]
+    positions_forEach["positions.forEach"]
+    positions_push["positions.push"]
+    processScopes_includes["processScopes.includes"]
+    processToTokenMap_clear["processToTokenMap.clear"]
+    processToTokenMap_get["processToTokenMap.get"]
+    processToTokenMap_has["processToTokenMap.has"]
+    processToTokenMap_set["processToTokenMap.set"]
+    propertiesPanel_registerProvider["propertiesPanel.registerProvider"]
+    pwd["pwd"]
     queue["queue<br/><small>javascript function</small>"]
+    randomBetween["randomBetween<br/><small>javascript function</small>"]
+    randomColor["randomColor"]
+    randomColor_______count__60______filter["randomColor({
+    count: 60
+  }).filter"]
+    ranges_forEach["ranges.forEach"]
+    reachables_i__has["reachables[i].has"]
+    readPlane["readPlane<br/><small>javascript function</small>"]
+    readRollupVersion["readRollupVersion<br/><small>javascript function</small>"]
+    rect["rect<br/><small>javascript function</small>"]
+    referenceSubscriptions_some["referenceSubscriptions.some"]
+    references["references<br/><small>javascript function</small>"]
+    refsMatch["refsMatch<br/><small>javascript function</small>"]
     registry_get["registry.get"]
+    registry_getAll["registry.getAll"]
+    registry_getAll___filter["registry.getAll().filter"]
+    registry_getAll___filter_el____el_type______bpmn_ExclusiveGateway___forEach["registry.getAll().filter(el =#gt; el.type === 'bpmn:ExclusiveGateway').forEach"]
+    registry_getAll___forEach["registry.getAll().forEach"]
+    remainingScopes_delete["remainingScopes.delete"]
+    remainingSubscriptions_includes["remainingSubscriptions.includes"]
+    remove["remove<br/><small>javascript method</small>"]
     renderMessageLogs["renderMessageLogs<br/><small>javascript function</small>"]
     renderStateSnapshot["renderStateSnapshot<br/><small>javascript function</small>"]
     replayToIndex["replayToIndex<br/><small>javascript function</small>"]
-    run["run<br/><small>bash module</small>"]
+    replayToIndex_target__then["replayToIndex(target).then"]
+    reportEdgesOverLabels["reportEdgesOverLabels<br/><small>javascript function</small>"]
+    reportEdgesThroughShapes["reportEdgesThroughShapes<br/><small>javascript function</small>"]
+    reportLabelOverlaps["reportLabelOverlaps<br/><small>javascript function</small>"]
+    reportShapeOverlaps["reportShapeOverlaps<br/><small>javascript function</small>"]
+    reportSharedLines["reportSharedLines<br/><small>javascript function</small>"]
+    reportedId["reportedId<br/><small>javascript function</small>"]
+    reporter_report["reporter.report"]
+    requestAnimationFrame["requestAnimationFrame"]
+    requestBranchSwitch["requestBranchSwitch<br/><small>javascript function</small>"]
+    reset["reset<br/><small>javascript function</small>"]
+    resetSimulation_resetSimulation["resetSimulation.resetSimulation"]
+    resolve["resolve"]
+    resolveTokenId["resolveTokenId<br/><small>javascript function</small>"]
+    response_json["response.json"]
+    response_text["response.text"]
+    result_push["result.push"]
+    root_children_forEach["root.children.forEach"]
+    rootScopes_push["rootScopes.push"]
+    row_appendChild["row.appendChild"]
+    run["run<br/><small>batch module</small>"]
+    running["running<br/><small>javascript method</small>"]
     sanitizeDiagram["sanitizeDiagram<br/><small>javascript function</small>"]
+    scope_children_filter["scope.children.filter"]
+    scope_complete["scope.complete"]
+    scope_destroy["scope.destroy"]
+    scope_getTokensByElement["scope.getTokensByElement"]
+    scope_hasTrait["scope.hasTrait"]
+    scope_start["scope.start"]
+    scope_subscriptions_add["scope.subscriptions.add"]
+    scope_subscriptions_delete["scope.subscriptions.delete"]
+    scopeChanged["scopeChanged<br/><small>javascript function</small>"]
+    scopeDestroyed["scopeDestroyed<br/><small>javascript function</small>"]
     scopeFilter["scopeFilter<br/><small>javascript function</small>"]
+    scopeFilter_isShown["scopeFilter.isShown"]
+    scopeIdToTokenMap_set["scopeIdToTokenMap.set"]
+    scopeIds_some["scopeIds.some"]
+    scopeSubscriptionFilter["scopeSubscriptionFilter<br/><small>javascript function</small>"]
+    scopes_add["scopes.add"]
+    scopes_delete["scopes.delete"]
+    scopes_forEach["scopes.forEach"]
+    scopes_push["scopes.push"]
+    seconds_forEach["seconds.forEach"]
+    seconds_map["seconds.map"]
+    sed["sed"]
+    seenNames_has["seenNames.has"]
+    seenNames_set["seenNames.set"]
+    seenTasks_add["seenTasks.add"]
+    seenTasks_has["seenTasks.has"]
+    segments["segments<br/><small>javascript function</small>"]
+    segments_a_points__forEach["segments(a.points).forEach"]
+    segments_b_points__forEach["segments(b.points).forEach"]
+    segments_points__forEach["segments(points).forEach"]
+    sel_appendChild["sel.appendChild"]
+    sel_removeChild["sel.removeChild"]
+    semver_satisfies["semver.satisfies"]
+    sequenceItems_push["sequenceItems.push"]
+    set["set"]
+    set_add["set.add"]
+    set_has["set.has"]
     setConfig["setConfig<br/><small>javascript function</small>"]
+    setNavigationVisible["setNavigationVisible<br/><small>javascript function</small>"]
+    setTransitions["setTransitions<br/><small>javascript method</small>"]
+    setValue["setValue<br/><small>javascript function</small>"]
+    shape_type_includes["shape.type.includes"]
+    shapes________filter["shapes
+      .filter"]
+    shapes________filter_child____child_parent_____shape_id_________map["shapes
+      .filter(child =#gt; child.parent === shape.id)
+      .map"]
+    shapes________filter_child____child_parent_____shape_id_________map_elementXml_________join["shapes
+      .filter(child =#gt; child.parent === shape.id)
+      .map(elementXml)
+      .join"]
+    shapes_filter["shapes.filter"]
+    shapes_filter_shape____shape_parent_____undefined__map["shapes.filter(shape =#gt; shape.parent === undefined).map"]
+    shapes_filter_shape____shape_parent_____undefined__map_elementXml__join["shapes.filter(shape =#gt; shape.parent === undefined).map(elementXml).join"]
+    shapes_forEach["shapes.forEach"]
+    shapes_map["shapes.map"]
+    shapes_push["shapes.push"]
+    shapesA_some["shapesA.some"]
+    shapesB_indexOf["shapesB.indexOf"]
+    shapesCovering["shapesCovering<br/><small>javascript function</small>"]
+    shapesCovering_point__shapes__index__forEach["shapesCovering(point, shapes, index).forEach"]
+    shared_reduce["shared.reduce"]
+    sharedDockings["sharedDockings<br/><small>javascript function</small>"]
+    sharedPiece["sharedPiece<br/><small>javascript function</small>"]
+    shift["shift"]
     showAdvanceDecisionDialog["showAdvanceDecisionDialog<br/><small>javascript function</small>"]
     showBranchDialog["showBranchDialog<br/><small>javascript function</small>"]
+    showMessage["showMessage<br/><small>javascript function</small>"]
     showStatePanelMessage["showStatePanelMessage<br/><small>javascript function</small>"]
+    sidePositions["sidePositions<br/><small>javascript function</small>"]
     signal["signal<br/><small>javascript function</small>"]
+    simDbg_findScopes["simDbg.findScopes"]
+    simulationLog["simulationLog<br/><small>javascript function</small>"]
+    simulationStyles_get["simulationStyles.get"]
+    simulationSupport_toggleSimulation["simulationSupport.toggleSimulation"]
+    simulationSupport_triggerElement["simulationSupport.triggerElement"]
+    simulationTrace_push["simulationTrace.push"]
+    simulationTrace_slice["simulationTrace.slice"]
+    simulationTrace_slice___map["simulationTrace.slice().map"]
+    simulator_findScope["simulator.findScope"]
+    simulator_findScopes["simulator.findScopes"]
+    simulator_findScopes______________element__element_____________find["simulator.findScopes({
+          element: element
+        }).find"]
+    simulator_findScopes_________________filter["simulator.findScopes({})
+          .filter"]
+    simulator_findSubscription["simulator.findSubscription"]
+    simulator_injector_get["simulator.injector.get"]
+    simulator_on["simulator.on"]
+    simulator_registerBehavior["simulator.registerBehavior"]
+    simulator_reset["simulator.reset"]
     simulator_setConfig["simulator.setConfig"]
+    simulator_signal["simulator.signal"]
+    simulator_trigger["simulator.trigger"]
+    simulator_waitAtElement["simulator.waitAtElement"]
+    snapName_startsWith["snapName.startsWith"]
+    some["some"]
+    splitNode_outgoing_forEach["splitNode.outgoing.forEach"]
+    splitNode_outgoing_map["splitNode.outgoing.map"]
+    stack_pop["stack.pop"]
+    stack_push["stack.push"]
+    start["start<br/><small>javascript method</small>"]
+    startEventIds_forEach["startEventIds.forEach"]
+    startEventRegistryIds_add["startEventRegistryIds.add"]
+    statePanel_classList_add["statePanel.classList.add"]
+    statePanelBody_appendChild["statePanelBody.appendChild"]
+    stateSequence_forEach["stateSequence.forEach"]
+    stateSequence_slice["stateSequence.slice"]
+    statesContext["statesContext"]
+    statesContext_keys["statesContext.keys"]
+    statusCell_appendChild["statusCell.appendChild"]
+    statusCell_classList_add["statusCell.classList.add"]
+    str_match["str.match"]
+    stretches["stretches<br/><small>javascript function</small>"]
+    stretches_slice["stretches.slice"]
     subscribe["subscribe<br/><small>javascript function</small>"]
+    subscription["subscription<br/><small>javascript function</small>"]
+    subscription_remove["subscription.remove"]
+    subscription_triggerFn["subscription.triggerFn"]
     subscriptionFilter["subscriptionFilter<br/><small>javascript function</small>"]
+    subscriptions_add["subscriptions.add"]
+    subscriptions_delete["subscriptions.delete"]
+    subscriptions_forEach["subscriptions.forEach"]
+    subscriptions_slice["subscriptions.slice"]
+    subscriptions_slice___sort["subscriptions.slice().sort"]
     svgToPng["svgToPng<br/><small>javascript function</small>"]
+    svgToPng_svg__then["svgToPng(svg).then"]
+    task["task<br/><small>javascript function</small>"]
+    tbody_appendChild["tbody.appendChild"]
+    tee["tee"]
+    terminate["terminate<br/><small>javascript method</small>"]
+    testRule["testRule"]
+    testRule___moddleRoot__rootElement__rule__noDiagramOverlaps______map["testRule({ moddleRoot: rootElement, rule: noDiagramOverlaps() }).map"]
+    text_replace["text.replace"]
+    text_replace___s__g_______trim["text.replace(/\\s+/g, ' ').trim"]
+    text_trim["text.trim"]
+    themeService_setTheme["themeService.setTheme"]
+    this__applyCustomColors["this._applyCustomColors"]
+    this__applyOriginalColors["this._applyOriginalColors"]
+    this__canvas_getContainer["this._canvas.getContainer"]
+    this__elementLog_push["this._elementLog.push"]
+    this__exclusiveGatewaySettings_setSequenceFlow["this._exclusiveGatewaySettings.setSequenceFlow"]
+    this__findSubscriptions["this._findSubscriptions"]
+    this__handleSelectionChanged["this._handleSelectionChanged"]
+    this__inclusiveGatewaySettings_toggleSequenceFlow["this._inclusiveGatewaySettings.toggleSequenceFlow"]
     this__init["this._init"]
+    this__log_bind["this._log.bind"]
+    this__paletteEntry_removeAttribute["this._paletteEntry.removeAttribute"]
+    this__saveOriginalColors["this._saveOriginalColors"]
+    this__scopeFilter_isFocused["this._scopeFilter.isFocused"]
+    this__scopeFilter_isShown["this._scopeFilter.isShown"]
+    this__setNeutralColors["this._setNeutralColors"]
+    this__simulator_trigger["this._simulator.trigger"]
+    this__togglePaused["this._togglePaused"]
+    this_activate["this.activate"]
+    this_addScope["this.addScope"]
+    this_addTokenCounts["this.addTokenCounts"]
+    this_children_filter["this.children.filter"]
+    this_clear["this.clear"]
+    this_clearAnimations["this.clearAnimations"]
+    this_closeContextPads["this.closeContextPads"]
+    this_create["this.create"]
+    this_deactivate["this.deactivate"]
+    this_each["this.each"]
+    this_enable["this.enable"]
+    this_getScopeElements["this.getScopeElements"]
+    this_hasTrait["this.hasTrait"]
+    this_log["this.log"]
+    this_openContextPads["this.openContextPads"]
+    this_pause["this.pause"]
+    this_play["this.play"]
+    this_registerHandler["this.registerHandler"]
+    this_removeAllInstances["this.removeAllInstances"]
+    this_removeScope["this.removeScope"]
+    this_removeTokenCounts["this.removeTokenCounts"]
+    this_reset["this.reset"]
+    this_resetSequenceFlows["this.resetSequenceFlows"]
+    this_resetSimulation["this.resetSimulation"]
+    this_setActive["this.setActive"]
+    this_setDefaults["this.setDefaults"]
+    this_setSequenceFlowsDefault["this.setSequenceFlowsDefault"]
+    this_setTransitions["this.setTransitions"]
+    this_state_cancel["this.state.cancel"]
+    this_state_compensable["this.state.compensable"]
+    this_state_complete["this.state.complete"]
+    this_state_destroy["this.state.destroy"]
+    this_state_fail["this.state.fail"]
+    this_state_hasTrait["this.state.hasTrait"]
+    this_state_start["this.state.start"]
+    this_state_terminate["this.state.terminate"]
+    this_toggle["this.toggle"]
+    this_toggleMode["this.toggleMode"]
+    this_unhighlightScope["this.unhighlightScope"]
+    this_unpause["this.unpause"]
+    this_updateElementContextPads["this.updateElementContextPads"]
+    this_updateScope["this.updateScope"]
+    to_map["to.map"]
+    toBox["toBox<br/><small>javascript function</small>"]
+    toggle_addEventListener["toggle.addEventListener"]
+    toggle_setAttribute["toggle.setAttribute"]
     toggleHeatmap["toggleHeatmap<br/><small>javascript function</small>"]
+    toggleMode_toggleMode["toggleMode.toggleMode"]
+    tokenId_split["tokenId.split"]
+    tokenId_split______slice["tokenId.split('_').slice"]
+    tokenId_split______slice_0__2__join["tokenId.split('_').slice(0, 2).join"]
+    tokenMap_entries["tokenMap.entries"]
     trace["trace<br/><small>javascript function</small>"]
+    trace__index___split["trace[ index ].split"]
+    translate["translate"]
     trigger["trigger<br/><small>javascript function</small>"]
-    update_example["update-example<br/><small>bash module</small>"]
+    triggerAction["triggerAction<br/><small>javascript function</small>"]
+    triggerElement["triggerElement<br/><small>javascript function</small>"]
+    triggerScope["triggerScope<br/><small>javascript function</small>"]
+    true["true"]
+    types_some["types.some"]
+    unsubscribe["unsubscribe<br/><small>javascript function</small>"]
+    updateBtn["updateBtn<br/><small>javascript function</small>"]
     updateHeatmapData["updateHeatmapData<br/><small>javascript function</small>"]
     updateNavigationUI["updateNavigationUI<br/><small>javascript function</small>"]
+    useService["useService"]
     validateSESE["validateSESE<br/><small>javascript function</small>"]
+    value_slice["value.slice"]
+    values_every["values.every"]
+    values_includes["values.includes"]
     verify["verify<br/><small>javascript function</small>"]
+    verifyOnly["verifyOnly<br/><small>javascript function</small>"]
+    verifySkip["verifySkip<br/><small>javascript function</small>"]
     verifyTrace["verifyTrace<br/><small>javascript function</small>"]
+    viewboxClearOfReserve["viewboxClearOfReserve<br/><small>javascript function</small>"]
+    waitAtElement["waitAtElement<br/><small>javascript function</small>"]
+    waitForScopes["waitForScopes<br/><small>javascript function</small>"]
     waitForTokenDrain["waitForTokenDrain<br/><small>javascript function</small>"]
+    warnings_map["warnings.map"]
+    wide_forEach["wide.forEach"]
+    wide_push["wide.push"]
+    widePositions["widePositions<br/><small>javascript function</small>"]
+    window_getComputedStyle["window.getComputedStyle"]
+    window_parent_postMessage["window.parent.postMessage"]
+    withBpmnJs["withBpmnJs<br/><small>javascript function</small>"]
+    without["without<br/><small>javascript function</small>"]
+    withoutTrunks["withoutTrunks<br/><small>javascript function</small>"]
+    withoutTrunks_joinPieces_pieces___sharedDockings_a__b___filter["withoutTrunks(joinPieces(pieces), sharedDockings(a, b)).filter"]
+    ActivityBehavior --> simulator_registerBehavior
+    AnimatedMessageFlowBehavior --> injector_invoke
+    AnimatedSequenceFlowBehavior --> injector_invoke
+    Animation --> animation_hide
+    Animation --> animation_show
     Animation --> eventBus_on
+    Animation --> this__scopeFilter_isShown
+    Animation --> this_clearAnimations
+    Animation --> this_each
+    Animation --> this_pause
+    Animation --> this_play
+    BoundaryEventBehavior --> simulator_registerBehavior
+    ColoredScopes --> c_substring
     ColoredScopes --> eventBus_on
+    ColoredScopes --> getColors
+    ColoredScopes --> getContrastYIQ
+    ColoredScopes --> randomColor
+    ColoredScopes --> randomColor_______count__60______filter
     ContextPads --> domClasses
+    ContextPads --> domClasses_element__toggle
+    ContextPads --> domQueryAll
+    ContextPads --> element_dataset_hideScopeIds_split
+    ContextPads --> element_dataset_scopeIds_split
     ContextPads --> eventBus_on
+    ContextPads --> scopeFilter_isShown
+    ContextPads --> scopeIds_some
+    ContextPads --> this_closeContextPads
+    ContextPads --> this_openContextPads
+    ContextPads --> this_registerHandler
+    ContextPads --> this_updateElementContextPads
+    DisableModeling --> SIMULATION_EDITOR_ACTIONS_includes
+    DisableModeling --> canvasLock_lock
+    DisableModeling --> canvasLock_unlock
+    DisableModeling --> eventBus_on
+    DurationProps --> TextFieldEntry
+    DurationProps --> translate
+    DurationProps --> useService
+    EditorActions --> editorActions_register
     EditorActions --> eventBus_on
+    EditorActions --> injector_get
+    EditorActions --> log_toggle
+    EditorActions --> pauseSimulation_toggle
+    EditorActions --> resetSimulation_resetSimulation
+    EditorActions --> toggleMode_toggleMode
     ElementColors --> eventBus_on
+    ElementColors --> eventBus_once
+    ElementColors --> this__applyCustomColors
+    ElementColors --> this__applyOriginalColors
+    ElementColors --> this__saveOriginalColors
+    ElementNotifications --> eventBus_on
+    ElementNotifications --> this_clear
+    ElementSupport --> canvas_getContainer
+    ElementSupport --> eventBus_on
+    ElementSupport --> this_clear
+    ElementSupport --> this_enable
+    EndEventBehavior --> simulator_registerBehavior
+    EventBasedGatewayBehavior --> simulator_registerBehavior
+    EventBehaviors --> injector_get
+    ExclusiveGatewayBehavior --> simulator_registerBehavior
+    ExclusiveGatewaySettings --> eventBus_on
+    ExclusiveGatewaySettings --> this_resetSequenceFlows
+    ExclusiveGatewaySettings --> this_setSequenceFlowsDefault
+    FixtureReporter --> _Cannot_find_module______Simulator___________json___exec
+    FixtureReporter --> _expected_trace____________exec
+    FixtureReporter --> baseReporterDecorator
+    FixtureReporter --> done
+    FixtureReporter --> error_actual_replace
+    FixtureReporter --> fs_writeFileSync
+    FixtureReporter --> log_info
+    FixtureReporter --> logger_create
+    InclusiveGatewayBehavior --> simulator_registerBehavior
+    InclusiveGatewaySettings --> eventBus_on
+    InclusiveGatewaySettings --> this_reset
+    InclusiveGatewaySettings --> this_setDefaults
+    IntermediateCatchEventBehavior --> simulator_registerBehavior
+    IntermediateThrowEventBehavior --> simulator_registerBehavior
+    KeyboardBindings --> eventBus_on
+    KeyboardBindings --> handleKeyEvent
+    KeyboardBindings --> injector_get
+    KeyboardBindings --> keyboard_addListener
+    Log --> CheckCircleIcon
+    Log --> TimesCircleIcon
     Log --> domClasses
+    Log --> domClasses_element__toggle
+    Log --> domQueryAll
     Log --> eventBus_on
+    Log --> getElementName
     Log --> getEventTypeString
+    Log --> getIconForIntermediateEvent
     Log --> is
     Log --> isAny
     Log --> this__init
+    Log --> this__scopeFilter_isShown
+    Log --> this_clear
+    Log --> this_log
+    Log --> this_toggle
+    MessageFlowBehavior --> simulator_registerBehavior
+    NeutralElementColors --> eventBus_on
+    NeutralElementColors --> this__setNeutralColors
+    Notifications --> eventBus_on
+    Notifications --> this__init
+    Notifications --> this_clear
     Palette --> domClasses
+    Palette --> domClasses_self_container__add
+    Palette --> domClasses_self_container__remove
     Palette --> eventBus_on
     Palette --> this__init
+    ParallelGatewayBehavior --> simulator_registerBehavior
+    PauseSimulation --> canvas_getContainer
     PauseSimulation --> eventBus_on
     PauseSimulation --> this__init
+    PauseSimulation --> this_activate
+    PauseSimulation --> this_deactivate
+    PauseSimulation --> this_pause
+    PauseSimulation --> this_unpause
+    ProcessBehavior --> simulator_registerBehavior
     ResetSimulation --> domClasses
+    ResetSimulation --> domClasses_this__paletteEntry__remove
     ResetSimulation --> eventBus_on
     ResetSimulation --> this__init
+    ResetSimulation --> this__paletteEntry_removeAttribute
+    ResetSimulation --> this_resetSimulation
+    ScopeFilter --> eventBus_on
+    ScopeFilter --> isAncestor
+    ScopeFilter --> this_toggle
+    SelectionAPI --> eventBus_on
+    SelectionAPI --> this__handleSelectionChanged
+    SequenceFlowBehavior --> simulator_registerBehavior
+    SetAnimationSpeed --> animation_getAnimationSpeed
     SetAnimationSpeed --> domClasses
+    SetAnimationSpeed --> domClasses_this__container__add
+    SetAnimationSpeed --> domClasses_this__container__remove
     SetAnimationSpeed --> eventBus_on
     SetAnimationSpeed --> this__init
+    SetAnimationSpeed --> this_setActive
     ShowScopes --> domClasses
+    ShowScopes --> domClasses_element__toggle
+    ShowScopes --> domClasses_this__container__add
+    ShowScopes --> domClasses_this__container__remove
+    ShowScopes --> domClear
+    ShowScopes --> element_setAttribute
     ShowScopes --> eventBus_on
     ShowScopes --> this__init
+    ShowScopes --> this__scopeFilter_isFocused
+    ShowScopes --> this__scopeFilter_isShown
+    ShowScopes --> this_addScope
+    ShowScopes --> this_getScopeElements
+    ShowScopes --> this_removeAllInstances
+    ShowScopes --> this_removeScope
+    ShowScopes --> this_unhighlightScope
+    ShowScopes --> this_updateScope
+    SimulationState --> CheckCircleIcon
+    SimulationState --> elementNotifications_addElementNotification
+    SimulationState --> eventBus_on
+    SimulationState --> processScopes_includes
+    SimulationTrace --> this__log_bind
+    SimulationTraceEvents --> eventBus_fire
+    SimulationTraceEvents --> eventBus_on
+    Simulator --> changedElements_clear
+    Simulator --> emit
+    Simulator --> injector_get
+    Simulator --> on
+    StartEventBehavior --> simulator_registerBehavior
+    SubProcessBehavior --> simulator_injector_get
+    SubProcessBehavior --> simulator_registerBehavior
+    ToggleMode --> domQuery
     ToggleMode --> eventBus_on
+    ToggleMode --> eventBus_once
+    ToggleMode --> this__canvas_getContainer
     ToggleMode --> this__init
+    ToggleMode --> this_toggleMode
+    TokenAnimation --> this_create
     TokenCount --> domClasses
+    TokenCount --> domClasses_element__toggle
+    TokenCount --> domQueryAll
     TokenCount --> eventBus_on
+    TokenCount --> this__scopeFilter_isShown
+    TokenCount --> this_addTokenCounts
+    TokenCount --> this_removeTokenCounts
+    _origPlayStatesEnd --> updateHeatmapData
+    _readMetric --> elementMetrics_get
+    _readMetric --> heatmapMetric_slice
+    _readMetric --> heatmapMetric_startsWith
+    _recordMetricsForElement --> String_e_name________trim
+    _recordMetricsForElement --> _scheduleDropdownRefresh
+    _recordMetricsForElement --> elementMetrics_get
+    _recordMetricsForElement --> elementMetrics_set
+    _recordMetricsForElement --> impactNamesSeen_add
+    _recordMetricsForElement --> impactNamesSeen_has
     _refreshHeatmapMetricOptions --> document_createElement
     _refreshHeatmapMetricOptions --> document_getElementById
+    _refreshHeatmapMetricOptions --> existingImpacts_add
+    _refreshHeatmapMetricOptions --> existingImpacts_has
+    _refreshHeatmapMetricOptions --> opt_value_slice
+    _refreshHeatmapMetricOptions --> opt_value_startsWith
+    _refreshHeatmapMetricOptions --> sel_appendChild
+    _resetHeatmapAccumulators --> elementMetrics_clear
+    _resetHeatmapAccumulators --> heatmapInstance_setData
+    _resetHeatmapImpactDiscovery --> _sel_value________startsWith
     _resetHeatmapImpactDiscovery --> document_getElementById
+    _resetHeatmapImpactDiscovery --> impactNamesSeen_clear
+    _resetHeatmapImpactDiscovery --> opt_value_startsWith
+    _resetHeatmapImpactDiscovery --> sel_removeChild
     _resetHeatmapImpactDiscovery --> updateHeatmapData
+    _scheduleDropdownRefresh --> _refreshHeatmapMetricOptions
+    _setDisplayId --> _scopeProcessId
+    _setDisplayId --> processToTokenMap_get
+    _setDisplayId --> scopeIdToTokenMap_set
+    action --> this__exclusiveGatewaySettings_setSequenceFlow
+    action --> this__inclusiveGatewaySettings_toggleSequenceFlow
+    action --> this__simulator_trigger
+    action --> this__togglePaused
+    active --> this_hasTrait
     aggregateByElement --> parseStateKey
+    along --> distance
+    applyTheme --> bpmnjs_get
+    applyTheme --> document_documentElement_classList_toggle
+    applyTheme --> themeService_setTheme
+    applyTheme --> toggle_setAttribute
+    belongTogether --> isAncestor
+    belongTogether --> isAttachedTo
+    bootstrapModeler --> _bootstrapModeler
+    boundsOf --> points_reduce
+    boxesOf --> items_map
+    bpmnJsSatisfies --> semver_satisfies
+    buildProcessToTokenMap --> contextId_split
     buildProcessToTokenMap --> parseStateKey
+    buildProcessToTokenMap --> processToTokenMap_clear
+    buildProcessToTokenMap --> processToTokenMap_has
+    buildProcessToTokenMap --> processToTokenMap_set
+    buildProcessToTokenMap --> tokenId_split
+    buildProcessToTokenMap --> tokenId_split______slice
+    buildProcessToTokenMap --> tokenId_split______slice_0__2__join
+    canTriggerElement --> getSimulationSupport
+    canTriggerElement --> getSimulationSupport___getElementTrigger
+    cancel --> illegalTransition
+    cancel --> this_state_cancel
+    canceled --> this_hasTrait
+    check --> ext__type_endsWith
+    check --> extensionElements_values_some
+    check --> is
+    check --> isTask
+    check --> readPlane
+    check --> reportEdgesOverLabels
+    check --> reportEdgesThroughShapes
+    check --> reportLabelOverlaps
+    check --> reportShapeOverlaps
+    check --> reportSharedLines
+    check --> reporter_report
+    checkDrain --> requestAnimationFrame
+    checkDrain --> resolve
+    clipPolyline --> clipSegment
+    clipPolyline --> pieces_push
+    clipPolyline --> segments
+    clipPolyline --> segments_points__forEach
+    common --> shapesA_some
+    common --> shapesB_indexOf
+    commonGateway --> is
+    commonGateway --> shapesA_some
+    commonGateway --> shapesB_indexOf
+    compensable --> illegalTransition
+    compensable --> this_state_compensable
+    complete --> illegalTransition
+    complete --> this_state_complete
+    completed --> this_hasTrait
+    configureExclusiveGateways --> activations_find
     configureExclusiveGateways --> aggregateByElement
+    configureExclusiveGateways --> child_incoming_find
+    configureExclusiveGateways --> child_incoming_some
+    configureExclusiveGateways --> diffActivations
     configureExclusiveGateways --> elementRegistry
+    configureExclusiveGateways --> gateways_forEach
     configureExclusiveGateways --> modeler_get
     configureExclusiveGateways --> registry_get
+    configureExclusiveGateways --> registry_getAll
+    configureExclusiveGateways --> registry_getAll___filter
     configureExclusiveGateways --> simulator_setConfig
+    constructor --> eventBus_on
+    constructor --> overlays_add
+    constructor --> propertiesPanel_registerProvider
+    constructor --> this__elementLog_push
+    constructor --> this_setTransitions
+    contexts --> subscriptions_slice
+    contexts --> subscriptions_slice___sort
+    contexts --> this__findSubscriptions
+    createHeatmapOverlay --> canvasEl_appendChild
+    createHeatmapOverlay --> controlsObserver_disconnect
+    createHeatmapOverlay --> controlsObserver_observe
     createHeatmapOverlay --> document_createElement
     createHeatmapOverlay --> document_querySelector
+    createHeatmapOverlay --> h337_create
+    createHeatmapOverlay --> heatmapContainer_parentNode_removeChild
+    createHeatmapOverlay --> requestAnimationFrame
+    createInternalRef --> getBusinessObject
+    createInternalRef --> is
+    createInternalRef --> isSpecialBoundaryEvent
     createScope --> elementChanged
     createScope --> emit
+    createScope --> ids_next
+    createScope --> parentScope_children_push
+    createScope --> scopes_add
     createScope --> trace
+    definitions --> _pool_____pool___concat_pool_lanes________concat
+    definitions --> _pool_____pool___concat_pool_lanes________concat_shapes__map
+    definitions --> _pool_____pool___concat_pool_lanes________concat_shapes__map_shape__________bpmndi_BPMNShape___attributes_________id______shape_id___di_________bpmnElement__shape_id________isExpanded__shape_expanded____true____undefined_____________boundsXml_shape_bounds______labelXml_shape_label_____bpmndi_BPMNShape_______join
+    definitions --> ______pool_____bpmn_laneSet_id__LaneSet_1_____pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join________bpmn_laneSet_____________shapes_filter_shape____shape_parent_____undefined__map_elementXml__join__________flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join_________join
+    definitions --> __pool___concat
+    definitions --> attributes
+    definitions --> boundsXml
+    definitions --> flow_waypoints_map
+    definitions --> flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join
+    definitions --> flows_map
+    definitions --> flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join
+    definitions --> flows_map_flow__________bpmndi_BPMNEdge_id_____flow_id___di__bpmnElement_____flow_id_______flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join_________labelXml_flow_label_____bpmndi_BPMNEdge_______join
+    definitions --> labelXml
+    definitions --> lane_nodes_map
+    definitions --> lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join
+    definitions --> pool_lanes_map
+    definitions --> pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join
+    definitions --> shapes_filter
+    definitions --> shapes_filter_shape____shape_parent_____undefined__map
+    definitions --> shapes_filter_shape____shape_parent_____undefined__map_elementXml__join
+    describe --> labelText
+    describe --> text_replace
+    describe --> text_replace___s__g_______trim
+    describe --> text_trim
+    destroy --> illegalTransition
+    destroy --> this_state_destroy
+    destroyListener --> off
+    destroyListener --> remainingScopes_delete
+    destroyListener --> trigger
     destroyScope --> elementChanged
     destroyScope --> emit
+    destroyScope --> scope_destroy
+    destroyScope --> scope_hasTrait
+    destroyScope --> scopes_delete
     destroyScope --> trace
+    destroyScope --> unsubscribe
+    destroyed --> this_hasTrait
+    diffActivations --> aggregateByElement
+    diffCompletions --> aggregateByElement
+    docker_entrypoint --> dirname
+    docker_entrypoint --> mkdir
+    docker_entrypoint --> npm
+    docker_entrypoint --> sed
+    docker_entrypoint --> set
+    docker_entrypoint --> tee
+    downloadDiagram --> download
+    downloadDiagram --> modeler_saveXML
+    downloadDiagram --> modeler_saveXML___format__true____then
     drainSimulationQueues --> modeler_get
+    drainSimulationQueues --> requestAnimationFrame
+    element --> elementRegistry_get
+    element --> getBpmnJS
+    element --> getBpmnJS___invoke
+    elementChanged --> changedElements_add
     elementChanged --> emit
+    elementEnter --> getSimulationSupport
+    elementEnter --> getSimulationSupport___elementEnter
+    elementExit --> getSimulationSupport
+    elementExit --> getSimulationSupport___elementExit
     elementRegistry --> modeler_get
+    elementXml --> attributes
+    elementXml --> shape_type_includes
+    elementXml --> shapes________filter
+    elementXml --> shapes________filter_child____child_parent_____shape_id_________map
+    elementXml --> shapes________filter_child____child_parent_____shape_id_________map_elementXml_________join
+    elementsUnderPalette --> canvas_getContainer
+    elementsUnderPalette --> canvas_getContainer___querySelector
+    elementsUnderPalette --> canvas_getContainer___querySelector___djs_palette___getBoundingClientRect
+    elementsUnderPalette --> canvas_getGraphics
+    elementsUnderPalette --> canvas_getGraphics_element__getBoundingClientRect
+    elementsUnderPalette --> canvas_getRootElement
+    elementsUnderPalette --> elementRegistry_filter
+    elementsUnderPalette --> elementRegistry_filter_function_element__________if__element_____root____________return_false_________________const_box___canvas_getGraphics_element__getBoundingClientRect___________return_box_width___0____box_height___0____________box_right___palette_left____box_left___palette_right____________box_bottom___palette_top____box_top___palette_bottom_________map
+    elementsUnderPalette --> getBpmnJS
+    elementsUnderPalette --> getBpmnJS___invoke
+    emit --> eventBus_fire
+    end_parse --> docker
+    end_parse --> echo
+    end_parse --> mkdir
+    enter --> getBehavior
+    enter --> getBehavior_element__enter
     enter --> initializeScope
     enter --> queue
+    enter --> scope_start
+    enter --> scopeChanged
     enter --> trace
+    eventsMatch --> ___type____name____iref____every
+    eventsMatch --> refsMatch
+    executeStep --> String_window__apiBaseUrl__replace
+    executeStep --> response_json
+    executeStep --> response_text
     exit --> destroyScope
+    exit --> getBehavior
+    exit --> getBehavior_element__exit
     exit --> queue
+    exit --> scope_complete
+    exit --> scopeChanged
     exit --> trace
+    expectColors --> elementColors__get
+    expectColors --> elementRegistry_get
     expectColors --> expect
+    expectColors --> expect_colors__to_eql
     expectColors --> getBpmnJS
     expectColors --> getBpmnJS___invoke
+    expectDestroyed --> expect
+    expectElementTrigger --> expect
+    expectElementTrigger --> getSimulationSupport
+    expectElementTrigger --> getSimulationSupport___getElementTrigger
+    expectHistory --> expect
+    expectHistory --> expect_history___history_equals___to_eql
+    expectHistory --> getSimulationSupport
+    expectHistory --> getSimulationSupport___getHistory
+    expectLog --> expect
+    expectLog --> expect_log__elementLog___log_equals___to_eql
+    expectLog --> getBpmnJS
+    expectLog --> getBpmnJS___get
+    expectNoElementTrigger --> expect
+    expectNoElementTrigger --> getSimulationSupport
+    expectNoElementTrigger --> getSimulationSupport___getElementTrigger
+    expectPanelRuleInForce --> document_body_appendChild
+    expectPanelRuleInForce --> document_createElement
+    expectPanelRuleInForce --> expect
+    expectPanelRuleInForce --> expect_display__to_equal
+    expectPanelRuleInForce --> panel_remove
+    expectPanelRuleInForce --> window_getComputedStyle
+    expectScopeTrigger --> expect
+    expectScopeTrigger --> getSimulationSupport
+    expectScopeTrigger --> getSimulationSupport___getScopeTrigger
+    expectTrace --> ____________t_action____________t_element____t_element_id_____null_____________t_scope____t_scope_id_____null____________join
     expectTrace --> getBpmnJS
     expectTrace --> getBpmnJS___invoke
+    expectTrace --> simulationTrace_slice
+    expectTrace --> simulationTrace_slice___map
     expectTrace --> verifyTrace
+    exportPNG --> download
+    exportPNG --> fileName_replace
+    exportPNG --> modeler_saveSVG
+    exportPNG --> modeler_saveSVG___then
     exportPNG --> svgToPng
+    exportPNG --> svgToPng_svg__then
+    exportSVG --> download
+    exportSVG --> fileName_replace
+    exportSVG --> modeler_saveSVG
+    exportSVG --> modeler_saveSVG___then
+    fail --> illegalTransition
+    fail --> this_state_fail
+    failed --> this_hasTrait
+    filterLinkThrowEvents --> elements_filter
+    filterLinkThrowEvents --> getLinkName
+    filterLinkThrowEvents --> isLinkThrow
+    filterSequenceFlows --> flows_filter
+    filterSequenceFlows --> is
+    filterSet --> matchFn
+    filterSet --> matched_push
+    findGenericJoin --> _____intersection___filter
+    findGenericJoin --> branches_map
     findGenericJoin --> getAllReachable
+    findGenericJoin --> reachables_i__has
+    findGenericJoin --> splitNode_outgoing_map
+    findJoin --> along
+    findJoin --> distance
+    findJoin --> isOnLine
+    findJoin --> pointAlong
+    findScope --> findSet
     findScope --> getBpmnJS
     findScope --> getBpmnJS___invoke
     findScope --> scopeFilter
+    findScope --> simulator_findScope
+    findScopes --> filterSet
+    findScopes --> scopeFilter
+    findSet --> matchFn
+    findSubscription --> findSet
+    findSubscription --> subscriptionFilter
+    findSubscriptionScope --> isEventSubProcess
+    findSubscriptions --> filterSet
+    findSubscriptions --> subscriptionFilter
+    fitViewportClearOfPalette --> canvas_getContainer
+    fitViewportClearOfPalette --> canvas_viewbox
+    fitViewportClearOfPalette --> paletteFootprint
+    fitViewportClearOfPalette --> viewboxClearOfReserve
+    forEachCellKey --> cellKey
+    forEachCellKey --> fn
+    forEachNearCrossPair --> cellsOf
+    forEachNearCrossPair --> firsts_forEach
+    forEachNearCrossPair --> fn
+    forEachNearCrossPair --> forEachCellKey
+    forEachNearCrossPair --> grid_get
+    forEachNearCrossPair --> gridOf
+    forEachNearCrossPair --> isWide
+    forEachNearCrossPair --> items_forEach
+    forEachNearCrossPair --> partners_add
+    forEachNearCrossPair --> seconds_forEach
+    forEachNearCrossPair --> seconds_map
+    forEachNearCrossPair --> widePositions
+    forEachNearPair --> boxes_map
+    forEachNearPair --> fn
+    forEachNearPair --> forEachCellKey
+    forEachNearPair --> grid_get
+    forEachNearPair --> gridOf
+    forEachNearPair --> isWide
+    forEachNearPair --> items_forEach
+    forEachNearPair --> partners_add
+    forEachNearPair --> ranges_forEach
+    forEachNearPair --> wide_forEach
+    forEachNearPair --> widePositions
+    getAllReachable --> n_outgoing_forEach
+    getAllReachable --> set_add
+    getAllReachable --> set_has
+    getAllReachable --> stack_pop
+    getAllReachable --> stack_push
+    getAnimationDuration --> randomBetween
+    getChildren --> elementRegistry_get
+    getChildren --> getPlaneIdFromShape
+    getChildren --> is
+    getColors --> getContrastYIQ
+    getContrastYIQ --> hexcolor_substr
+    getDefaultFlow --> gateway_outgoing_find
+    getDefaultFlow --> getBusinessObject
+    getElementName --> escapeHTML
+    getEvent --> createInternalRef
+    getEvent --> elementRegistry_get
+    getEvent --> getEventDefinitions
     getEvent --> is
     getEvent --> isBoundaryEvent
+    getEvent --> isEventSubProcess
+    getEvent --> isImplicitMessageCatch
+    getEvent --> isInterrupting
+    getEvent --> isStartEvent
+    getEventDefinition --> find
     getEventDefinition --> getBusinessObject
     getEventDefinition --> is
+    getEventDefinitions --> element_businessObject_get
+    getEventTypeString --> bo_get
     getEventTypeString --> getBusinessObject
     getEventTypeString --> is
     getExecutionOrderMap --> elementRegistry
+    getExecutionOrderMap --> executionOrder_map
+    getExecutionOrderMap --> executionOrder_push
     getExecutionOrderMap --> parseStateKey
     getExecutionOrderMap --> registry_get
+    getExecutionOrderMap --> seenTasks_add
+    getExecutionOrderMap --> seenTasks_has
+    getExecutionOrderMap --> stateSequence_forEach
+    getGroups --> createDurationGroup
+    getGroups --> groups_push
+    getHeatmapFrequencyData --> _readMetric
+    getHeatmapFrequencyData --> elementMetrics_forEach
+    getHeatmapFrequencyData --> elementTokenHistory_forEach
+    getHeatmapFrequencyData --> out_set
+    getIconForIntermediateEvent --> getEventTypeString
+    getIntId --> idMap_get
+    getIntId --> idMap_has
+    getIntId --> idMap_set
+    getLatestScopeId --> ____history_keys____pop
+    getLatestScopeId --> elementTokenHistory_get
+    getLatestScopeId --> elementTokenHistory_has
+    getLatestScopeId --> history_keys
+    getLinkDefinition --> getEventDefinition
+    getLinkName --> getEventDefinition
+    getNext --> gateway_outgoing_filter
+    getNext --> outgoing_indexOf
+    getNonDefaultFlows --> gateway_outgoing_filter
+    getNonDefaultFlows --> getBusinessObject
+    getNonDefaultFlows --> getDefaultFlow
+    getNumber --> str_match
+    getOverallStatus --> values_every
+    getOverallStatus --> values_includes
+    getScopeElements --> domQueryAll
     getSimulationSupport --> getBpmnJS
+    getSimulationSupport --> getBpmnJS___get
+    getSortedTriggers --> elementRegistry
+    getSortedTriggers --> ids_sort
+    getSortedTriggers --> registry_get
+    getTokens --> this_children_filter
+    getTokensByElement --> this_children_filter
+    getTriggers --> element_outgoing_map
+    getTriggers --> element_outgoing_map______outgoing____outgoing_target_____filter
+    getTriggers --> isAny
+    getValue --> extensionElements_values_find
+    gridOf --> forEachCellKey
+    gridOf --> grid_get
+    gridOf --> grid_set
+    gridOf --> isWide
+    gridOf --> items_push
+    gridOf --> ranges_forEach
+    handleKeyEvent --> editorActions_trigger
+    handleKeyEvent --> isKey
+    hasTrait --> this_state_hasTrait
+    hideBranchDialog --> document_getElementById
+    hideMessage --> document_querySelector
+    ifElement --> fn
+    indexShapes --> byElement_get
+    indexShapes --> byElement_set
+    indexShapes --> cellsOf
+    indexShapes --> gridOf
+    indexShapes --> positions_push
+    indexShapes --> shapes_forEach
+    indexShapes --> shapes_map
+    indexShapes --> widePositions
     init --> applyTheme
+    init --> document_documentElement_classList_contains
     init --> document_getElementById
+    init --> localStorage_setItem
+    init --> toggle_addEventListener
     initializeRootScopes --> createScope
+    initializeRootScopes --> element_children_filter
+    initializeRootScopes --> elementRegistry_forEach
     initializeRootScopes --> getEvent
+    initializeRootScopes --> getNoneEvent
     initializeRootScopes --> isAny
+    initializeRootScopes --> rootScopes_push
     initializeRootScopes --> signal
     initializeRootScopes --> subscribe
     initializeScope --> createScope
+    initializeScope --> getChildren
+    initializeScope --> getChildren_childElement__elementRegistry__filter
     initializeScope --> isBoundaryEvent
+    initializeScope --> isCompensationEvent
+    initializeScope --> isEventSubProcess
+    initializeScope --> isStartEvent
     initializeScope --> signal
     initializeScope --> subscribe
     initializeSimulationToStart --> buildProcessToTokenMap
     initializeSimulationToStart --> configureExclusiveGateways
+    initializeSimulationToStart --> elementRegistry_getAll
+    initializeSimulationToStart --> elementRegistry_getAll___forEach
+    initializeSimulationToStart --> elementTokenHistory_clear
     initializeSimulationToStart --> loadStateSequenceForCurrentDiagram
+    initializeSimulationToStart --> logInfo
     initializeSimulationToStart --> modeler_get
+    initializeSimulationToStart --> new_URL_window_location_href__searchParams_get
     initializeSimulationToStart --> parseStateKey
     initializeSimulationToStart --> registry_get
     initializeSimulationToStart --> renderMessageLogs
     initializeSimulationToStart --> renderStateSnapshot
     initializeSimulationToStart --> replayToIndex
+    initializeSimulationToStart --> replayToIndex_target__then
+    initializeSimulationToStart --> setNavigationVisible
     initializeSimulationToStart --> showStatePanelMessage
+    initializeSimulationToStart --> simulationSupport_toggleSimulation
     initializeSimulationToStart --> simulator_setConfig
     initializeSimulationToStart --> updateNavigationUI
+    injectStyles --> bpmnJsSatisfies
+    injectStyles --> insertCSS
+    is --> element__instanceOf
     isAny --> is
+    isAny --> types_some
+    isAttachedTo --> is
     isBoundaryEvent --> is
+    isBoundaryEvent --> isLabel
     isCatchEvent --> is
+    isCatchEvent --> isLabel
+    isCompensationActivity --> is
+    isCompensationEvent --> isCatchEvent
+    isCompensationEvent --> isTypedEvent
+    isEventSubProcess --> getBusinessObject
+    isExpandedSubProcess --> is
+    isFrame --> is
+    isImplicitMessageCatch --> element_incoming_some
+    isImplicitMessageCatch --> is
+    isImplicitStartEvent --> element_incoming_find
     isImplicitStartEvent --> isAny
+    isImplicitStartEvent --> isCompensationActivity
+    isImplicitStartEvent --> isEventSubProcess
+    isImplicitStartEvent --> isLabel
+    isImplicitStartEvent --> isLinkCatch
+    isInterrupting --> getBusinessObject
+    isInterrupting --> is
+    isKey --> keys_indexOf
+    isKeyboardTrigger --> ___Enter_________Spacebar____includes
+    isLabelExternal --> is
+    isLinkCatch --> isCatchEvent
+    isLinkCatch --> isTypedEvent
+    isLinkThrow --> is
+    isLinkThrow --> isTypedEvent
+    isMessageCatch --> isCatchEvent
+    isMessageCatch --> isTypedEvent
+    isMessageFlow --> is
+    isNoneStartEvent --> isStartEvent
+    isNoneStartEvent --> isTypedEvent
+    isOnLine --> distance
+    isSequenceFlow --> is
+    isSpecialBoundaryEvent --> getEventDefinitions
+    isSpecialBoundaryEvent --> isAny
+    isSpecialBoundaryEvent --> isBoundaryEvent
+    isStartEvent --> is
+    isStartEvent --> isLabel
+    isTransaction --> is
     isTypedEvent --> getBusinessObject
     isTypedEvent --> is
+    isTypedEvent --> some
+    joinPieces --> findJoin
+    joinPieces --> joined_splice
+    joinPieces --> pieces_slice
+    labelText --> is
+    labelXml --> boundsXml
+    lint --> expect
+    lint --> lintWith
+    lintWith --> definitions
+    lintWith --> new_BpmnModdle_extensions__fromXML
+    lintWith --> noDiagramOverlaps
+    lintWith --> testRule
+    lintWith --> testRule___moddleRoot__rootElement__rule__noDiagramOverlaps______map
+    lintWith --> warnings_map
+    listToBinarySequence --> items_slice
+    listener --> eventBus_off
+    listener --> isAny
+    listener --> resolve
+    loadStateSequenceForCurrentDiagram --> allKeys_filter
     loadStateSequenceForCurrentDiagram --> buildProcessToTokenMap
+    loadStateSequenceForCurrentDiagram --> diagramKeys_sort
+    loadStateSequenceForCurrentDiagram --> diagramKeys_sort__a__b____________const_getNumber____str______________const_match___str_match__t__d____json____________return_match___parseInt_match_1___10____0_______________return_getNumber_a____getNumber_b_________map
+    loadStateSequenceForCurrentDiagram --> fileName_replace
+    loadStateSequenceForCurrentDiagram --> getNumber
+    loadStateSequenceForCurrentDiagram --> k_startsWith
+    loadStateSequenceForCurrentDiagram --> key_replace
+    loadStateSequenceForCurrentDiagram --> key_replace______baseName_________replace
+    loadStateSequenceForCurrentDiagram --> statesContext
+    loadStateSequenceForCurrentDiagram --> statesContext_keys
+    logError --> logMessage
+    logInfo --> logMessage
+    logMessage --> log_log
+    logMessage --> simulationLog
+    moveSimulationControls --> controlGroup_appendChild
     moveSimulationControls --> document_getElementById
     moveSimulationControls --> document_querySelector
+    moveSimulationControls --> ioGroup_appendChild
+    moveSimulationControls --> monitorGroup_appendChild
+    name --> describe
+    navigateBackward --> animation_getAnimationSpeed
+    navigateBackward --> animation_setAnimationSpeed
     navigateBackward --> document_querySelector
     navigateBackward --> modeler_get
     navigateBackward --> replayToIndex
+    navigateBackward --> stateSequence_slice
     navigateBackward --> updateNavigationUI
+    navigateForward --> _gw_outgoing________filter
+    navigateForward --> ____completedInTarget__join
     navigateForward --> aggregateByElement
+    navigateForward --> allScopesAfter_filter
+    navigateForward --> allScopesAfter_filter_s_____s_destroyed__forEach
+    navigateForward --> animation_getAnimationSpeed
+    navigateForward --> animation_setAnimationSpeed
+    navigateForward --> completedInTarget_add
+    navigateForward --> completedInTarget_has
     navigateForward --> document_getElementById
     navigateForward --> drainSimulationQueues
+    navigateForward --> el_incoming_filter
+    navigateForward --> leafScopes_map
+    navigateForward --> leafScopes_map_s_______s_element__id____s_id_____join
+    navigateForward --> logInfo
     navigateForward --> modeler_get
+    navigateForward --> modeler_get__eventBus___fire
+    navigateForward --> outgoing_find
     navigateForward --> parseStateKey
     navigateForward --> registry_get
+    navigateForward --> registry_getAll
+    navigateForward --> registry_getAll___filter
+    navigateForward --> registry_getAll___filter_el____el_type______bpmn_ExclusiveGateway___forEach
+    navigateForward --> registry_getAll___forEach
     navigateForward --> renderStateSnapshot
+    navigateForward --> requestBranchSwitch
     navigateForward --> showBranchDialog
+    navigateForward --> simulationSupport_triggerElement
+    navigateForward --> simulator_findScopes
+    navigateForward --> simulator_findScopes_________________filter
     navigateForward --> simulator_setConfig
+    navigateForward --> simulator_signal
     navigateForward --> updateNavigationUI
+    navigateForward --> window_parent_postMessage
+    nextName --> seenNames_has
+    nextName --> seenNames_set
+    normalizeStatusClass --> ACTIVITY_STATE_NAME_get
+    off --> eventBus_off
+    on --> eventBus_on
     openDiagram --> buildProcessToTokenMap
+    openDiagram --> fitViewportClearOfPalette
     openDiagram --> initializeSimulationToStart
     openDiagram --> modeler_get
+    openDiagram --> modeler_importXML
+    openDiagram --> modeler_importXML_diagram________then
+    openDiagram --> modeler_importXML_diagram________then____warnings________________if__warnings_length_____________console_warn_warnings_____________________sanitizeDiagram_modeler____persist__persistent______________if__persistent_____________localStorage__diagram_xml_____diagram_______________________Not__canvas_zoom__fit_viewport_____that_fit_draws_the_leftmost_elements___________under_the_palette__see_fit_viewport_js___A_canvas_with_no_size_yet______________an_iframe_that_is_not_visible____cannot_be_fitted__say_so_instead_of___________dropping_the_reason_________try____________fitViewportClearOfPalette_modeler_get__canvas______________catch__err_____________console_warn___openDiagram__diagram_not_fitted_to_the_canvas____err_message________________________Force_ALL_tasks_to_behave_as_wait_states_so_tokens_stay_visible_on_them________const_registry___modeler_get__elementRegistry___________const_simulator___modeler_get__simulator___________registry_getAll___forEach_el_______________if__el_type______bpmn_Task_____el_type______bpmn_UserTask_____el_type______bpmn_ServiceTask________________simulator_waitAtElement_el__true_____________________________________Auto_start_simulation_at_t0________initializeSimulationToStart________________Retry_pending_API_states___they_may_have_arrived_before_importXML___________completed_and_been_deferred_because_the_diagram_wasn_t_ready_yet_________if___pendingApiStates_____________const_retryKey___Object_keys__pendingApiStates_length____pendingApiStates_0__state_______0____________const_retryId___retryKey___parseStateKey_retryKey__registryId___null___________if__retryId____registry_get_retryId________________console_log___openDiagram__Retrying_deferred_API_states_______________stateSequence____pendingApiStates______________statesInjectedViaApi___true______________pendingApiStates___null_____________buildProcessToTokenMap_______________if___pendingApiNavData__________________treeTopology____pendingApiNavData_topology________________allPaths____pendingApiNavData_allPaths________________allPathNodeIds____pendingApiNavData_allPathNodeIds________________pathNodeIds_____allPathNodeIds_____pendingApiNavData_nodeId____null____________________allPathNodeIds_String__pendingApiNavData_nodeId______null___null________________currentNodeId____pendingApiNavData_nodeId____null__________________String__pendingApiNavData_nodeId____null________________navigationMode______treeTopology________________pendingApiNavData___null_______________setNavigationVisible__navigationMode___________________________if___pendingApiTargetIndex_____null_________________const_target____pendingApiTargetIndex________________pendingApiTargetIndex___null_______________replayToIndex_target__then_______updateNavigationUI____________________________________________________catch
     openDiagram --> parseStateKey
     openDiagram --> registry_get
+    openDiagram --> registry_getAll
+    openDiagram --> registry_getAll___forEach
     openDiagram --> replayToIndex
+    openDiagram --> replayToIndex_target__then
     openDiagram --> sanitizeDiagram
+    openDiagram --> setNavigationVisible
+    openDiagram --> simulator_waitAtElement
     openDiagram --> updateNavigationUI
+    openFile --> hideMessage
+    openFile --> openDiagram
+    paletteFootprint --> container_querySelector
+    paletteFootprint --> window_getComputedStyle
+    parseBPMN --> canvas_getRootElement
+    parseBPMN --> elementRegistry_filter
+    parseBPMN --> idMap_entries
+    parseBPMN --> listToBinarySequence
     parseBPMN --> modeler_get
     parseBPMN --> parseSequence
+    parseSequence --> children_push
     parseSequence --> findGenericJoin
+    parseSequence --> getIntId
+    parseSequence --> getNext
+    parseSequence --> getType
+    parseSequence --> listToBinarySequence
+    parseSequence --> sequenceItems_push
+    parseSequence --> splitNode_outgoing_forEach
+    parseStateKey --> key_indexOf
+    parseStateKey --> key_substring
+    parseStateKey --> keyWithoutToken_split
+    parse_args --> shift
+    playStates --> ____activations_____completions__filter
     playStates --> aggregateByElement
+    playStates --> allScopes_map
+    playStates --> bo_eventDefinitions_some
     playStates --> configureExclusiveGateways
+    playStates --> diffActivations
+    playStates --> diffActivations_prev__next__filter
+    playStates --> diffCompletions
     playStates --> drainSimulationQueues
     playStates --> elementRegistry
+    playStates --> lateStartIds_forEach
+    playStates --> logError
+    playStates --> logInfo
     playStates --> modeler_get
     playStates --> registry_get
     playStates --> renderStateSnapshot
     playStates --> showStatePanelMessage
+    playStates --> simDbg_findScopes
+    playStates --> simulationSupport_toggleSimulation
+    playStates --> simulationSupport_triggerElement
+    playStates --> startEventIds_forEach
     playStates --> waitForTokenDrain
+    pointAlong --> distance
     queue --> emit
+    queue --> jobs_push
+    queue --> jobs_shift
+    queue --> task
+    readPlane --> boundsOf
+    readPlane --> di_get
+    readPlane --> di_get__waypoint___map
+    readPlane --> edges_forEach
+    readPlane --> edges_push
+    readPlane --> from_concat
+    readPlane --> from_map
+    readPlane --> indexShapes
+    readPlane --> is
+    readPlane --> isExpandedSubProcess
+    readPlane --> isFrame
+    readPlane --> isLabelExternal
+    readPlane --> labelText
+    readPlane --> labels_push
+    readPlane --> plane_get
+    readPlane --> plane_get__planeElement___forEach
+    readPlane --> shapes_push
+    readPlane --> sidePositions
+    readPlane --> to_map
+    readPlane --> toBox
+    readRollupVersion --> fs_readFileSync
+    readRollupVersion --> path_join
+    readRollupVersion --> pkg_devDependencies_rollup_replace
+    rect --> document_querySelector
+    rect --> document_querySelector_selector__getBoundingClientRect
+    references --> connection_get
+    references --> value_slice
+    remove --> unsubscribe
     renderMessageLogs --> document_createElement
     renderMessageLogs --> document_getElementById
+    renderMessageLogs --> messageLogs_forEach
+    renderMessageLogs --> panel_classList_add
+    renderMessageLogs --> tbody_appendChild
+    renderStateSnapshot --> ACTIVITY_STATE_NAME_get
+    renderStateSnapshot --> div_classList_add
     renderStateSnapshot --> document_createElement
+    renderStateSnapshot --> elementEntries_get
+    renderStateSnapshot --> elementEntries_get_elementKey__get
+    renderStateSnapshot --> elementEntries_get_elementKey__set
+    renderStateSnapshot --> elementEntries_has
+    renderStateSnapshot --> elementEntries_set
+    renderStateSnapshot --> elementOrder_forEach
+    renderStateSnapshot --> elementOrder_push
     renderStateSnapshot --> elementRegistry
+    renderStateSnapshot --> elementRegistry___get
+    renderStateSnapshot --> entries_forEach
     renderStateSnapshot --> getExecutionOrderMap
+    renderStateSnapshot --> new_Date___toLocaleTimeString
+    renderStateSnapshot --> normalizeStatusClass
+    renderStateSnapshot --> orderMap_get
+    renderStateSnapshot --> orderMap_has
     renderStateSnapshot --> parseStateKey
+    renderStateSnapshot --> parts_slice
+    renderStateSnapshot --> parts_slice_0__2__join
+    renderStateSnapshot --> row_appendChild
+    renderStateSnapshot --> statePanel_classList_add
+    renderStateSnapshot --> statePanelBody_appendChild
+    renderStateSnapshot --> statusCell_appendChild
+    renderStateSnapshot --> statusCell_classList_add
+    renderStateSnapshot --> tokenId_split
+    renderStateSnapshot --> tokenMap_entries
+    replayToIndex --> _gateway_outgoing________filter
+    replayToIndex --> _resetHeatmapAccumulators
+    replayToIndex --> completedInTarget_add
+    replayToIndex --> completedInTarget_has
     replayToIndex --> drainSimulationQueues
+    replayToIndex --> el_incoming_filter
+    replayToIndex --> elementColors_add
+    replayToIndex --> gateways_forEach
     replayToIndex --> modeler_get
+    replayToIndex --> modeler_get__eventBus___fire
+    replayToIndex --> outgoing_find
+    replayToIndex --> outgoing_forEach
     replayToIndex --> parseStateKey
     replayToIndex --> registry_get
+    replayToIndex --> registry_getAll
+    replayToIndex --> registry_getAll___filter
+    replayToIndex --> registry_getAll___forEach
     replayToIndex --> renderStateSnapshot
+    replayToIndex --> simulationStyles_get
+    replayToIndex --> simulationSupport_toggleSimulation
+    replayToIndex --> simulationSupport_triggerElement
+    replayToIndex --> simulator_reset
     replayToIndex --> simulator_setConfig
+    replayToIndex --> startEventRegistryIds_add
+    reportEdgesOverLabels --> boxesOf
+    reportEdgesOverLabels --> clipPolyline
+    reportEdgesOverLabels --> describe
+    reportEdgesOverLabels --> forEachNearCrossPair
+    reportEdgesOverLabels --> name
+    reportEdgesOverLabels --> reportedId
+    reportEdgesOverLabels --> reporter_report
+    reportEdgesOverLabels --> stretches
+    reportEdgesThroughShapes --> boxesOf
+    reportEdgesThroughShapes --> clipPolyline
+    reportEdgesThroughShapes --> edge_ends_indexOf
+    reportEdgesThroughShapes --> edge_ends_some
+    reportEdgesThroughShapes --> forEachNearCrossPair
+    reportEdgesThroughShapes --> isAncestor
+    reportEdgesThroughShapes --> name
+    reportEdgesThroughShapes --> reportedId
+    reportEdgesThroughShapes --> reporter_report
+    reportEdgesThroughShapes --> stretches
+    reportLabelOverlaps --> area
+    reportLabelOverlaps --> boxesOf
+    reportLabelOverlaps --> contains
+    reportLabelOverlaps --> describe
+    reportLabelOverlaps --> forEachNearCrossPair
+    reportLabelOverlaps --> forEachNearPair
+    reportLabelOverlaps --> intersection
+    reportLabelOverlaps --> name
+    reportLabelOverlaps --> reporter_report
+    reportShapeOverlaps --> area
+    reportShapeOverlaps --> belongTogether
+    reportShapeOverlaps --> boxesOf
+    reportShapeOverlaps --> drawing_shapes_filter
+    reportShapeOverlaps --> forEachNearPair
+    reportShapeOverlaps --> intersection
+    reportShapeOverlaps --> name
+    reportShapeOverlaps --> reportedId
+    reportShapeOverlaps --> reporter_report
+    reportSharedLines --> boxesOf
+    reportSharedLines --> distance
+    reportSharedLines --> forEachNearPair
+    reportSharedLines --> joinPieces
+    reportSharedLines --> name
+    reportSharedLines --> pieces_push
+    reportSharedLines --> reportedId
+    reportSharedLines --> reporter_report
+    reportSharedLines --> segments
+    reportSharedLines --> segments_a_points__forEach
+    reportSharedLines --> segments_b_points__forEach
+    reportSharedLines --> shared_reduce
+    reportSharedLines --> sharedDockings
+    reportSharedLines --> sharedPiece
+    reportSharedLines --> stretches
+    reportSharedLines --> withoutTrunks
+    reportSharedLines --> withoutTrunks_joinPieces_pieces___sharedDockings_a__b___filter
+    requestBranchSwitch --> buildProcessToTokenMap
+    requestBranchSwitch --> window_parent_postMessage
+    reset --> destroyScope
+    reset --> emit
+    reset --> initializeRootScopes
+    reset --> scopes_add
+    resolveTokenId --> getProcessId
+    resolveTokenId --> processToTokenMap_get
+    resolveTokenId --> scopeIdToTokenMap_set
+    run --> command
+    run --> docker
+    run --> echo
     run --> exit
+    run --> mkdir
+    run --> nc
+    run --> pwd
+    run --> set
+    run --> shift
+    run --> true
+    running --> this_hasTrait
+    sanitizeDiagram --> _bo_name________trim
+    sanitizeDiagram --> _element_type________replace
+    sanitizeDiagram --> _rawName________element_type________replace__bpmn____________Element_____bo_id____________replace
+    sanitizeDiagram --> bo__instanceOf
+    sanitizeDiagram --> elementRegistry_getAll
+    sanitizeDiagram --> elementRegistry_getAll___forEach
     sanitizeDiagram --> modeler_get
+    sanitizeDiagram --> modeler_saveXML
+    sanitizeDiagram --> modeler_saveXML___format__true____then
+    sanitizeDiagram --> modeler_saveXML___format__true____then____xml________________localStorage__diagram_xml_____xml__________catch
+    sanitizeDiagram --> nextName
+    scopeChanged --> emit
+    scopeDestroyed --> getSimulationSupport
+    scopeDestroyed --> getSimulationSupport___scopeDestroyed
+    scopeFilter --> isSubscribed
+    scopeFilter --> scope_getTokensByElement
+    scopeFilter --> scope_hasTrait
+    scopeFilter --> scopeSubscriptionFilter
+    scopeSubscriptionFilter --> subscriptionFilter
+    segments --> result_push
     setConfig --> elementChanged
     setConfig --> getBpmnJS
     setConfig --> getBpmnJS___invoke
+    setConfig --> getConfig
     setConfig --> simulator_setConfig
+    setNavigationVisible --> document_getElementById
+    setTransitions --> orSelf
+    setValue --> bpmnFactory_create
+    setValue --> extensionElements_values_filter
+    setValue --> extensionElements_values_find
+    setValue --> modeling_updateModdleProperties
+    setValue --> modeling_updateProperties
+    shapesCovering --> candidates_filter
+    shapesCovering --> cellKey
+    shapesCovering --> covers
+    shapesCovering --> index_grid_get
+    shapesCovering --> items_concat
+    sharedDockings --> common
+    sharedDockings --> commonGateway
+    sharedDockings --> distance
+    sharedDockings --> docks_push
+    sharedPiece --> along
+    sharedPiece --> distance
+    sharedPiece --> isOnLine
+    sharedPiece --> pointAlong
+    showAdvanceDecisionDialog --> _cd_decisions________every
+    showAdvanceDecisionDialog --> _cd_decisions________forEach
+    showAdvanceDecisionDialog --> btn_addEventListener
+    showAdvanceDecisionDialog --> childrenDecisions_find
+    showAdvanceDecisionDialog --> childrenDecisions_forEach
+    showAdvanceDecisionDialog --> confirmBtn_addEventListener
+    showAdvanceDecisionDialog --> dialog_querySelector
     showAdvanceDecisionDialog --> document_createElement
     showAdvanceDecisionDialog --> document_getElementById
+    showAdvanceDecisionDialog --> footer_insertBefore
+    showAdvanceDecisionDialog --> footer_querySelector
+    showAdvanceDecisionDialog --> gatewayMap_forEach
+    showAdvanceDecisionDialog --> gatewayMap_get
+    showAdvanceDecisionDialog --> gatewayMap_has
+    showAdvanceDecisionDialog --> gatewayMap_set
+    showAdvanceDecisionDialog --> group_appendChild
+    showAdvanceDecisionDialog --> hideBranchDialog
+    showAdvanceDecisionDialog --> list_appendChild
+    showAdvanceDecisionDialog --> old_remove
+    showAdvanceDecisionDialog --> oldConfirm_remove
+    showAdvanceDecisionDialog --> optContainer_appendChild
+    showAdvanceDecisionDialog --> optContainer_querySelectorAll
+    showAdvanceDecisionDialog --> optContainer_querySelectorAll__button___forEach
+    showAdvanceDecisionDialog --> options_forEach
+    showAdvanceDecisionDialog --> options_keys
+    showAdvanceDecisionDialog --> opts_has
+    showAdvanceDecisionDialog --> opts_set
+    showAdvanceDecisionDialog --> updateBtn
+    showAdvanceDecisionDialog --> window_parent_postMessage
+    showBranchDialog --> _child_decisions________forEach
+    showBranchDialog --> btn_addEventListener
+    showBranchDialog --> child_decisions_every
+    showBranchDialog --> children_find
+    showBranchDialog --> children_forEach
+    showBranchDialog --> children_some
+    showBranchDialog --> confirmBtn_addEventListener
+    showBranchDialog --> dialog_querySelector
     showBranchDialog --> document_createElement
     showBranchDialog --> document_getElementById
+    showBranchDialog --> existingConfirm_remove
+    showBranchDialog --> footer_insertBefore
+    showBranchDialog --> footer_querySelector
+    showBranchDialog --> gatewayMap_forEach
+    showBranchDialog --> gatewayMap_get
+    showBranchDialog --> gatewayMap_has
+    showBranchDialog --> gatewayMap_set
+    showBranchDialog --> group_appendChild
+    showBranchDialog --> hideBranchDialog
+    showBranchDialog --> list_appendChild
     showBranchDialog --> navigateForward
+    showBranchDialog --> oldConfirm_remove
+    showBranchDialog --> optContainer_appendChild
+    showBranchDialog --> optContainer_querySelectorAll
+    showBranchDialog --> optContainer_querySelectorAll__button___forEach
+    showBranchDialog --> options_forEach
+    showBranchDialog --> options_keys
+    showBranchDialog --> opts_has
+    showBranchDialog --> opts_set
+    showBranchDialog --> requestBranchSwitch
+    showBranchDialog --> updateBtn
+    showMessage --> document_querySelector
     showStatePanelMessage --> document_createElement
+    showStatePanelMessage --> row_appendChild
+    showStatePanelMessage --> statePanel_classList_add
+    showStatePanelMessage --> statePanelBody_appendChild
+    sidePositions --> elements_forEach
+    sidePositions --> elements_push
+    sidePositions --> index_byElement_get
+    sidePositions --> is
+    sidePositions --> picked_add
+    sidePositions --> positions_forEach
+    sidePositions --> references
+    sidePositions --> shapesCovering
+    sidePositions --> shapesCovering_point__shapes__index__forEach
+    signal --> getBehavior
+    signal --> getBehavior_element__signal
     signal --> getBpmnJS
     signal --> getBpmnJS___invoke
     signal --> initializeScope
     signal --> queue
+    signal --> scope_start
+    signal --> scopeChanged
+    signal --> simulator_signal
     signal --> trace
+    simulationLog --> modeler_get
+    start --> illegalTransition
+    start --> this_state_start
+    stretches --> pieces_map
+    stretches --> pieces_map_function_piece________return__from____point_piece_from____to____point_piece_to___________join
+    stretches --> point
     subscribe --> elementChanged
     subscribe --> getEvent
+    subscribe --> scope_subscriptions_add
+    subscribe --> subscriptions_add
+    subscription --> getBpmnJS
+    subscription --> getBpmnJS___invoke
+    subscription --> simulator_findSubscription
+    subscriptionFilter --> elements_includes
+    subscriptionFilter --> eventsMatch
     subscriptionFilter --> getEvent
+    svgToPng --> URL_createObjectURL
+    svgToPng --> URL_revokeObjectURL
+    svgToPng --> canvas_getContext
+    svgToPng --> canvas_toBlob
+    svgToPng --> context_drawImage
     svgToPng --> document_createElement
+    svgToPng --> resolve
+    terminate --> illegalTransition
+    terminate --> this_state_terminate
+    toggleHeatmap --> controlsObserver_disconnect
+    toggleHeatmap --> controlsObserver_observe
     toggleHeatmap --> createHeatmapOverlay
     toggleHeatmap --> document_getElementById
+    toggleHeatmap --> event_preventDefault
+    toggleHeatmap --> event_stopPropagation
+    toggleHeatmap --> heatmapContainer_parentNode_removeChild
+    toggleHeatmap --> requestAnimationFrame
     toggleHeatmap --> updateHeatmapData
     trace --> emit
+    trigger --> __interrupt_triggerFn_initiator____flat
+    trigger --> __interrupt_triggerFn_initiator____flat___filter
+    trigger --> eventsMatch
     trigger --> expect
     trigger --> filterSet
     trigger --> getBpmnJS
     trigger --> getBpmnJS___invoke
     trigger --> getEvent
+    trigger --> interrupt_triggerFn
+    trigger --> interrupting_find
+    trigger --> isRethrow
+    trigger --> matchingSubscriptions_every
+    trigger --> matchingSubscriptions_filter
+    trigger --> nonInterrupting_map
+    trigger --> nonInterrupting_map__________subscription____subscription_triggerFn_initiator__________flat
+    trigger --> referenceSubscriptions_some
+    trigger --> refsMatch
+    trigger --> remainingSubscriptions_includes
+    trigger --> simulator_trigger
+    trigger --> subscription
+    trigger --> subscription_remove
+    trigger --> subscription_triggerFn
+    trigger --> subscriptions_forEach
+    triggerAction --> _action
+    triggerAction --> _contexts
+    triggerAction --> _contexts___filter
+    triggerAction --> this__scopeFilter_isShown
+    triggerElement --> getSimulationSupport
+    triggerElement --> getSimulationSupport___triggerElement
+    triggerScope --> getSimulationSupport
+    triggerScope --> getSimulationSupport___triggerScope
+    unsubscribe --> elementChanged
+    unsubscribe --> scope_subscriptions_delete
+    unsubscribe --> subscriptions_delete
+    updateHeatmapData --> canvas_getGraphics
+    updateHeatmapData --> data_push
+    updateHeatmapData --> freqData_forEach
     updateHeatmapData --> getHeatmapFrequencyData
+    updateHeatmapData --> gfx_getBoundingClientRect
+    updateHeatmapData --> heatmapContainer_getBoundingClientRect
+    updateHeatmapData --> heatmapInstance_setData
     updateHeatmapData --> modeler_get
     updateHeatmapData --> registry_get
+    updateNavigationUI --> _syncCurrentNodeId
     updateNavigationUI --> document_getElementById
+    updateNavigationUI --> setNavigationVisible
+    updateNavigationUI --> snapName_startsWith
+    validateSESE --> allElements_forEach
+    validateSESE --> canvas_getRootElement
+    validateSESE --> elementRegistry_getAll
+    validateSESE --> errors_push
     validateSESE --> modeler_get
+    validateSESE --> root_children_forEach
+    validateSESE --> scope_children_filter
+    validateSESE --> scopes_forEach
+    validateSESE --> scopes_push
+    verify --> bootstrapModeler
+    verify --> bootstrapModeler_diagram__________additionalModules____________SimulatorModule________________________init__________________function_simulator__simulationTrace__________________simulator_on__trace___function_event____________________simulationTrace_push_event________________________________________________function_eventBus__simulator__________________eventBus_once__import_done___________________________simulator_reset___________________________________________________________scopeIds_____factory___function__________________let_idx___0_______________const_alphabet___Array_from__ABCDEFGHIJKLMNOPQRSTUVWXYZ____________________generate_IDs_in_alphabetic_order_________________when_overflowing_the_alphabet__attach_a_numeric_runner_suffix________________________________A_B_C_D_E_____Z_A1_B1_C1_________________function_next___________________const_i___idx___________________const_runner___Math_trunc_i___alphabet_length_________________const_char___i___alphabet_length_________________return_alphabet_char_____runner____________________________________return_________________next_________________________________________simulationScopes_____value___________________simulationTrace_____value_________________________________call
+    verify --> eventBus_once
     verify --> expect
     verify --> getBpmnJS
     verify --> getBpmnJS___invoke
+    verify --> iit
+    verify --> simulationTrace_push
+    verify --> simulator_on
+    verify --> simulator_reset
+    verifyOnly --> verify
+    verifySkip --> verify
+    verifyTrace --> __split__0____split__1____scopes__scope_____join
+    verifyTrace --> adjustedExpectedTrace_push
+    verifyTrace --> event_split
     verifyTrace --> expect
+    verifyTrace --> expect_trace__to_eql
+    verifyTrace --> expectedTrace_forEach
+    verifyTrace --> trace__index___split
+    waitAtElement --> getBpmnJS
+    waitAtElement --> getBpmnJS___invoke
+    waitAtElement --> setConfig
+    waitAtElement --> simulator_waitAtElement
+    waitForScopes --> on
     waitForTokenDrain --> drainSimulationQueues
     waitForTokenDrain --> elementRegistry
+    waitForTokenDrain --> elementRegistry___get
+    waitForTokenDrain --> getSortedTriggers
     waitForTokenDrain --> modeler_get
+    waitForTokenDrain --> simulationSupport_triggerElement
+    waitForTokenDrain --> simulator_findScopes
+    waitForTokenDrain --> simulator_findScopes______________element__element_____________find
+    waitForTokenDrain --> simulator_signal
+    widePositions --> isWide
+    widePositions --> ranges_forEach
+    widePositions --> wide_push
+    withBpmnJs --> bpmnJsSatisfies
+    without --> array_filter
+    withoutTrunks --> distance
+    withoutTrunks --> docks_forEach
+    withoutTrunks --> left_findIndex
+    withoutTrunks --> left_splice
+    withoutTrunks --> stretches_slice

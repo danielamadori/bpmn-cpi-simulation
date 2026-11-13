@@ -1,91 +1,73 @@
 # Diagrams
 
 Generated from this repository's source by
-[UniversalSemantics](https://github.com/danielamadori/UniversalSemantics)
-on 2026-09-14, and committed because they are **reproducible**: the same
-source produces byte-identical files, so a diff between two
-regenerations shows what changed in the code and nothing else.
+[UniversalSemantics](https://github.com/danielamadori/UniversalSemantics) on
+2026-11-13, at revision `75a4dc2e2`, and committed because they are reproducible:
+the provenance comments name files the way this repository does, not the way
+one machine happened to mount them. Regenerate them rather than editing them.
 
 ## What is here
 
-| file | what it shows |
-|---|---|
-| `ast-class_diagram.*` | types with their members, plus one box per module holding that module's free functions (`<<javascript module>>`) |
-| `ast-call_graph.*` | who calls whom |
-| `ast-component_diagram.*` | one component per file, with its function count |
-| `ast-package_diagram.*` | packages and their import dependencies |
-| `state_diagram.*` | the MDP built from the BPMN model of this code |
+| file | what it shows | formats |
+|---|---|---|
+| `ast-class_diagram.*` | types with their members | .dot, .mmd, .puml |
+| `ast-call_graph.*` | who calls whom | .dot, .mmd, .puml |
+| `ast-component_diagram.*` | one component per file, with its function count | .dot, .mmd, .puml |
+| `ast-package_diagram.*` | packages and their import dependencies | .dot, .mmd, .puml |
+| `state_diagram.*` | the MDP built from the BPMN model of this code | .mmd, .puml |
 
-Three formats each where the view has something to draw in all three:
-`.mmd` (Mermaid -- GitHub renders it inline), `.puml` (PlantUML),
-`.dot` (Graphviz).
+## Read the header before quoting a number
 
-## Read line 2 before quoting a number
+A file that shows less than all of its subject, or that a viewer will not
+render, says so in its first lines:
 
-**Every file that shows less than all of its subject says so on line
-2.** A file without such a header is complete.
+- `ast-call_graph`
+  - `.dot`: 398 of 1720 call records rendered, of which 0 are an identifier PASSED AS AN ARGUMENT and not a call at that site (dashed, and their tooltip says so); 398 are call sites.
+  - `.mmd`: OVER MERMAID'S DEFAULT LIMIT: 125225 characters of diagram, plus 861 for these two lines, is 126086 against a 50000-character default (over by 76086, x2.5).
+- `state_diagram`
+  - `.mmd`: OVER MERMAID'S DEFAULT LIMIT: 412548 characters of diagram, plus 862 for these two lines, is 413410 against a 50000-character default (over by 363410, x8.3).
 
-- the call graph is a top-degree induced subgraph -- 100 of 743 nodes, 200 of 1021 edges, so it
-  answers "what are the hot paths" and does not answer "what
-  calls this";
-- the state diagram is diagram shows first 500 states only;
-- the class diagram carries no shortfall header, so every entity
-  the extractor found is drawn. The 84 boxes include one synthetic
-  box per module for that module's free functions, so the box
-  count is larger than the entity count by construction.
+The JSON maps (`uml_map.json`, `cytoscape.json`, `state_diagram_map.json`) and
+`processes.bpmn` are deliberately not committed: they are for machines, and a run
+produces them afresh.
 
-This repository holds javascript.
+## What UES read and ran
 
-## What was measured on this repository
+- A code-only archive of `75a4dc2e2`: 138 files, 0.5 MB of source (uncompressed), 139 ZIP entries including .ues_corpus_provenance.json, built with UES's
+  `scripts/dev/build_corpus_zip.py --audit --require-single-revision`.
+- Run `20261113T154256Z_56562016` on the Aruba Virtual Private Server, deleted once its
+  outputs were copied. Steps, and how each ended:
 
-From run `20260914T185300Z_3f38fd1b` (2026-09-14): **19 of 21 pipeline steps succeeded**.
+  - `unzip_archive`: succeeded
+  - `source_ast`: succeeded
+  - `compile_ast_ues`: succeeded
+  - `shared_state_extract`: succeeded
+  - `bad_habits_report`: succeeded
+  - `source_uml`: succeeded
+  - `ast_uml`: succeeded
+  - `ast_to_bpmn`: succeeded
+  - `bpmn_to_mdp`: succeeded
+  - `state_diagram`: succeeded
+  - `render_diagram_svg`: succeeded
 
-- every class-like entity the extractor found is drawn, in 84 boxes;
-- coherence audit PASS (24 passed, 0 warned, 0 failed, 9 n/a);
-- `simulate_bpmn`: Fleet: 154/314 process(es) simulated [shape filter: 154 eligible, 2411/3341 flow nodes = 72.2% of the model], 3674 total nodes
-- `ltl_check`: LTL₄ check: 56 properties, scope=primary_process. Decided: 0 (⊤ 0, ⊥ 0); inconclusive on the finite prefix: 56 (⊤_p 3, ⊥_p 53). Violations: none
-  "Violations: none" here means **nothing was decided**, not
-  that nothing is wrong.
-- `strategy_synthesis`: Strategy synthesis: no strategy under the given bounds (reason_kind=incomplete_frontier, frontiers=23, details_keys=['P_sum', 'missing_saturate_ids', 'note'])
+- The IR the steps read:
 
-Two steps did not succeed, and neither is a defect in this
-repository's code:
+  - Entities: 888 (source 555, synthetic modules 0, external stubs 333)
+  - Relations: 1606
+  - CFGs: 412 (3490 nodes, 3534 edges)
+  - ICFG call edges: 397
 
-- `llm_enrich` **failed** because no LLM endpoint is reachable from
-  the analysis container (`UES_LLM_ENDPOINT` unset; `localhost`
-  inside a container is the container itself). It refuses rather than
-  writing an unenriched file and reporting success.
-- `verification_report` **skipped**: verification_report SKIPPED: no behavior export. `export_prism` is off by default since 2026-09-03 and it is the only producer of `mdp.metadata.json`, which is this report's input. Add "export_prism" to `steps` to get the report back. This is not a verification that passed -- it is one that never ran.
+Bad practices found in the same run are in
+[bad_practices.md](../bad_practices.md).
 
 ## Regenerating
 
-From a UniversalSemantics checkout with its server running, and with
-this machine's repositories visible to the container at `/projects`:
-
-```bash
-curl -s -X POST http://127.0.0.1:8050/api/runs \
-  -H "Content-Type: application/json" \
-  -d '{"name":"bpmn-cpi-simulation","inputs":{"source_root":"/projects/bpmnpy/server/gui/vendor/Simulator/Docs/external/bpmn-cpi-simulation"}}'
-
-python3 scripts/ues/ast_to_uml.py \
-    docs/generated/runs/<run_id>/ast/ast.json <staging_dir> \
-    --source-root /projects/bpmnpy/server/gui/vendor/Simulator/Docs/external/bpmn-cpi-simulation
-```
-
-`--source-root` is what keeps the container's mount point out of the
-committed files; without it every provenance comment reads
-`/projects/bpmnpy/server/gui/vendor/Simulator/Docs/external/bpmn-cpi-simulation/<file>:<line>` instead of `<file>:<line>`.
-
-Copy the `.mmd`, `.puml` and `.dot` files from `<staging_dir>` to
-`docs/diagrams/`, prefixing the AST views with `ast-`. The JSON maps,
-`cytoscape.json` and `processes.bpmn` stay out -- they are for
-machines, not for reading.
-
-### There is no `source-*` family here, on purpose
-
-Some sibling repositories carry a second `source-*` set from the
-Python-only pass. That pass (`source_uml`) is scheduled **only** on
-the archive route, so a `source_root` run like this one cannot
-produce it. Committing half a set -- a fresh `ast-*` beside a
-`source-*` from a different day -- looks coherent and is not, so
-this set is `ast-*` only and says so.
+1. In a UniversalSemantics checkout: `python3 scripts/dev/build_corpus_zip.py
+   <this checkout> -o <name>_<sha>.zip --audit --require-single-revision`.
+2. Upload the archive to UES and start a run with `inputs.archive` set to it and
+   the steps `unzip_archive, source_ast, compile_ast_ues, shared_state_extract,
+   bad_habits_report, source_uml, ast_uml, ast_to_bpmn, bpmn_to_mdp,
+   state_diagram, render_diagram_svg`.
+3. Copy `uml_ast/<view>.{dot,mmd,puml}` here as `ast-<view>.*` and
+   `uml/state_diagram.{mmd,puml}` as they are, leaving out any file that holds
+   only the renderer's scaffolding.

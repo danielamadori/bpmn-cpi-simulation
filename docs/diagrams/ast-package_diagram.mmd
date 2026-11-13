@@ -1,105 +1,501 @@
 flowchart LR
+    %% 138 internal module(s), 53 external root(s), 298 edge(s) drawn
+    %% 386 import reference(s) considered = 301 drawn + 0 with no module name + 85 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
+    %% nodes: 138 of 138 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 138 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 53 external node(s) are not files of this tree
+    %% edges: 298 of 298 state an import site = 0 fully checked + 298 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
+    %% languages this checker does not read are checked separately by: scripts/dev/js_package_edge_oracle.py
+    %% path-relative JS/TS: 255 reference(s) = 170 resolved against the 138 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 85 declined: 68 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
+    %% of those resolved, 0 matched more than one candidate and took the documented order's first; NOT IMPLEMENTED here: tsconfig/jsconfig path aliases; node_modules resolution; package.json main/exports/imports
     subgraph Internal
-        animation_Animation["animation.Animation"]
-        animation_behaviors_AnimatedMessageFlowBehavior["animation.behaviors.AnimatedMessageFlowBehavior"]
-        animation_behaviors_AnimatedSequenceFlowBehavior["animation.behaviors.AnimatedSequenceFlowBehavior"]
-        bpmnlint_plugin_sese_rules_task_has_duration["bpmnlint-plugin-sese.rules.task-has-duration"]
-        bpmnlint_plugin_sese_rules_task_has_impact["bpmnlint-plugin-sese.rules.task-has-impact"]
-        context_pads_handler_ExclusiveGatewayHandler["context-pads.handler.ExclusiveGatewayHandler"]
-        context_pads_handler_InclusiveGatewayHandler["context-pads.handler.InclusiveGatewayHandler"]
-        context_pads_handler_PauseHandler["context-pads.handler.PauseHandler"]
-        context_pads_handler_TriggerHandler["context-pads.handler.TriggerHandler"]
-        docker_entrypoint["docker-entrypoint"]
-        example_api_client["example.api-client"]
-        example_bpmn_to_json["example.bpmn-to-json"]
-        example_modeler["example.modeler"]
-        example_sese_properties_provider["example.sese-properties-provider"]
-        example_sese_validator["example.sese-validator"]
-        example_theme_toggle["example.theme-toggle"]
-        example_utils["example.utils"]
-        features_colored_scopes_ColoredScopes["features.colored-scopes.ColoredScopes"]
-        features_context_pads_ContextPads["features.context-pads.ContextPads"]
-        features_context_pads_ContextPadsSpec["features.context-pads.ContextPadsSpec"]
-        features_disable_modeling_DisableModeling["features.disable-modeling.DisableModeling"]
-        features_editor_actions_EditorActions["features.editor-actions.EditorActions"]
-        features_element_colors_ElementColors["features.element-colors.ElementColors"]
-        features_element_notifications_ElementNotifications["features.element-notifications.ElementNotifications"]
-        features_element_support_ElementSupport["features.element-support.ElementSupport"]
-        features_exclusive_gateway_settings_ExclusiveGatewaySettings["features.exclusive-gateway-settings.ExclusiveGatewaySettings"]
-        features_inclusive_gateway_settings_InclusiveGatewaySettings["features.inclusive-gateway-settings.InclusiveGatewaySettings"]
-        features_keyboard_bindings_KeyboardBindings["features.keyboard-bindings.KeyboardBindings"]
-        features_log_Log["features.log.Log"]
-        features_log_LogSpec["features.log.LogSpec"]
+        _bpmnlint_js[".bpmnlint.js"]
+        bpmnlint_plugin_sese_index_js["bpmnlint-plugin-sese/index.js"]
+        bpmnlint_plugin_sese_rules_no_diagram_overlaps_js["bpmnlint-plugin-sese/rules/no-diagram-overlaps.js"]
+        bpmnlint_plugin_sese_rules_task_has_duration_js["bpmnlint-plugin-sese/rules/task-has-duration.js"]
+        bpmnlint_plugin_sese_rules_task_has_impact_js["bpmnlint-plugin-sese/rules/task-has-impact.js"]
+        docker_entrypoint_sh["docker-entrypoint.sh"]
+        eslint_config_mjs["eslint.config.mjs"]
+        example_basic_src_app_js["example/basic/src/app.js"]
+        example_src_api_client_js["example/src/api-client.js"]
+        example_src_bpmn_to_json_js["example/src/bpmn-to-json.js"]
+        example_src_fit_viewport_js["example/src/fit-viewport.js"]
+        example_src_modeler_js["example/src/modeler.js"]
+        example_src_sese_properties_provider_js["example/src/sese-properties-provider.js"]
+        example_src_sese_validator_js["example/src/sese-validator.js"]
+        example_src_utils_js["example/src/utils.js"]
+        example_theme_toggle_js["example/theme-toggle.js"]
+        karma_conf_js["karma.conf.js"]
+        lib_animation_Animation_js["lib/animation/Animation.js"]
+        lib_animation_behaviors_AnimatedMessageFlowBehavior_js["lib/animation/behaviors/AnimatedMessageFlowBehavior.js"]
+        lib_animation_behaviors_AnimatedSequenceFlowBehavior_js["lib/animation/behaviors/AnimatedSequenceFlowBehavior.js"]
+        lib_animation_behaviors_index_js["lib/animation/behaviors/index.js"]
+        lib_animation_index_js["lib/animation/index.js"]
+        lib_base_js["lib/base.js"]
+        lib_features_colored_scopes_ColoredScopes_js["lib/features/colored-scopes/ColoredScopes.js"]
+        lib_features_colored_scopes_index_js["lib/features/colored-scopes/index.js"]
+        lib_features_context_pads_ContextPads_js["lib/features/context-pads/ContextPads.js"]
+        lib_features_context_pads_handler_ExclusiveGatewayHandler_js["lib/features/context-pads/handler/ExclusiveGatewayHandler.js"]
+        lib_features_context_pads_handler_InclusiveGatewayHandler_js["lib/features/context-pads/handler/InclusiveGatewayHandler.js"]
+        lib_features_context_pads_handler_PauseHandler_js["lib/features/context-pads/handler/PauseHandler.js"]
+        lib_features_context_pads_handler_TriggerHandler_js["lib/features/context-pads/handler/TriggerHandler.js"]
+        lib_features_context_pads_index_js["lib/features/context-pads/index.js"]
+        lib_features_disable_modeling_DisableModeling_js["lib/features/disable-modeling/DisableModeling.js"]
+        lib_features_disable_modeling_index_js["lib/features/disable-modeling/index.js"]
+        lib_features_editor_actions_EditorActions_js["lib/features/editor-actions/EditorActions.js"]
+        lib_features_editor_actions_index_js["lib/features/editor-actions/index.js"]
+        lib_features_element_colors_ElementColors_js["lib/features/element-colors/ElementColors.js"]
+        lib_features_element_colors_index_js["lib/features/element-colors/index.js"]
+        lib_features_element_notifications_ElementNotifications_js["lib/features/element-notifications/ElementNotifications.js"]
+        lib_features_element_notifications_index_js["lib/features/element-notifications/index.js"]
+        lib_features_element_support_ElementSupport_js["lib/features/element-support/ElementSupport.js"]
+        lib_features_element_support_index_js["lib/features/element-support/index.js"]
+        lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js["lib/features/exclusive-gateway-settings/ExclusiveGatewaySettings.js"]
+        lib_features_exclusive_gateway_settings_index_js["lib/features/exclusive-gateway-settings/index.js"]
+        lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js["lib/features/inclusive-gateway-settings/InclusiveGatewaySettings.js"]
+        lib_features_inclusive_gateway_settings_index_js["lib/features/inclusive-gateway-settings/index.js"]
+        lib_features_keyboard_bindings_KeyboardBindings_js["lib/features/keyboard-bindings/KeyboardBindings.js"]
+        lib_features_keyboard_bindings_index_js["lib/features/keyboard-bindings/index.js"]
+        lib_features_log_Log_js["lib/features/log/Log.js"]
+        lib_features_log_index_js["lib/features/log/index.js"]
+        lib_features_neutral_element_colors_NeutralElementColors_js["lib/features/neutral-element-colors/NeutralElementColors.js"]
+        lib_features_neutral_element_colors_index_js["lib/features/neutral-element-colors/index.js"]
+        lib_features_notifications_Notifications_js["lib/features/notifications/Notifications.js"]
+        lib_features_notifications_index_js["lib/features/notifications/index.js"]
+        lib_features_palette_Palette_js["lib/features/palette/Palette.js"]
+        lib_features_palette_index_js["lib/features/palette/index.js"]
+        lib_features_pause_simulation_PauseSimulation_js["lib/features/pause-simulation/PauseSimulation.js"]
+        lib_features_pause_simulation_index_js["lib/features/pause-simulation/index.js"]
+        lib_features_reset_simulation_ResetSimulation_js["lib/features/reset-simulation/ResetSimulation.js"]
+        lib_features_reset_simulation_index_js["lib/features/reset-simulation/index.js"]
+        lib_features_scope_filter_ScopeFilter_js["lib/features/scope-filter/ScopeFilter.js"]
+        lib_features_scope_filter_index_js["lib/features/scope-filter/index.js"]
+        lib_features_selection_api_SelectionAPI_js["lib/features/selection-api/SelectionAPI.js"]
+        lib_features_selection_api_index_js["lib/features/selection-api/index.js"]
+        lib_features_set_animation_speed_SetAnimationSpeed_js["lib/features/set-animation-speed/SetAnimationSpeed.js"]
+        lib_features_set_animation_speed_index_js["lib/features/set-animation-speed/index.js"]
+        lib_features_show_scopes_ShowScopes_js["lib/features/show-scopes/ShowScopes.js"]
+        lib_features_show_scopes_index_js["lib/features/show-scopes/index.js"]
+        lib_features_simulation_state_SimulationState_js["lib/features/simulation-state/SimulationState.js"]
+        lib_features_simulation_state_index_js["lib/features/simulation-state/index.js"]
+        lib_features_simulation_styles_SimulationStyles_js["lib/features/simulation-styles/SimulationStyles.js"]
+        lib_features_simulation_styles_index_js["lib/features/simulation-styles/index.js"]
+        lib_features_toggle_mode_modeler_ToggleMode_js["lib/features/toggle-mode/modeler/ToggleMode.js"]
+        lib_features_toggle_mode_modeler_index_js["lib/features/toggle-mode/modeler/index.js"]
+        lib_features_toggle_mode_viewer_ToggleMode_js["lib/features/toggle-mode/viewer/ToggleMode.js"]
+        lib_features_toggle_mode_viewer_index_js["lib/features/toggle-mode/viewer/index.js"]
+        lib_features_token_count_TokenCount_js["lib/features/token-count/TokenCount.js"]
+        lib_features_token_count_index_js["lib/features/token-count/index.js"]
+        lib_index_js["lib/index.js"]
+        lib_modeler_js["lib/modeler.js"]
+        lib_simulation_support_SimulationSupport_js["lib/simulation-support/SimulationSupport.js"]
+        lib_simulation_support_SimulationTrace_js["lib/simulation-support/SimulationTrace.js"]
+        lib_simulation_support_SimulationTraceEvents_js["lib/simulation-support/SimulationTraceEvents.js"]
+        lib_simulation_support_index_js["lib/simulation-support/index.js"]
+        lib_simulator_Scope_js["lib/simulator/Scope.js"]
+        lib_simulator_ScopeStates_js["lib/simulator/ScopeStates.js"]
+        lib_simulator_ScopeTraits_js["lib/simulator/ScopeTraits.js"]
+        lib_simulator_Simulator_js["lib/simulator/Simulator.js"]
+        lib_simulator_behaviors_ActivityBehavior_js["lib/simulator/behaviors/ActivityBehavior.js"]
+        lib_simulator_behaviors_BoundaryEventBehavior_js["lib/simulator/behaviors/BoundaryEventBehavior.js"]
+        lib_simulator_behaviors_EndEventBehavior_js["lib/simulator/behaviors/EndEventBehavior.js"]
+        lib_simulator_behaviors_EventBasedGatewayBehavior_js["lib/simulator/behaviors/EventBasedGatewayBehavior.js"]
+        lib_simulator_behaviors_EventBehaviors_js["lib/simulator/behaviors/EventBehaviors.js"]
+        lib_simulator_behaviors_ExclusiveGatewayBehavior_js["lib/simulator/behaviors/ExclusiveGatewayBehavior.js"]
+        lib_simulator_behaviors_InclusiveGatewayBehavior_js["lib/simulator/behaviors/InclusiveGatewayBehavior.js"]
+        lib_simulator_behaviors_IntermediateCatchEventBehavior_js["lib/simulator/behaviors/IntermediateCatchEventBehavior.js"]
+        lib_simulator_behaviors_IntermediateThrowEventBehavior_js["lib/simulator/behaviors/IntermediateThrowEventBehavior.js"]
+        lib_simulator_behaviors_MessageFlowBehavior_js["lib/simulator/behaviors/MessageFlowBehavior.js"]
+        lib_simulator_behaviors_ParallelGatewayBehavior_js["lib/simulator/behaviors/ParallelGatewayBehavior.js"]
+        lib_simulator_behaviors_ProcessBehavior_js["lib/simulator/behaviors/ProcessBehavior.js"]
+        lib_simulator_behaviors_ScopeBehavior_js["lib/simulator/behaviors/ScopeBehavior.js"]
+        lib_simulator_behaviors_SequenceFlowBehavior_js["lib/simulator/behaviors/SequenceFlowBehavior.js"]
+        lib_simulator_behaviors_StartEventBehavior_js["lib/simulator/behaviors/StartEventBehavior.js"]
+        lib_simulator_behaviors_SubProcessBehavior_js["lib/simulator/behaviors/SubProcessBehavior.js"]
+        lib_simulator_behaviors_TransactionBehavior_js["lib/simulator/behaviors/TransactionBehavior.js"]
+        lib_simulator_behaviors_index_js["lib/simulator/behaviors/index.js"]
+        lib_simulator_index_js["lib/simulator/index.js"]
+        lib_simulator_util_EventsUtil_js["lib/simulator/util/EventsUtil.js"]
+        lib_simulator_util_ModelUtil_js["lib/simulator/util/ModelUtil.js"]
+        lib_simulator_util_SetUtil_js["lib/simulator/util/SetUtil.js"]
+        lib_util_ElementHelper_js["lib/util/ElementHelper.js"]
+        lib_util_EventHelper_js["lib/util/EventHelper.js"]
+        lib_viewer_js["lib/viewer.js"]
+        rollup_config_js["rollup.config.js"]
+        run_bat["run.bat"]
+        run_sh["run.sh"]
+        src_icons_index_js["src/icons/index.js"]
+        tasks_ensure_rollup_binary_js["tasks/ensure-rollup-binary.js"]
+        tasks_sync_state_identifiers_js["tasks/sync-state-identifiers.js"]
+        test_TestHelper_js["test/TestHelper.js"]
+        test_all_js["test/all.js"]
+        test_globals_js["test/globals.js"]
+        test_mocks_Animation_js["test/mocks/Animation.js"]
+        test_reporters_fixture_reporter_js["test/reporters/fixture-reporter.js"]
+        test_spec_DisableModelingSpec_js["test/spec/DisableModelingSpec.js"]
+        test_spec_ExamplePaletteSpec_js["test/spec/ExamplePaletteSpec.js"]
+        test_spec_ModelerSpec_js["test/spec/ModelerSpec.js"]
+        test_spec_SeseNoDiagramOverlapsSpec_js["test/spec/SeseNoDiagramOverlapsSpec.js"]
+        test_spec_SimulationSpec_js["test/spec/SimulationSpec.js"]
+        test_spec_ViewerSpec_js["test/spec/ViewerSpec.js"]
+        test_spec_animation_AnimationSpec_js["test/spec/animation/AnimationSpec.js"]
+        test_spec_features_context_pads_ContextPadsSpec_js["test/spec/features/context-pads/ContextPadsSpec.js"]
+        test_spec_features_gateway_settings_GatewaySettingsSpec_js["test/spec/features/gateway-settings/GatewaySettingsSpec.js"]
+        test_spec_features_log_LogSpec_js["test/spec/features/log/LogSpec.js"]
+        test_spec_features_show_scopes_ShowScopesSpec_js["test/spec/features/show-scopes/ShowScopesSpec.js"]
+        test_spec_simulator_ScopeStatesSpec_js["test/spec/simulator/ScopeStatesSpec.js"]
+        test_spec_simulator_SimulatorSpec_js["test/spec/simulator/SimulatorSpec.js"]
+        test_suite_js["test/suite.js"]
+        webpack_config_js["webpack.config.js"]
     end
     subgraph External
-        _unknown_ext[""]
         _bpmn_io_add_exporter_ext["@bpmn-io/add-exporter"]
         _bpmn_io_diagram_js_canvas_lock_ext["@bpmn-io/diagram-js-canvas-lock"]
+        _bpmn_io_diagram_js_canvas_lock_assets_canvas_lock_ext["@bpmn-io/diagram-js-canvas-lock/assets/canvas-lock"]
         _bpmn_io_properties_panel_ext["@bpmn-io/properties-panel"]
         _rollup_plugin_commonjs_ext["@rollup/plugin-commonjs"]
         _rollup_plugin_node_resolve_ext["@rollup/plugin-node-resolve"]
         bpmn_js_bpmnlint_ext["bpmn-js-bpmnlint"]
         bpmn_js_color_picker_ext["bpmn-js-color-picker"]
         bpmn_js_properties_panel_ext["bpmn-js-properties-panel"]
+        bpmn_js_dist_assets_bpmn_font_css_bpmn_embedded_ext["bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded"]
+        bpmn_js_dist_assets_bpmn_js_ext["bpmn-js/dist/assets/bpmn-js"]
+        bpmn_js_dist_assets_diagram_js_ext["bpmn-js/dist/assets/diagram-js"]
         bpmn_js_lib_Modeler_ext["bpmn-js/lib/Modeler"]
         bpmn_js_lib_NavigatedViewer_ext["bpmn-js/lib/NavigatedViewer"]
         bpmn_js_lib_util_DrilldownUtil_ext["bpmn-js/lib/util/DrilldownUtil"]
         bpmn_js_lib_util_ModelUtil_ext["bpmn-js/lib/util/ModelUtil"]
+        bpmn_js_package_ext["bpmn-js/package"]
         bpmn_js_test_helper_ext["bpmn-js/test/helper"]
+        bpmn_moddle_ext["bpmn-moddle"]
+        bpmnlint_lib_test_rule_ext["bpmnlint/lib/test-rule"]
         chai_ext["chai"]
+        child_process_ext["child_process"]
+        copy_webpack_plugin_ext["copy-webpack-plugin"]
         diagram_js_grid_ext["diagram-js-grid"]
         diagram_js_minimap_ext["diagram-js-minimap"]
         diagram_js_lib_util_EscapeUtil_ext["diagram-js/lib/util/EscapeUtil"]
         downloadjs_ext["downloadjs"]
         eslint_plugin_bpmn_io_ext["eslint-plugin-bpmn-io"]
+        file_drops_ext["file-drops"]
+        file_open_ext["file-open"]
+        fs_ext["fs"]
+        heatmap_ext["heatmap"]
+        ids_ext["ids"]
+        inherits_browser_ext["inherits-browser"]
+        lib_features_log_Log_ext["lib/features/log/Log"]
+        lib_icons_ext["lib/icons"]
+        lib_modeler_ext["lib/modeler"]
+        lib_simulation_support_ext["lib/simulation-support"]
+        lib_simulator_ext["lib/simulator"]
+        lib_simulator_ScopeStates_ext["lib/simulator/ScopeStates"]
+        lib_simulator_ScopeTraits_ext["lib/simulator/ScopeTraits"]
+        lib_viewer_ext["lib/viewer"]
+        min_dash_ext["min-dash"]
+        min_dom_ext["min-dom"]
+        path_ext["path"]
+        randomcolor_ext["randomcolor"]
+        rollup_plugin_string_ext["rollup-plugin-string"]
+        semver_ext["semver"]
+        sinon_ext["sinon"]
+        sinon_chai_ext["sinon-chai"]
+        test_TestHelper_ext["test/TestHelper"]
+        tiny_svg_ext["tiny-svg"]
+        webpack_ext["webpack"]
     end
-    animation_Animation --> _unknown_ext
-    animation_Animation --> min_dom_ext
-    animation_Animation --> tiny_svg_ext
-    animation_behaviors_AnimatedMessageFlowBehavior --> _unknown_ext
-    animation_behaviors_AnimatedMessageFlowBehavior --> inherits_browser_ext
-    animation_behaviors_AnimatedSequenceFlowBehavior --> _unknown_ext
-    animation_behaviors_AnimatedSequenceFlowBehavior --> inherits_browser_ext
-    animation_behaviors_index --> _unknown_ext
-    animation_index --> _unknown_ext
-    base --> _unknown_ext
-    context_pads_handler_ExclusiveGatewayHandler --> _unknown_ext
-    context_pads_handler_ExclusiveGatewayHandler --> bpmn_js_lib_util_ModelUtil_ext
-    context_pads_handler_InclusiveGatewayHandler --> _unknown_ext
-    context_pads_handler_InclusiveGatewayHandler --> bpmn_js_lib_util_ModelUtil_ext
-    context_pads_handler_PauseHandler --> _unknown_ext
-    context_pads_handler_PauseHandler --> bpmn_js_lib_util_ModelUtil_ext
-    context_pads_handler_TriggerHandler --> _unknown_ext
-    eslint_config --> eslint_plugin_bpmn_io_ext
-    example_basic_app --> _unknown_ext
-    example_basic_app --> bpmn_js_lib_NavigatedViewer_ext
-    example_modeler --> _unknown_ext
-    example_modeler --> _bpmn_io_add_exporter_ext
-    example_modeler --> bpmn_js_bpmnlint_ext
-    example_modeler --> bpmn_js_color_picker_ext
-    example_modeler --> bpmn_js_properties_panel_ext
-    example_modeler --> bpmn_js_lib_Modeler_ext
-    example_modeler --> diagram_js_grid_ext
-    example_modeler --> diagram_js_minimap_ext
-    example_modeler --> downloadjs_ext
-    example_modeler --> file_drops_ext
-    example_modeler --> file_open_ext
-    example_modeler --> heatmap_ext
-    example_sese_properties_provider --> _bpmn_io_properties_panel_ext
-    example_sese_properties_provider --> bpmn_js_properties_panel_ext
-    features_colored_scopes_ColoredScopes --> _unknown_ext
-    features_colored_scopes_ColoredScopes --> randomcolor_ext
-    features_colored_scopes_index --> _unknown_ext
-    features_context_pads_ContextPads --> _unknown_ext
-    features_context_pads_ContextPads --> bpmn_js_lib_util_DrilldownUtil_ext
-    features_context_pads_ContextPads --> bpmn_js_lib_util_ModelUtil_ext
-    features_context_pads_ContextPads --> min_dom_ext
-    features_context_pads_ContextPadsSpec --> chai_ext
-    features_context_pads_ContextPadsSpec --> lib_modeler_ext
-    features_context_pads_ContextPadsSpec --> lib_simulation_support_ext
-    features_context_pads_ContextPadsSpec --> test_TestHelper_ext
-    features_context_pads_index --> _unknown_ext
-    features_disable_modeling_DisableModeling --> _unknown_ext
-    features_disable_modeling_index --> _unknown_ext
-    features_editor_actions_EditorActions --> _unknown_ext
-    features_editor_actions_index --> _unknown_ext
+    eslint_config_mjs --> eslint_plugin_bpmn_io_ext
+    example_basic_src_app_js --> bpmn_js_lib_NavigatedViewer_ext
+    example_basic_src_app_js --> lib_viewer_js
+    example_src_modeler_js --> _bpmn_io_add_exporter_ext
+    example_src_modeler_js --> bpmn_js_bpmnlint_ext
+    example_src_modeler_js --> bpmn_js_color_picker_ext
+    example_src_modeler_js --> bpmn_js_properties_panel_ext
+    example_src_modeler_js --> bpmn_js_lib_Modeler_ext
+    example_src_modeler_js --> diagram_js_grid_ext
+    example_src_modeler_js --> diagram_js_minimap_ext
+    example_src_modeler_js --> downloadjs_ext
+    example_src_modeler_js --> example_src_fit_viewport_js
+    example_src_modeler_js --> example_src_utils_js
+    example_src_modeler_js --> file_drops_ext
+    example_src_modeler_js --> file_open_ext
+    example_src_modeler_js --> heatmap_ext
+    example_src_modeler_js --> lib_simulation_support_index_js
+    example_src_sese_properties_provider_js --> _bpmn_io_properties_panel_ext
+    example_src_sese_properties_provider_js --> bpmn_js_properties_panel_ext
+    karma_conf_js --> fs_ext
+    karma_conf_js --> path_ext
+    karma_conf_js --> test_reporters_fixture_reporter_js
+    lib_animation_Animation_js --> lib_util_EventHelper_js
+    lib_animation_Animation_js --> min_dom_ext
+    lib_animation_Animation_js --> tiny_svg_ext
+    lib_animation_behaviors_AnimatedMessageFlowBehavior_js --> inherits_browser_ext
+    lib_animation_behaviors_AnimatedMessageFlowBehavior_js --> lib_simulator_behaviors_MessageFlowBehavior_js
+    lib_animation_behaviors_AnimatedSequenceFlowBehavior_js --> inherits_browser_ext
+    lib_animation_behaviors_AnimatedSequenceFlowBehavior_js --> lib_simulator_behaviors_SequenceFlowBehavior_js
+    lib_animation_behaviors_index_js --> lib_animation_behaviors_AnimatedMessageFlowBehavior_js
+    lib_animation_behaviors_index_js --> lib_animation_behaviors_AnimatedSequenceFlowBehavior_js
+    lib_animation_index_js --> lib_animation_Animation_js
+    lib_animation_index_js --> lib_animation_behaviors_index_js
+    lib_animation_index_js --> lib_features_scope_filter_index_js
+    lib_animation_index_js --> lib_simulator_index_js
+    lib_base_js --> lib_animation_index_js
+    lib_base_js --> lib_features_colored_scopes_index_js
+    lib_base_js --> lib_features_context_pads_index_js
+    lib_base_js --> lib_features_element_support_index_js
+    lib_base_js --> lib_features_exclusive_gateway_settings_index_js
+    lib_base_js --> lib_features_inclusive_gateway_settings_index_js
+    lib_base_js --> lib_features_log_index_js
+    lib_base_js --> lib_features_neutral_element_colors_index_js
+    lib_base_js --> lib_features_palette_index_js
+    lib_base_js --> lib_features_pause_simulation_index_js
+    lib_base_js --> lib_features_reset_simulation_index_js
+    lib_base_js --> lib_features_selection_api_index_js
+    lib_base_js --> lib_features_set_animation_speed_index_js
+    lib_base_js --> lib_features_show_scopes_index_js
+    lib_base_js --> lib_features_simulation_state_index_js
+    lib_base_js --> lib_features_token_count_index_js
+    lib_base_js --> lib_simulator_index_js
+    lib_features_colored_scopes_ColoredScopes_js --> lib_util_EventHelper_js
+    lib_features_colored_scopes_ColoredScopes_js --> randomcolor_ext
+    lib_features_colored_scopes_index_js --> lib_features_colored_scopes_ColoredScopes_js
+    lib_features_context_pads_ContextPads_js --> bpmn_js_lib_util_DrilldownUtil_ext
+    lib_features_context_pads_ContextPads_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_context_pads_ContextPads_js --> lib_features_context_pads_handler_ExclusiveGatewayHandler_js
+    lib_features_context_pads_ContextPads_js --> lib_features_context_pads_handler_InclusiveGatewayHandler_js
+    lib_features_context_pads_ContextPads_js --> lib_features_context_pads_handler_PauseHandler_js
+    lib_features_context_pads_ContextPads_js --> lib_features_context_pads_handler_TriggerHandler_js
+    lib_features_context_pads_ContextPads_js --> lib_util_EventHelper_js
+    lib_features_context_pads_ContextPads_js --> min_dom_ext
+    lib_features_context_pads_handler_ExclusiveGatewayHandler_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_context_pads_handler_InclusiveGatewayHandler_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_context_pads_handler_InclusiveGatewayHandler_js --> lib_simulator_util_ModelUtil_js
+    lib_features_context_pads_handler_PauseHandler_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_context_pads_index_js --> lib_features_context_pads_ContextPads_js
+    lib_features_context_pads_index_js --> lib_features_scope_filter_index_js
+    lib_features_disable_modeling_DisableModeling_js --> lib_util_EventHelper_js
+    lib_features_disable_modeling_index_js --> lib_features_disable_modeling_DisableModeling_js
+    lib_features_editor_actions_EditorActions_js --> lib_util_EventHelper_js
+    lib_features_editor_actions_index_js --> lib_features_editor_actions_EditorActions_js
+    lib_features_element_colors_ElementColors_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_element_colors_ElementColors_js --> lib_util_EventHelper_js
+    lib_features_element_colors_index_js --> lib_features_element_colors_ElementColors_js
+    lib_features_element_notifications_ElementNotifications_js --> lib_util_EventHelper_js
+    lib_features_element_notifications_ElementNotifications_js --> min_dom_ext
+    lib_features_element_notifications_index_js --> lib_features_element_notifications_ElementNotifications_js
+    lib_features_element_support_ElementSupport_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_element_support_ElementSupport_js --> lib_util_EventHelper_js
+    lib_features_element_support_ElementSupport_js --> min_dom_ext
+    lib_features_element_support_index_js --> lib_features_element_notifications_index_js
+    lib_features_element_support_index_js --> lib_features_element_support_ElementSupport_js
+    lib_features_element_support_index_js --> lib_features_notifications_index_js
+    lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js --> lib_util_EventHelper_js
+    lib_features_exclusive_gateway_settings_index_js --> lib_features_element_colors_index_js
+    lib_features_exclusive_gateway_settings_index_js --> lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js
+    lib_features_exclusive_gateway_settings_index_js --> lib_features_simulation_styles_index_js
+    lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js --> lib_simulator_util_ModelUtil_js
+    lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js --> lib_util_EventHelper_js
+    lib_features_inclusive_gateway_settings_index_js --> lib_features_element_colors_index_js
+    lib_features_inclusive_gateway_settings_index_js --> lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js
+    lib_features_inclusive_gateway_settings_index_js --> lib_features_simulation_styles_index_js
+    lib_features_keyboard_bindings_KeyboardBindings_js --> lib_util_EventHelper_js
+    lib_features_keyboard_bindings_index_js --> lib_features_keyboard_bindings_KeyboardBindings_js
+    lib_features_log_Log_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_log_Log_js --> diagram_js_lib_util_EscapeUtil_ext
+    lib_features_log_Log_js --> lib_util_EventHelper_js
+    lib_features_log_Log_js --> min_dom_ext
+    lib_features_log_index_js --> lib_features_log_Log_js
+    lib_features_log_index_js --> lib_features_notifications_index_js
+    lib_features_log_index_js --> lib_features_scope_filter_index_js
+    lib_features_neutral_element_colors_NeutralElementColors_js --> lib_util_EventHelper_js
+    lib_features_neutral_element_colors_index_js --> lib_features_element_colors_index_js
+    lib_features_neutral_element_colors_index_js --> lib_features_neutral_element_colors_NeutralElementColors_js
+    lib_features_notifications_Notifications_js --> lib_util_EventHelper_js
+    lib_features_notifications_Notifications_js --> min_dom_ext
+    lib_features_notifications_index_js --> lib_features_notifications_Notifications_js
+    lib_features_notifications_index_js --> lib_features_scope_filter_index_js
+    lib_features_palette_Palette_js --> lib_util_EventHelper_js
+    lib_features_palette_Palette_js --> min_dom_ext
+    lib_features_palette_index_js --> lib_features_palette_Palette_js
+    lib_features_pause_simulation_PauseSimulation_js --> lib_util_EventHelper_js
+    lib_features_pause_simulation_PauseSimulation_js --> min_dom_ext
+    lib_features_pause_simulation_index_js --> lib_features_notifications_index_js
+    lib_features_pause_simulation_index_js --> lib_features_pause_simulation_PauseSimulation_js
+    lib_features_reset_simulation_ResetSimulation_js --> lib_util_EventHelper_js
+    lib_features_reset_simulation_ResetSimulation_js --> min_dom_ext
+    lib_features_reset_simulation_index_js --> lib_features_notifications_index_js
+    lib_features_reset_simulation_index_js --> lib_features_reset_simulation_ResetSimulation_js
+    lib_features_scope_filter_ScopeFilter_js --> lib_util_EventHelper_js
+    lib_features_scope_filter_index_js --> lib_features_scope_filter_ScopeFilter_js
+    lib_features_selection_api_SelectionAPI_js --> lib_util_EventHelper_js
+    lib_features_selection_api_index_js --> lib_features_selection_api_SelectionAPI_js
+    lib_features_set_animation_speed_SetAnimationSpeed_js --> lib_util_EventHelper_js
+    lib_features_set_animation_speed_SetAnimationSpeed_js --> min_dom_ext
+    lib_features_set_animation_speed_index_js --> lib_features_set_animation_speed_SetAnimationSpeed_js
+    lib_features_show_scopes_ShowScopes_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_show_scopes_ShowScopes_js --> lib_util_EventHelper_js
+    lib_features_show_scopes_ShowScopes_js --> min_dom_ext
+    lib_features_show_scopes_index_js --> lib_features_scope_filter_index_js
+    lib_features_show_scopes_index_js --> lib_features_show_scopes_ShowScopes_js
+    lib_features_show_scopes_index_js --> lib_features_simulation_styles_index_js
+    lib_features_simulation_state_SimulationState_js --> lib_util_EventHelper_js
+    lib_features_simulation_state_index_js --> lib_features_element_notifications_index_js
+    lib_features_simulation_state_index_js --> lib_features_notifications_index_js
+    lib_features_simulation_state_index_js --> lib_features_simulation_state_SimulationState_js
+    lib_features_simulation_styles_index_js --> lib_features_simulation_styles_SimulationStyles_js
+    lib_features_toggle_mode_modeler_ToggleMode_js --> lib_util_EventHelper_js
+    lib_features_toggle_mode_modeler_ToggleMode_js --> min_dom_ext
+    lib_features_toggle_mode_modeler_index_js --> lib_features_toggle_mode_modeler_ToggleMode_js
+    lib_features_toggle_mode_viewer_ToggleMode_js --> lib_util_EventHelper_js
+    lib_features_toggle_mode_viewer_ToggleMode_js --> min_dom_ext
+    lib_features_toggle_mode_viewer_index_js --> lib_features_toggle_mode_viewer_ToggleMode_js
+    lib_features_token_count_TokenCount_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_features_token_count_TokenCount_js --> lib_util_EventHelper_js
+    lib_features_token_count_TokenCount_js --> min_dom_ext
+    lib_features_token_count_index_js --> lib_features_scope_filter_index_js
+    lib_features_token_count_index_js --> lib_features_simulation_styles_index_js
+    lib_features_token_count_index_js --> lib_features_token_count_TokenCount_js
+    lib_index_js --> lib_modeler_js
+    lib_modeler_js --> _bpmn_io_diagram_js_canvas_lock_ext
+    lib_modeler_js --> lib_base_js
+    lib_modeler_js --> lib_features_disable_modeling_index_js
+    lib_modeler_js --> lib_features_editor_actions_index_js
+    lib_modeler_js --> lib_features_keyboard_bindings_index_js
+    lib_modeler_js --> lib_features_toggle_mode_modeler_index_js
+    lib_simulation_support_SimulationSupport_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_simulation_support_SimulationSupport_js --> lib_util_EventHelper_js
+    lib_simulation_support_SimulationSupport_js --> min_dom_ext
+    lib_simulation_support_SimulationTrace_js --> lib_util_EventHelper_js
+    lib_simulation_support_SimulationTrace_js --> min_dash_ext
+    lib_simulation_support_SimulationTraceEvents_js --> lib_simulation_support_SimulationSupport_js
+    lib_simulation_support_SimulationTraceEvents_js --> lib_util_EventHelper_js
+    lib_simulation_support_index_js --> lib_simulation_support_SimulationSupport_js
+    lib_simulation_support_index_js --> lib_simulation_support_SimulationTrace_js
+    lib_simulation_support_index_js --> lib_simulation_support_SimulationTraceEvents_js
+    lib_simulator_Scope_js --> lib_simulator_ScopeStates_js
+    lib_simulator_Scope_js --> lib_simulator_ScopeTraits_js
+    lib_simulator_ScopeStates_js --> lib_simulator_ScopeTraits_js
+    lib_simulator_Simulator_js --> ids_ext
+    lib_simulator_Simulator_js --> lib_simulator_Scope_js
+    lib_simulator_Simulator_js --> lib_simulator_ScopeTraits_js
+    lib_simulator_Simulator_js --> lib_simulator_util_EventsUtil_js
+    lib_simulator_Simulator_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_Simulator_js --> lib_simulator_util_SetUtil_js
+    lib_simulator_behaviors_ActivityBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_BoundaryEventBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_EventBasedGatewayBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_EventBehaviors_js --> lib_simulator_ScopeTraits_js
+    lib_simulator_behaviors_EventBehaviors_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_EventBehaviors_js --> lib_util_ElementHelper_js
+    lib_simulator_behaviors_ExclusiveGatewayBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_InclusiveGatewayBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_InclusiveGatewayBehavior_js --> lib_util_ElementHelper_js
+    lib_simulator_behaviors_MessageFlowBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_ParallelGatewayBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_ProcessBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_SubProcessBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_TransactionBehavior_js --> lib_simulator_ScopeTraits_js
+    lib_simulator_behaviors_TransactionBehavior_js --> lib_simulator_util_EventsUtil_js
+    lib_simulator_behaviors_TransactionBehavior_js --> lib_simulator_util_ModelUtil_js
+    lib_simulator_behaviors_TransactionBehavior_js --> lib_simulator_util_SetUtil_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_ActivityBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_BoundaryEventBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_EndEventBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_EventBasedGatewayBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_EventBehaviors_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_ExclusiveGatewayBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_InclusiveGatewayBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_IntermediateCatchEventBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_IntermediateThrowEventBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_MessageFlowBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_ParallelGatewayBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_ProcessBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_ScopeBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_SequenceFlowBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_StartEventBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_SubProcessBehavior_js
+    lib_simulator_behaviors_index_js --> lib_simulator_behaviors_TransactionBehavior_js
+    lib_simulator_index_js --> lib_simulator_Simulator_js
+    lib_simulator_index_js --> lib_simulator_behaviors_index_js
+    lib_simulator_util_ModelUtil_js --> bpmn_js_lib_util_DrilldownUtil_ext
+    lib_simulator_util_ModelUtil_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_simulator_util_ModelUtil_js --> min_dash_ext
+    lib_util_ElementHelper_js --> bpmn_js_lib_util_ModelUtil_ext
+    lib_util_ElementHelper_js --> min_dash_ext
+    lib_viewer_js --> lib_base_js
+    lib_viewer_js --> lib_features_toggle_mode_viewer_index_js
+    rollup_config_js --> _rollup_plugin_commonjs_ext
+    rollup_config_js --> _rollup_plugin_node_resolve_ext
+    rollup_config_js --> rollup_plugin_string_ext
+    tasks_ensure_rollup_binary_js --> child_process_ext
+    tasks_ensure_rollup_binary_js --> fs_ext
+    tasks_ensure_rollup_binary_js --> path_ext
+    tasks_sync_state_identifiers_js --> fs_ext
+    tasks_sync_state_identifiers_js --> path_ext
+    test_TestHelper_js --> _bpmn_io_diagram_js_canvas_lock_assets_canvas_lock_ext
+    test_TestHelper_js --> bpmn_js_dist_assets_bpmn_font_css_bpmn_embedded_ext
+    test_TestHelper_js --> bpmn_js_dist_assets_bpmn_js_ext
+    test_TestHelper_js --> bpmn_js_dist_assets_diagram_js_ext
+    test_TestHelper_js --> bpmn_js_package_ext
+    test_TestHelper_js --> bpmn_js_test_helper_ext
+    test_TestHelper_js --> semver_ext
+    test_all_js --> test_globals_js
+    test_globals_js --> chai_ext
+    test_globals_js --> sinon_chai_ext
+    test_reporters_fixture_reporter_js --> fs_ext
+    test_spec_DisableModelingSpec_js --> chai_ext
+    test_spec_DisableModelingSpec_js --> test_TestHelper_ext
+    test_spec_ExamplePaletteSpec_js --> chai_ext
+    test_spec_ExamplePaletteSpec_js --> example_src_fit_viewport_js
+    test_spec_ExamplePaletteSpec_js --> test_TestHelper_ext
+    test_spec_ModelerSpec_js --> bpmn_js_lib_Modeler_ext
+    test_spec_ModelerSpec_js --> chai_ext
+    test_spec_ModelerSpec_js --> min_dash_ext
+    test_spec_ModelerSpec_js --> min_dom_ext
+    test_spec_ModelerSpec_js --> sinon_ext
+    test_spec_ModelerSpec_js --> test_TestHelper_ext
+    test_spec_SeseNoDiagramOverlapsSpec_js --> bpmn_moddle_ext
+    test_spec_SeseNoDiagramOverlapsSpec_js --> bpmnlint_plugin_sese_index_js
+    test_spec_SeseNoDiagramOverlapsSpec_js --> bpmnlint_plugin_sese_rules_no_diagram_overlaps_js
+    test_spec_SeseNoDiagramOverlapsSpec_js --> bpmnlint_lib_test_rule_ext
+    test_spec_SeseNoDiagramOverlapsSpec_js --> chai_ext
+    test_spec_SimulationSpec_js --> chai_ext
+    test_spec_SimulationSpec_js --> lib_modeler_ext
+    test_spec_SimulationSpec_js --> lib_simulation_support_ext
+    test_spec_SimulationSpec_js --> test_TestHelper_ext
+    test_spec_ViewerSpec_js --> bpmn_js_lib_NavigatedViewer_ext
+    test_spec_ViewerSpec_js --> chai_ext
+    test_spec_ViewerSpec_js --> lib_viewer_ext
+    test_spec_ViewerSpec_js --> test_TestHelper_ext
+    test_spec_animation_AnimationSpec_js --> chai_ext
+    test_spec_animation_AnimationSpec_js --> lib_modeler_ext
+    test_spec_animation_AnimationSpec_js --> lib_simulation_support_ext
+    test_spec_animation_AnimationSpec_js --> test_TestHelper_ext
+    test_spec_features_context_pads_ContextPadsSpec_js --> chai_ext
+    test_spec_features_context_pads_ContextPadsSpec_js --> lib_modeler_ext
+    test_spec_features_context_pads_ContextPadsSpec_js --> lib_simulation_support_ext
+    test_spec_features_context_pads_ContextPadsSpec_js --> test_TestHelper_ext
+    test_spec_features_gateway_settings_GatewaySettingsSpec_js --> chai_ext
+    test_spec_features_gateway_settings_GatewaySettingsSpec_js --> lib_modeler_ext
+    test_spec_features_gateway_settings_GatewaySettingsSpec_js --> lib_simulation_support_ext
+    test_spec_features_gateway_settings_GatewaySettingsSpec_js --> test_TestHelper_ext
+    test_spec_features_log_LogSpec_js --> chai_ext
+    test_spec_features_log_LogSpec_js --> lib_features_log_Log_ext
+    test_spec_features_log_LogSpec_js --> lib_icons_ext
+    test_spec_features_log_LogSpec_js --> lib_modeler_ext
+    test_spec_features_log_LogSpec_js --> lib_simulation_support_ext
+    test_spec_features_log_LogSpec_js --> test_TestHelper_ext
+    test_spec_features_show_scopes_ShowScopesSpec_js --> chai_ext
+    test_spec_features_show_scopes_ShowScopesSpec_js --> lib_modeler_ext
+    test_spec_features_show_scopes_ShowScopesSpec_js --> lib_simulation_support_ext
+    test_spec_features_show_scopes_ShowScopesSpec_js --> min_dom_ext
+    test_spec_features_show_scopes_ShowScopesSpec_js --> test_TestHelper_ext
+    test_spec_simulator_ScopeStatesSpec_js --> chai_ext
+    test_spec_simulator_ScopeStatesSpec_js --> lib_simulator_ScopeStates_ext
+    test_spec_simulator_ScopeStatesSpec_js --> lib_simulator_ScopeTraits_ext
+    test_spec_simulator_SimulatorSpec_js --> chai_ext
+    test_spec_simulator_SimulatorSpec_js --> lib_simulator_ext
+    test_spec_simulator_SimulatorSpec_js --> lib_simulator_ScopeTraits_ext
+    test_spec_simulator_SimulatorSpec_js --> sinon_ext
+    test_spec_simulator_SimulatorSpec_js --> test_TestHelper_ext
+    test_suite_js --> test_globals_js
+    webpack_config_js --> copy_webpack_plugin_ext
+    webpack_config_js --> webpack_ext

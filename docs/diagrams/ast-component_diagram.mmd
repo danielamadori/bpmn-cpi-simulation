@@ -1,4 +1,15 @@
 flowchart TB
+%% Component diagram, 138 of 138 file(s) drawn.
+%% Not truncated: all 138 file(s) are drawn.
+%% EDGES: 0 drawn of 0 resolved import edge(s); 0 dropped because an endpoint is outside the cap (0 importer outside, 0 imported file outside, 0 both). Until 2026-10-13 those 0 were DRAWN, to ids no subgraph declares, which mermaid renders as bare boxes labelled with the raw path.
+%% 5 module stem(s) resolve to more than one file and carry NO edge: a wrong edge is worse than a missing one.
+    subgraph _bpmnlint_js[".bpmnlint.js (javascript)"]
+    end
+    subgraph bpmnlint_plugin_sese_index_js["bpmnlint-plugin-sese/index.js (javascript)"]
+    end
+    subgraph bpmnlint_plugin_sese_rules_no_diagram_overlaps_js["bpmnlint-plugin-sese/rules/no-diagram-overlaps.js (javascript)"]
+        bpmnlint_plugin_sese_rules_no_diagram_overlaps_js_funcs["52 functions"]
+    end
     subgraph bpmnlint_plugin_sese_rules_task_has_duration_js["bpmnlint-plugin-sese/rules/task-has-duration.js (javascript)"]
         bpmnlint_plugin_sese_rules_task_has_duration_js_funcs["2 functions"]
     end
@@ -7,11 +18,18 @@ flowchart TB
     end
     subgraph docker_entrypoint_sh["docker-entrypoint.sh (bash)"]
     end
+    subgraph eslint_config_mjs["eslint.config.mjs (javascript)"]
+    end
+    subgraph example_basic_src_app_js["example/basic/src/app.js (javascript)"]
+    end
     subgraph example_src_api_client_js["example/src/api-client.js (javascript)"]
         example_src_api_client_js_funcs["1 functions"]
     end
     subgraph example_src_bpmn_to_json_js["example/src/bpmn-to-json.js (javascript)"]
         example_src_bpmn_to_json_js_funcs["2 functions"]
+    end
+    subgraph example_src_fit_viewport_js["example/src/fit-viewport.js (javascript)"]
+        example_src_fit_viewport_js_funcs["3 functions"]
     end
     subgraph example_src_modeler_js["example/src/modeler.js (javascript)"]
         example_src_modeler_js_funcs["58 functions"]
@@ -29,6 +47,8 @@ flowchart TB
     subgraph example_theme_toggle_js["example/theme-toggle.js (javascript)"]
         example_theme_toggle_js_funcs["2 functions"]
     end
+    subgraph karma_conf_js["karma.conf.js (javascript)"]
+    end
     subgraph lib_animation_Animation_js["lib/animation/Animation.js (javascript)"]
         lib_animation_Animation_js_funcs["11 functions"]
     end
@@ -38,11 +58,19 @@ flowchart TB
     subgraph lib_animation_behaviors_AnimatedSequenceFlowBehavior_js["lib/animation/behaviors/AnimatedSequenceFlowBehavior.js (javascript)"]
         lib_animation_behaviors_AnimatedSequenceFlowBehavior_js_funcs["1 functions"]
     end
+    subgraph lib_animation_behaviors_index_js["lib/animation/behaviors/index.js (javascript)"]
+    end
+    subgraph lib_animation_index_js["lib/animation/index.js (javascript)"]
+    end
+    subgraph lib_base_js["lib/base.js (javascript)"]
+    end
     subgraph lib_features_colored_scopes_ColoredScopes_js["lib/features/colored-scopes/ColoredScopes.js (javascript)"]
         lib_features_colored_scopes_ColoredScopes_js_funcs["1 functions"]
     end
+    subgraph lib_features_colored_scopes_index_js["lib/features/colored-scopes/index.js (javascript)"]
+    end
     subgraph lib_features_context_pads_ContextPads_js["lib/features/context-pads/ContextPads.js (javascript)"]
-        lib_features_context_pads_ContextPads_js_funcs["5 functions"]
+        lib_features_context_pads_ContextPads_js_funcs["4 functions"]
     end
     subgraph lib_features_context_pads_handler_ExclusiveGatewayHandler_js["lib/features/context-pads/handler/ExclusiveGatewayHandler.js (javascript)"]
         lib_features_context_pads_handler_ExclusiveGatewayHandler_js_funcs["2 functions"]
@@ -56,36 +84,287 @@ flowchart TB
     subgraph lib_features_context_pads_handler_TriggerHandler_js["lib/features/context-pads/handler/TriggerHandler.js (javascript)"]
         lib_features_context_pads_handler_TriggerHandler_js_funcs["3 functions"]
     end
+    subgraph lib_features_context_pads_index_js["lib/features/context-pads/index.js (javascript)"]
+    end
     subgraph lib_features_disable_modeling_DisableModeling_js["lib/features/disable-modeling/DisableModeling.js (javascript)"]
         lib_features_disable_modeling_DisableModeling_js_funcs["1 functions"]
+    end
+    subgraph lib_features_disable_modeling_index_js["lib/features/disable-modeling/index.js (javascript)"]
     end
     subgraph lib_features_editor_actions_EditorActions_js["lib/features/editor-actions/EditorActions.js (javascript)"]
         lib_features_editor_actions_EditorActions_js_funcs["1 functions"]
     end
+    subgraph lib_features_editor_actions_index_js["lib/features/editor-actions/index.js (javascript)"]
+    end
     subgraph lib_features_element_colors_ElementColors_js["lib/features/element-colors/ElementColors.js (javascript)"]
         lib_features_element_colors_ElementColors_js_funcs["3 functions"]
+    end
+    subgraph lib_features_element_colors_index_js["lib/features/element-colors/index.js (javascript)"]
     end
     subgraph lib_features_element_notifications_ElementNotifications_js["lib/features/element-notifications/ElementNotifications.js (javascript)"]
         lib_features_element_notifications_ElementNotifications_js_funcs["1 functions"]
     end
+    subgraph lib_features_element_notifications_index_js["lib/features/element-notifications/index.js (javascript)"]
+    end
     subgraph lib_features_element_support_ElementSupport_js["lib/features/element-support/ElementSupport.js (javascript)"]
         lib_features_element_support_ElementSupport_js_funcs["2 functions"]
+    end
+    subgraph lib_features_element_support_index_js["lib/features/element-support/index.js (javascript)"]
     end
     subgraph lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js["lib/features/exclusive-gateway-settings/ExclusiveGatewaySettings.js (javascript)"]
         lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js_funcs["3 functions"]
     end
+    subgraph lib_features_exclusive_gateway_settings_index_js["lib/features/exclusive-gateway-settings/index.js (javascript)"]
+    end
     subgraph lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js["lib/features/inclusive-gateway-settings/InclusiveGatewaySettings.js (javascript)"]
         lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js_funcs["4 functions"]
+    end
+    subgraph lib_features_inclusive_gateway_settings_index_js["lib/features/inclusive-gateway-settings/index.js (javascript)"]
     end
     subgraph lib_features_keyboard_bindings_KeyboardBindings_js["lib/features/keyboard-bindings/KeyboardBindings.js (javascript)"]
         lib_features_keyboard_bindings_KeyboardBindings_js_funcs["2 functions"]
     end
+    subgraph lib_features_keyboard_bindings_index_js["lib/features/keyboard-bindings/index.js (javascript)"]
+    end
     subgraph lib_features_log_Log_js["lib/features/log/Log.js (javascript)"]
         lib_features_log_Log_js_funcs["4 functions"]
+    end
+    subgraph lib_features_log_index_js["lib/features/log/index.js (javascript)"]
     end
     subgraph lib_features_neutral_element_colors_NeutralElementColors_js["lib/features/neutral-element-colors/NeutralElementColors.js (javascript)"]
         lib_features_neutral_element_colors_NeutralElementColors_js_funcs["1 functions"]
     end
+    subgraph lib_features_neutral_element_colors_index_js["lib/features/neutral-element-colors/index.js (javascript)"]
+    end
     subgraph lib_features_notifications_Notifications_js["lib/features/notifications/Notifications.js (javascript)"]
         lib_features_notifications_Notifications_js_funcs["1 functions"]
+    end
+    subgraph lib_features_notifications_index_js["lib/features/notifications/index.js (javascript)"]
+    end
+    subgraph lib_features_palette_Palette_js["lib/features/palette/Palette.js (javascript)"]
+        lib_features_palette_Palette_js_funcs["1 functions"]
+    end
+    subgraph lib_features_palette_index_js["lib/features/palette/index.js (javascript)"]
+    end
+    subgraph lib_features_pause_simulation_PauseSimulation_js["lib/features/pause-simulation/PauseSimulation.js (javascript)"]
+        lib_features_pause_simulation_PauseSimulation_js_funcs["1 functions"]
+    end
+    subgraph lib_features_pause_simulation_index_js["lib/features/pause-simulation/index.js (javascript)"]
+    end
+    subgraph lib_features_reset_simulation_ResetSimulation_js["lib/features/reset-simulation/ResetSimulation.js (javascript)"]
+        lib_features_reset_simulation_ResetSimulation_js_funcs["1 functions"]
+    end
+    subgraph lib_features_reset_simulation_index_js["lib/features/reset-simulation/index.js (javascript)"]
+    end
+    subgraph lib_features_scope_filter_ScopeFilter_js["lib/features/scope-filter/ScopeFilter.js (javascript)"]
+        lib_features_scope_filter_ScopeFilter_js_funcs["3 functions"]
+    end
+    subgraph lib_features_scope_filter_index_js["lib/features/scope-filter/index.js (javascript)"]
+    end
+    subgraph lib_features_selection_api_SelectionAPI_js["lib/features/selection-api/SelectionAPI.js (javascript)"]
+        lib_features_selection_api_SelectionAPI_js_funcs["1 functions"]
+    end
+    subgraph lib_features_selection_api_index_js["lib/features/selection-api/index.js (javascript)"]
+    end
+    subgraph lib_features_set_animation_speed_SetAnimationSpeed_js["lib/features/set-animation-speed/SetAnimationSpeed.js (javascript)"]
+        lib_features_set_animation_speed_SetAnimationSpeed_js_funcs["1 functions"]
+    end
+    subgraph lib_features_set_animation_speed_index_js["lib/features/set-animation-speed/index.js (javascript)"]
+    end
+    subgraph lib_features_show_scopes_ShowScopes_js["lib/features/show-scopes/ShowScopes.js (javascript)"]
+        lib_features_show_scopes_ShowScopes_js_funcs["1 functions"]
+    end
+    subgraph lib_features_show_scopes_index_js["lib/features/show-scopes/index.js (javascript)"]
+    end
+    subgraph lib_features_simulation_state_SimulationState_js["lib/features/simulation-state/SimulationState.js (javascript)"]
+        lib_features_simulation_state_SimulationState_js_funcs["1 functions"]
+    end
+    subgraph lib_features_simulation_state_index_js["lib/features/simulation-state/index.js (javascript)"]
+    end
+    subgraph lib_features_simulation_styles_SimulationStyles_js["lib/features/simulation-styles/SimulationStyles.js (javascript)"]
+        lib_features_simulation_styles_SimulationStyles_js_funcs["2 functions"]
+    end
+    subgraph lib_features_simulation_styles_index_js["lib/features/simulation-styles/index.js (javascript)"]
+    end
+    subgraph lib_features_toggle_mode_modeler_ToggleMode_js["lib/features/toggle-mode/modeler/ToggleMode.js (javascript)"]
+        lib_features_toggle_mode_modeler_ToggleMode_js_funcs["1 functions"]
+    end
+    subgraph lib_features_toggle_mode_modeler_index_js["lib/features/toggle-mode/modeler/index.js (javascript)"]
+    end
+    subgraph lib_features_toggle_mode_viewer_ToggleMode_js["lib/features/toggle-mode/viewer/ToggleMode.js (javascript)"]
+        lib_features_toggle_mode_viewer_ToggleMode_js_funcs["1 functions"]
+    end
+    subgraph lib_features_toggle_mode_viewer_index_js["lib/features/toggle-mode/viewer/index.js (javascript)"]
+    end
+    subgraph lib_features_token_count_TokenCount_js["lib/features/token-count/TokenCount.js (javascript)"]
+        lib_features_token_count_TokenCount_js_funcs["1 functions"]
+    end
+    subgraph lib_features_token_count_index_js["lib/features/token-count/index.js (javascript)"]
+    end
+    subgraph lib_index_js["lib/index.js (javascript)"]
+    end
+    subgraph lib_modeler_js["lib/modeler.js (javascript)"]
+    end
+    subgraph lib_simulation_support_SimulationSupport_js["lib/simulation-support/SimulationSupport.js (javascript)"]
+        lib_simulation_support_SimulationSupport_js_funcs["3 functions"]
+    end
+    subgraph lib_simulation_support_SimulationTrace_js["lib/simulation-support/SimulationTrace.js (javascript)"]
+        lib_simulation_support_SimulationTrace_js_funcs["1 functions"]
+    end
+    subgraph lib_simulation_support_SimulationTraceEvents_js["lib/simulation-support/SimulationTraceEvents.js (javascript)"]
+        lib_simulation_support_SimulationTraceEvents_js_funcs["1 functions"]
+    end
+    subgraph lib_simulation_support_index_js["lib/simulation-support/index.js (javascript)"]
+    end
+    subgraph lib_simulator_Scope_js["lib/simulator/Scope.js (javascript)"]
+        lib_simulator_Scope_js_Scope(("Scope"))
+    end
+    subgraph lib_simulator_ScopeStates_js["lib/simulator/ScopeStates.js (javascript)"]
+        lib_simulator_ScopeStates_js_ScopeState(("ScopeState"))
+        lib_simulator_ScopeStates_js_funcs["2 functions"]
+    end
+    subgraph lib_simulator_ScopeTraits_js["lib/simulator/ScopeTraits.js (javascript)"]
+    end
+    subgraph lib_simulator_Simulator_js["lib/simulator/Simulator.js (javascript)"]
+        lib_simulator_Simulator_js_funcs["6 functions"]
+    end
+    subgraph lib_simulator_behaviors_ActivityBehavior_js["lib/simulator/behaviors/ActivityBehavior.js (javascript)"]
+        lib_simulator_behaviors_ActivityBehavior_js_funcs["4 functions"]
+    end
+    subgraph lib_simulator_behaviors_BoundaryEventBehavior_js["lib/simulator/behaviors/BoundaryEventBehavior.js (javascript)"]
+        lib_simulator_behaviors_BoundaryEventBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_EndEventBehavior_js["lib/simulator/behaviors/EndEventBehavior.js (javascript)"]
+        lib_simulator_behaviors_EndEventBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_EventBasedGatewayBehavior_js["lib/simulator/behaviors/EventBasedGatewayBehavior.js (javascript)"]
+        lib_simulator_behaviors_EventBasedGatewayBehavior_js_funcs["2 functions"]
+    end
+    subgraph lib_simulator_behaviors_EventBehaviors_js["lib/simulator/behaviors/EventBehaviors.js (javascript)"]
+        lib_simulator_behaviors_EventBehaviors_js_funcs["3 functions"]
+    end
+    subgraph lib_simulator_behaviors_ExclusiveGatewayBehavior_js["lib/simulator/behaviors/ExclusiveGatewayBehavior.js (javascript)"]
+        lib_simulator_behaviors_ExclusiveGatewayBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_InclusiveGatewayBehavior_js["lib/simulator/behaviors/InclusiveGatewayBehavior.js (javascript)"]
+        lib_simulator_behaviors_InclusiveGatewayBehavior_js_funcs["3 functions"]
+    end
+    subgraph lib_simulator_behaviors_IntermediateCatchEventBehavior_js["lib/simulator/behaviors/IntermediateCatchEventBehavior.js (javascript)"]
+        lib_simulator_behaviors_IntermediateCatchEventBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_IntermediateThrowEventBehavior_js["lib/simulator/behaviors/IntermediateThrowEventBehavior.js (javascript)"]
+        lib_simulator_behaviors_IntermediateThrowEventBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_MessageFlowBehavior_js["lib/simulator/behaviors/MessageFlowBehavior.js (javascript)"]
+        lib_simulator_behaviors_MessageFlowBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_ParallelGatewayBehavior_js["lib/simulator/behaviors/ParallelGatewayBehavior.js (javascript)"]
+        lib_simulator_behaviors_ParallelGatewayBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_ProcessBehavior_js["lib/simulator/behaviors/ProcessBehavior.js (javascript)"]
+        lib_simulator_behaviors_ProcessBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_ScopeBehavior_js["lib/simulator/behaviors/ScopeBehavior.js (javascript)"]
+        lib_simulator_behaviors_ScopeBehavior_js_funcs["2 functions"]
+    end
+    subgraph lib_simulator_behaviors_SequenceFlowBehavior_js["lib/simulator/behaviors/SequenceFlowBehavior.js (javascript)"]
+        lib_simulator_behaviors_SequenceFlowBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_StartEventBehavior_js["lib/simulator/behaviors/StartEventBehavior.js (javascript)"]
+        lib_simulator_behaviors_StartEventBehavior_js_funcs["1 functions"]
+    end
+    subgraph lib_simulator_behaviors_SubProcessBehavior_js["lib/simulator/behaviors/SubProcessBehavior.js (javascript)"]
+        lib_simulator_behaviors_SubProcessBehavior_js_funcs["2 functions"]
+    end
+    subgraph lib_simulator_behaviors_TransactionBehavior_js["lib/simulator/behaviors/TransactionBehavior.js (javascript)"]
+        lib_simulator_behaviors_TransactionBehavior_js_funcs["2 functions"]
+    end
+    subgraph lib_simulator_behaviors_index_js["lib/simulator/behaviors/index.js (javascript)"]
+    end
+    subgraph lib_simulator_index_js["lib/simulator/index.js (javascript)"]
+    end
+    subgraph lib_simulator_util_EventsUtil_js["lib/simulator/util/EventsUtil.js (javascript)"]
+        lib_simulator_util_EventsUtil_js_funcs["2 functions"]
+    end
+    subgraph lib_simulator_util_ModelUtil_js["lib/simulator/util/ModelUtil.js (javascript)"]
+        lib_simulator_util_ModelUtil_js_funcs["19 functions"]
+    end
+    subgraph lib_simulator_util_SetUtil_js["lib/simulator/util/SetUtil.js (javascript)"]
+        lib_simulator_util_SetUtil_js_funcs["2 functions"]
+    end
+    subgraph lib_util_ElementHelper_js["lib/util/ElementHelper.js (javascript)"]
+        lib_util_ElementHelper_js_funcs["2 functions"]
+    end
+    subgraph lib_util_EventHelper_js["lib/util/EventHelper.js (javascript)"]
+    end
+    subgraph lib_viewer_js["lib/viewer.js (javascript)"]
+    end
+    subgraph rollup_config_js["rollup.config.js (javascript)"]
+    end
+    subgraph run_bat["run.bat (batch)"]
+        run_bat_funcs["2 functions"]
+    end
+    subgraph run_sh["run.sh (bash)"]
+    end
+    subgraph src_icons_index_js["src/icons/index.js (javascript)"]
+        src_icons_index_js_funcs["1 functions"]
+    end
+    subgraph tasks_ensure_rollup_binary_js["tasks/ensure-rollup-binary.js (javascript)"]
+        tasks_ensure_rollup_binary_js_funcs["1 functions"]
+    end
+    subgraph tasks_sync_state_identifiers_js["tasks/sync-state-identifiers.js (javascript)"]
+    end
+    subgraph test_TestHelper_js["test/TestHelper.js (javascript)"]
+        test_TestHelper_js_funcs["3 functions"]
+    end
+    subgraph test_all_js["test/all.js (javascript)"]
+    end
+    subgraph test_globals_js["test/globals.js (javascript)"]
+    end
+    subgraph test_mocks_Animation_js["test/mocks/Animation.js (javascript)"]
+        test_mocks_Animation_js_funcs["2 functions"]
+    end
+    subgraph test_reporters_fixture_reporter_js["test/reporters/fixture-reporter.js (javascript)"]
+        test_reporters_fixture_reporter_js_funcs["1 functions"]
+    end
+    subgraph test_spec_DisableModelingSpec_js["test/spec/DisableModelingSpec.js (javascript)"]
+    end
+    subgraph test_spec_ExamplePaletteSpec_js["test/spec/ExamplePaletteSpec.js (javascript)"]
+        test_spec_ExamplePaletteSpec_js_funcs["4 functions"]
+    end
+    subgraph test_spec_ModelerSpec_js["test/spec/ModelerSpec.js (javascript)"]
+        test_spec_ModelerSpec_js_FoobarOverlays(("FoobarOverlays"))
+        test_spec_ModelerSpec_js_funcs["1 functions"]
+    end
+    subgraph test_spec_SeseNoDiagramOverlapsSpec_js["test/spec/SeseNoDiagramOverlapsSpec.js (javascript)"]
+        test_spec_SeseNoDiagramOverlapsSpec_js_funcs["4 functions"]
+    end
+    subgraph test_spec_SimulationSpec_js["test/spec/SimulationSpec.js (javascript)"]
+        test_spec_SimulationSpec_js_funcs["11 functions"]
+    end
+    subgraph test_spec_ViewerSpec_js["test/spec/ViewerSpec.js (javascript)"]
+    end
+    subgraph test_spec_animation_AnimationSpec_js["test/spec/animation/AnimationSpec.js (javascript)"]
+        test_spec_animation_AnimationSpec_js_funcs["3 functions"]
+    end
+    subgraph test_spec_features_context_pads_ContextPadsSpec_js["test/spec/features/context-pads/ContextPadsSpec.js (javascript)"]
+        test_spec_features_context_pads_ContextPadsSpec_js_funcs["5 functions"]
+    end
+    subgraph test_spec_features_gateway_settings_GatewaySettingsSpec_js["test/spec/features/gateway-settings/GatewaySettingsSpec.js (javascript)"]
+    end
+    subgraph test_spec_features_log_LogSpec_js["test/spec/features/log/LogSpec.js (javascript)"]
+        test_spec_features_log_LogSpec_js_LogCollector(("LogCollector"))
+        test_spec_features_log_LogSpec_js_funcs["6 functions"]
+    end
+    subgraph test_spec_features_show_scopes_ShowScopesSpec_js["test/spec/features/show-scopes/ShowScopesSpec.js (javascript)"]
+        test_spec_features_show_scopes_ShowScopesSpec_js_funcs["5 functions"]
+    end
+    subgraph test_spec_simulator_ScopeStatesSpec_js["test/spec/simulator/ScopeStatesSpec.js (javascript)"]
+    end
+    subgraph test_spec_simulator_SimulatorSpec_js["test/spec/simulator/SimulatorSpec.js (javascript)"]
+        test_spec_simulator_SimulatorSpec_js_funcs["13 functions"]
+    end
+    subgraph test_suite_js["test/suite.js (javascript)"]
+    end
+    subgraph webpack_config_js["webpack.config.js (javascript)"]
     end

@@ -1,303 +1,2347 @@
 @startuml
-' truncated: showing 100 of 743 nodes, 200 of 1021 edges (top-degree induced subgraph)
+object "(bo.name || '').trim" as _bo_name________trim
+object "(cd.decisions || []).every" as _cd_decisions________every
+object "(cd.decisions || []).forEach" as _cd_decisions________forEach
+object "(child.decisions || []).forEach" as _child_decisions________forEach
+object "(element.type || '').replace" as _element_type________replace
+object "(gateway.outgoing || []).filter" as _gateway_outgoing________filter
+object "(gw.outgoing || []).filter" as _gw_outgoing________filter
+object "(pool ? [ pool ].concat(pool.lanes) : []).concat" as _pool_____pool___concat_pool_lanes________concat
+object "(pool ? [ pool ].concat(pool.lanes) : []).concat(shapes).map" as _pool_____pool___concat_pool_lanes________concat_shapes__map
+' _pool_____pool___concat_pool_lanes________concat_shapes__map_shape__________bpmndi_BPMNShape___attributes_________id______shape_id___di_________bpmnElement__shape_id________isExpanded__shape_expanded____true____undefined_____________boundsXml_shape_bounds______labelXml_shape_label_____bpmndi_BPMNShape_______join["(pool ? [ pool ].concat(pool.lanes) : []).concat(shapes).map(shape =#gt;
+' `#lt;bpmndi:BPMNShape${ attributes({
+' id: `${ shape.id }_di`,
+' bpmnElement: shape.id,
+' isExpanded: shape.expanded ? 'true' : undefined
+' }) }#gt;${ boundsXml(shape.bounds) }${ labelXml(shape.label) }#lt;/bpmndi:BPMNShape#gt;`
+' ).join"]
+' _rawName________element_type________replace__bpmn____________Element_____bo_id____________replace["(rawName || `${(element.type || '').replace('bpmn:', '') || 'Element'} ${bo.id}`)
+' .replace"]
+object "(sel.value || '').startsWith" as _sel_value________startsWith
+object "/Cannot find module '\\.\\/Simulator\\.([^.]*)\\.json'/.exec" as _Cannot_find_module______Simulator___________json___exec
+object "/expected trace #lt;([^#gt;]+)#gt;/.exec" as _expected_trace____________exec
+object "ACTIVITY_STATE_NAME.get" as ACTIVITY_STATE_NAME_get
+object "ActivityBehavior<br/><small>javascript function</small>" as ActivityBehavior
+object "AnimatedMessageFlowBehavior<br/><small>javascript function</small>" as AnimatedMessageFlowBehavior
+object "AnimatedSequenceFlowBehavior<br/><small>javascript function</small>" as AnimatedSequenceFlowBehavior
 object "Animation<br/><small>javascript function</small>" as Animation
+object "BoundaryEventBehavior<br/><small>javascript function</small>" as BoundaryEventBehavior
+object "CheckCircleIcon" as CheckCircleIcon
 object "ColoredScopes<br/><small>javascript function</small>" as ColoredScopes
 object "ContextPads<br/><small>javascript function</small>" as ContextPads
+object "DisableModeling<br/><small>javascript function</small>" as DisableModeling
+object "DurationProps<br/><small>javascript function</small>" as DurationProps
 object "EditorActions<br/><small>javascript function</small>" as EditorActions
 object "ElementColors<br/><small>javascript function</small>" as ElementColors
+object "ElementNotifications<br/><small>javascript function</small>" as ElementNotifications
+object "ElementSupport<br/><small>javascript function</small>" as ElementSupport
+object "EndEventBehavior<br/><small>javascript function</small>" as EndEventBehavior
+object "EventBasedGatewayBehavior<br/><small>javascript function</small>" as EventBasedGatewayBehavior
+object "EventBehaviors<br/><small>javascript function</small>" as EventBehaviors
+object "ExclusiveGatewayBehavior<br/><small>javascript function</small>" as ExclusiveGatewayBehavior
+object "ExclusiveGatewaySettings<br/><small>javascript function</small>" as ExclusiveGatewaySettings
+object "FixtureReporter<br/><small>javascript function</small>" as FixtureReporter
+object "InclusiveGatewayBehavior<br/><small>javascript function</small>" as InclusiveGatewayBehavior
+object "InclusiveGatewaySettings<br/><small>javascript function</small>" as InclusiveGatewaySettings
+object "IntermediateCatchEventBehavior<br/><small>javascript function</small>" as IntermediateCatchEventBehavior
+object "IntermediateThrowEventBehavior<br/><small>javascript function</small>" as IntermediateThrowEventBehavior
+object "KeyboardBindings<br/><small>javascript function</small>" as KeyboardBindings
 object "Log<br/><small>javascript function</small>" as Log
+object "MessageFlowBehavior<br/><small>javascript function</small>" as MessageFlowBehavior
+object "NeutralElementColors<br/><small>javascript function</small>" as NeutralElementColors
+object "Notifications<br/><small>javascript function</small>" as Notifications
 object "Palette<br/><small>javascript function</small>" as Palette
+object "ParallelGatewayBehavior<br/><small>javascript function</small>" as ParallelGatewayBehavior
 object "PauseSimulation<br/><small>javascript function</small>" as PauseSimulation
+object "ProcessBehavior<br/><small>javascript function</small>" as ProcessBehavior
 object "ResetSimulation<br/><small>javascript function</small>" as ResetSimulation
+object "SIMULATION_EDITOR_ACTIONS.includes" as SIMULATION_EDITOR_ACTIONS_includes
+object "ScopeFilter<br/><small>javascript function</small>" as ScopeFilter
+object "SelectionAPI<br/><small>javascript function</small>" as SelectionAPI
+object "SequenceFlowBehavior<br/><small>javascript function</small>" as SequenceFlowBehavior
 object "SetAnimationSpeed<br/><small>javascript function</small>" as SetAnimationSpeed
 object "ShowScopes<br/><small>javascript function</small>" as ShowScopes
+object "SimulationState<br/><small>javascript function</small>" as SimulationState
+object "SimulationTrace<br/><small>javascript function</small>" as SimulationTrace
+object "SimulationTraceEvents<br/><small>javascript function</small>" as SimulationTraceEvents
+object "Simulator<br/><small>javascript function</small>" as Simulator
+object "StartEventBehavior<br/><small>javascript function</small>" as StartEventBehavior
+object "String(e.name || '').trim" as String_e_name________trim
+object "String(window._apiBaseUrl).replace" as String_window__apiBaseUrl__replace
+object "SubProcessBehavior<br/><small>javascript function</small>" as SubProcessBehavior
+object "TextFieldEntry" as TextFieldEntry
+object "TimesCircleIcon" as TimesCircleIcon
 object "ToggleMode<br/><small>javascript function</small>" as ToggleMode
+object "TokenAnimation<br/><small>javascript function</small>" as TokenAnimation
 object "TokenCount<br/><small>javascript function</small>" as TokenCount
+object "URL.createObjectURL" as URL_createObjectURL
+object "URL.revokeObjectURL" as URL_revokeObjectURL
+' ____________t_action____________t_element____t_element_id_____null_____________t_scope____t_scope_id_____null____________join["[
+' t.action,
+' t.element && t.element.id || 'null',
+' t.scope && t.scope.id || 'null'
+' ].join"]
+' ______pool_____bpmn_laneSet_id__LaneSet_1_____pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join________bpmn_laneSet_____________shapes_filter_shape____shape_parent_____undefined__map_elementXml__join__________flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join_________join["[
+' pool ? `#lt;bpmn:laneSet id=#quot;LaneSet_1#quot;#gt;${ pool.lanes.map(lane =#gt;
+' `#lt;bpmn:lane id=#quot;${ lane.id }#quot; name=#quot;${ lane.name }#quot;#gt;${ lane.nodes.map(node =#gt;
+' `#lt;bpmn:flowNodeRef#gt;${ node }#lt;/bpmn:flowNodeRef#gt;`).join('') }#lt;/bpmn:lane#gt;`
+' ).join('') }#lt;/bpmn:laneSet#gt;` : '',
+' shapes.filter(shape =#gt; shape.parent === undefined).map(elementXml).join(''),
+' flows.map(flow =#gt;
+' `#lt;bpmn:${ flow.type === undefined ? 'sequenceFlow' : flow.type }${
+' attributes({ id: flow.id, name: flow.name, sourceRef: flow.source, targetRef: flow.target }) } /#gt;`
+' ).join('')
+' ].join"]
+object "[ 'Enter', ' ', 'Spacebar' ].includes" as ___Enter_________Spacebar____includes
+object "[ 'type', 'name', 'iref' ].every" as ___type____name____iref____every
+object "[ ...intersection ].filter" as _____intersection___filter
+object "[ interrupt.triggerFn(initiator) ].flat" as __interrupt_triggerFn_initiator____flat
+object "[ interrupt.triggerFn(initiator) ].flat().filter" as __interrupt_triggerFn_initiator____flat___filter
+object "[ pool ].concat" as __pool___concat
+object "[ split[ 0 ], split[ 1 ], scopes[ scope ] ].join" as __split__0____split__1____scopes__scope_____join
+object "[...activations, ...completions].filter" as ____activations_____completions__filter
+object "[...completedInTarget].join" as ____completedInTarget__join
+object "[...history.keys()].pop" as ____history_keys____pop
+object "_action" as _action
+object "_bootstrapModeler" as _bootstrapModeler
+object "_contexts" as _contexts
+object "_contexts().filter" as _contexts___filter
+object "_origPlayStatesEnd<br/><small>javascript function</small>" as _origPlayStatesEnd
+object "_readMetric<br/><small>javascript function</small>" as _readMetric
 object "_recordMetricsForElement<br/><small>javascript function</small>" as _recordMetricsForElement
 object "_refreshHeatmapMetricOptions<br/><small>javascript function</small>" as _refreshHeatmapMetricOptions
+object "_resetHeatmapAccumulators<br/><small>javascript function</small>" as _resetHeatmapAccumulators
 object "_resetHeatmapImpactDiscovery<br/><small>javascript function</small>" as _resetHeatmapImpactDiscovery
+object "_scheduleDropdownRefresh<br/><small>javascript function</small>" as _scheduleDropdownRefresh
+object "_scopeProcessId<br/><small>javascript function</small>" as _scopeProcessId
+object "_setDisplayId<br/><small>javascript function</small>" as _setDisplayId
+object "_syncCurrentNodeId<br/><small>javascript function</small>" as _syncCurrentNodeId
+object "action<br/><small>javascript function</small>" as action
+object "activations.find" as activations_find
+object "active<br/><small>javascript method</small>" as active
+object "adjustedExpectedTrace.push" as adjustedExpectedTrace_push
 object "aggregateByElement<br/><small>javascript function</small>" as aggregateByElement
+object "allElements.forEach" as allElements_forEach
+object "allKeys.filter" as allKeys_filter
+object "allScopes.map" as allScopes_map
+object "allScopesAfter.filter" as allScopesAfter_filter
+object "allScopesAfter.filter(s =#gt; !s.destroyed).forEach" as allScopesAfter_filter_s_____s_destroyed__forEach
+object "along<br/><small>javascript function</small>" as along
+object "animation.getAnimationSpeed" as animation_getAnimationSpeed
+object "animation.hide" as animation_hide
+object "animation.setAnimationSpeed" as animation_setAnimationSpeed
+object "animation.show" as animation_show
 object "applyTheme<br/><small>javascript function</small>" as applyTheme
+object "area<br/><small>javascript function</small>" as area
+object "array.filter" as array_filter
+object "attributes<br/><small>javascript function</small>" as attributes
+object "baseReporterDecorator" as baseReporterDecorator
+object "belongTogether<br/><small>javascript function</small>" as belongTogether
+object "bo.$instanceOf" as bo__instanceOf
+object "bo.eventDefinitions.some" as bo_eventDefinitions_some
+object "bo.get" as bo_get
+object "bootstrapModeler<br/><small>javascript function</small>" as bootstrapModeler
+' bootstrapModeler_diagram__________additionalModules____________SimulatorModule________________________init__________________function_simulator__simulationTrace__________________simulator_on__trace___function_event____________________simulationTrace_push_event________________________________________________function_eventBus__simulator__________________eventBus_once__import_done___________________________simulator_reset___________________________________________________________scopeIds_____factory___function__________________let_idx___0_______________const_alphabet___Array_from__ABCDEFGHIJKLMNOPQRSTUVWXYZ____________________generate_IDs_in_alphabetic_order_________________when_overflowing_the_alphabet__attach_a_numeric_runner_suffix________________________________A_B_C_D_E_____Z_A1_B1_C1_________________function_next___________________const_i___idx___________________const_runner___Math_trunc_i___alphabet_length_________________const_char___i___alphabet_length_________________return_alphabet_char_____runner____________________________________return_________________next_________________________________________simulationScopes_____value___________________simulationTrace_____value_________________________________call["bootstrapModeler(diagram, {
+' additionalModules: [
+' SimulatorModule,
+' {
+' __init__: [
+' function(simulator, simulationTrace) {
+' simulator.on('trace', function(event) {
+' simulationTrace.push(event);
+' });
+' },
+' function(eventBus, simulator) {
+' eventBus.once('import.done', () =#gt; {
+' simulator.reset();
+' });
+' }
+' ],
+' scopeIds: [ 'factory', function() {
+' let idx = 0;
+' const alphabet = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+' // generate IDs in alphabetic order;
+' // when overflowing the alphabet, attach a numeric runner suffix:
+' //
+' // A B C D E ... Z A1 B1 C1 ...
+' function next() {
+' const i = idx++;
+' const runner = Math.trunc(i / alphabet.length);
+' const char = i % alphabet.length;
+' return alphabet[char] + (runner || '');
+' }
+' return {
+' next
+' };
+' } ],
+' simulationScopes: [ 'value', {} ],
+' simulationTrace: [ 'value', [] ]
+' }
+' ]
+' }).call"]
+object "boundsOf<br/><small>javascript function</small>" as boundsOf
+object "boundsXml<br/><small>javascript function</small>" as boundsXml
+object "boxes.map" as boxes_map
+object "boxesOf<br/><small>javascript function</small>" as boxesOf
+object "bpmnFactory.create" as bpmnFactory_create
+object "bpmnJsSatisfies<br/><small>javascript function</small>" as bpmnJsSatisfies
+object "bpmnjs.get" as bpmnjs_get
+object "branches.map" as branches_map
+object "btn.addEventListener" as btn_addEventListener
 object "buildProcessToTokenMap<br/><small>javascript function</small>" as buildProcessToTokenMap
+object "byElement.get" as byElement_get
+object "byElement.set" as byElement_set
+object "c.substring" as c_substring
+object "canTriggerElement<br/><small>javascript function</small>" as canTriggerElement
+object "cancel<br/><small>javascript method</small>" as cancel
+object "canceled<br/><small>javascript method</small>" as canceled
+object "candidates.filter" as candidates_filter
+object "canvas.getContainer" as canvas_getContainer
+object "canvas.getContainer().querySelector" as canvas_getContainer___querySelector
+object "canvas.getContainer().querySelector('.djs-palette').getBoundingClientRect" as canvas_getContainer___querySelector___djs_palette___getBoundingClientRect
+object "canvas.getContext" as canvas_getContext
+object "canvas.getGraphics" as canvas_getGraphics
+object "canvas.getGraphics(element).getBoundingClientRect" as canvas_getGraphics_element__getBoundingClientRect
+object "canvas.getRootElement" as canvas_getRootElement
+object "canvas.toBlob" as canvas_toBlob
+object "canvas.viewbox" as canvas_viewbox
+object "canvasEl.appendChild" as canvasEl_appendChild
+object "canvasLock.lock" as canvasLock_lock
+object "canvasLock.unlock" as canvasLock_unlock
+object "cellKey<br/><small>javascript function</small>" as cellKey
+object "cellsOf<br/><small>javascript function</small>" as cellsOf
+object "changedElements.add" as changedElements_add
+object "changedElements.clear" as changedElements_clear
+object "check<br/><small>javascript function</small>" as check
+object "checkDrain<br/><small>javascript function</small>" as checkDrain
+object "child.decisions.every" as child_decisions_every
+object "child.incoming.find" as child_incoming_find
+object "child.incoming.some" as child_incoming_some
+object "children.find" as children_find
+object "children.forEach" as children_forEach
+object "children.push" as children_push
+object "children.some" as children_some
+object "childrenDecisions.find" as childrenDecisions_find
+object "childrenDecisions.forEach" as childrenDecisions_forEach
+object "clipPolyline<br/><small>javascript function</small>" as clipPolyline
+object "clipSegment<br/><small>javascript function</small>" as clipSegment
+object "command" as command
+object "common<br/><small>javascript function</small>" as common
+object "commonGateway<br/><small>javascript function</small>" as commonGateway
+object "compensable<br/><small>javascript method</small>" as compensable
+object "complete<br/><small>javascript method</small>" as complete
+object "completed<br/><small>javascript method</small>" as completed
+object "completedInTarget.add" as completedInTarget_add
+object "completedInTarget.has" as completedInTarget_has
 object "configureExclusiveGateways<br/><small>javascript function</small>" as configureExclusiveGateways
+object "confirmBtn.addEventListener" as confirmBtn_addEventListener
+object "connection.get" as connection_get
+object "constructor<br/><small>javascript method</small>" as constructor
+object "container.querySelector" as container_querySelector
+object "contains<br/><small>javascript function</small>" as contains
+object "context.drawImage" as context_drawImage
+object "contextId.split" as contextId_split
+object "contexts<br/><small>javascript function</small>" as contexts
+object "controlGroup.appendChild" as controlGroup_appendChild
+object "controlsObserver.disconnect" as controlsObserver_disconnect
+object "controlsObserver.observe" as controlsObserver_observe
+object "covers<br/><small>javascript function</small>" as covers
+object "createDurationGroup<br/><small>javascript function</small>" as createDurationGroup
 object "createHeatmapOverlay<br/><small>javascript function</small>" as createHeatmapOverlay
+object "createInternalRef<br/><small>javascript function</small>" as createInternalRef
 object "createScope<br/><small>javascript function</small>" as createScope
+object "data.push" as data_push
+object "definitions<br/><small>javascript function</small>" as definitions
+object "describe<br/><small>javascript function</small>" as describe
+object "destroy<br/><small>javascript method</small>" as destroy
+object "destroyListener<br/><small>javascript function</small>" as destroyListener
 object "destroyScope<br/><small>javascript function</small>" as destroyScope
+object "destroyed<br/><small>javascript method</small>" as destroyed
+object "di.get" as di_get
+object "di.get('waypoint').map" as di_get__waypoint___map
+object "diagramKeys.sort" as diagramKeys_sort
+' diagramKeys_sort__a__b____________const_getNumber____str______________const_match___str_match__t__d____json____________return_match___parseInt_match_1___10____0_______________return_getNumber_a____getNumber_b_________map["diagramKeys.sort((a, b) =#gt; {
+' const getNumber = (str) =#gt; {
+' const match = str.match(/t(\\d+)\\.json$/);
+' return match ? parseInt(match[1], 10) : 0;
+' };
+' return getNumber(a) - getNumber(b);
+' }).map"]
+object "dialog.querySelector" as dialog_querySelector
+object "diffActivations<br/><small>javascript function</small>" as diffActivations
+object "diffActivations(prev, next).filter" as diffActivations_prev__next__filter
+object "diffCompletions<br/><small>javascript function</small>" as diffCompletions
+object "dirname" as dirname
+object "distance<br/><small>javascript function</small>" as distance
+object "div.classList.add" as div_classList_add
+object "docker" as docker
 object "docker-entrypoint<br/><small>bash module</small>" as docker_entrypoint
+object "docks.forEach" as docks_forEach
+object "docks.push" as docks_push
+object "document.body.appendChild" as document_body_appendChild
 object "document.createElement" as document_createElement
+object "document.documentElement.classList.contains" as document_documentElement_classList_contains
+object "document.documentElement.classList.toggle" as document_documentElement_classList_toggle
 object "document.getElementById" as document_getElementById
 object "document.querySelector" as document_querySelector
+object "document.querySelector(selector).getBoundingClientRect" as document_querySelector_selector__getBoundingClientRect
 object "domClasses" as domClasses
+object "domClasses(element).toggle" as domClasses_element__toggle
+object "domClasses(self.container).add" as domClasses_self_container__add
+object "domClasses(self.container).remove" as domClasses_self_container__remove
+object "domClasses(this._container).add" as domClasses_this__container__add
+object "domClasses(this._container).remove" as domClasses_this__container__remove
+object "domClasses(this._paletteEntry).remove" as domClasses_this__paletteEntry__remove
+object "domClear" as domClear
+object "domQuery" as domQuery
+object "domQueryAll" as domQueryAll
+object "done" as done
+object "download" as download
+object "downloadDiagram<br/><small>javascript function</small>" as downloadDiagram
 object "drainSimulationQueues<br/><small>javascript function</small>" as drainSimulationQueues
+object "drawing.shapes.filter" as drawing_shapes_filter
+object "echo" as echo
+object "edge.ends.indexOf" as edge_ends_indexOf
+object "edge.ends.some" as edge_ends_some
+object "edges.forEach" as edges_forEach
+object "edges.push" as edges_push
+object "editorActions.register" as editorActions_register
+object "editorActions.trigger" as editorActions_trigger
+object "el.incoming.filter" as el_incoming_filter
+object "element<br/><small>javascript function</small>" as element
+object "element.$instanceOf" as element__instanceOf
+object "element.businessObject.get" as element_businessObject_get
+object "element.children.filter" as element_children_filter
+object "element.dataset.hideScopeIds.split" as element_dataset_hideScopeIds_split
+object "element.dataset.scopeIds.split" as element_dataset_scopeIds_split
+object "element.incoming.find" as element_incoming_find
+object "element.incoming.some" as element_incoming_some
+object "element.outgoing.map" as element_outgoing_map
+' element_outgoing_map______outgoing____outgoing_target_____filter["element.outgoing.map(
+' outgoing =#gt; outgoing.target
+' ).filter"]
+object "element.setAttribute" as element_setAttribute
 object "elementChanged<br/><small>javascript function</small>" as elementChanged
+object "elementColors._get" as elementColors__get
+object "elementColors.add" as elementColors_add
+object "elementEnter<br/><small>javascript function</small>" as elementEnter
+object "elementEntries.get" as elementEntries_get
+object "elementEntries.get(elementKey).get" as elementEntries_get_elementKey__get
+object "elementEntries.get(elementKey).set" as elementEntries_get_elementKey__set
+object "elementEntries.has" as elementEntries_has
+object "elementEntries.set" as elementEntries_set
+object "elementExit<br/><small>javascript function</small>" as elementExit
+object "elementMetrics.clear" as elementMetrics_clear
+object "elementMetrics.forEach" as elementMetrics_forEach
+object "elementMetrics.get" as elementMetrics_get
+object "elementMetrics.set" as elementMetrics_set
+object "elementNotifications.addElementNotification" as elementNotifications_addElementNotification
+object "elementOrder.forEach" as elementOrder_forEach
+object "elementOrder.push" as elementOrder_push
 object "elementRegistry<br/><small>javascript function</small>" as elementRegistry
+object "elementRegistry().get" as elementRegistry___get
+object "elementRegistry.filter" as elementRegistry_filter
+' elementRegistry_filter_function_element__________if__element_____root____________return_false_________________const_box___canvas_getGraphics_element__getBoundingClientRect___________return_box_width___0____box_height___0____________box_right___palette_left____box_left___palette_right____________box_bottom___palette_top____box_top___palette_bottom_________map["elementRegistry.filter(function(element) {
+' if (element === root) {
+' return false;
+' }
+' const box = canvas.getGraphics(element).getBoundingClientRect();
+' return box.width #gt; 0 && box.height #gt; 0 &&
+' box.right #gt; palette.left && box.left #lt; palette.right &&
+' box.bottom #gt; palette.top && box.top #lt; palette.bottom;
+' }).map"]
+object "elementRegistry.forEach" as elementRegistry_forEach
+object "elementRegistry.get" as elementRegistry_get
+object "elementRegistry.getAll" as elementRegistry_getAll
+object "elementRegistry.getAll().forEach" as elementRegistry_getAll___forEach
+object "elementTokenHistory.clear" as elementTokenHistory_clear
+object "elementTokenHistory.forEach" as elementTokenHistory_forEach
+object "elementTokenHistory.get" as elementTokenHistory_get
+object "elementTokenHistory.has" as elementTokenHistory_has
+object "elementXml<br/><small>javascript function</small>" as elementXml
+object "elements.filter" as elements_filter
+object "elements.forEach" as elements_forEach
+object "elements.includes" as elements_includes
+object "elements.push" as elements_push
+object "elementsUnderPalette<br/><small>javascript function</small>" as elementsUnderPalette
 object "emit<br/><small>javascript function</small>" as emit
+object "end_parse<br/><small>batch function</small>" as end_parse
 object "enter<br/><small>javascript function</small>" as enter
+object "entries.forEach" as entries_forEach
+object "error.actual.replace" as error_actual_replace
+object "errors.push" as errors_push
+object "escapeHTML" as escapeHTML
+object "event.preventDefault" as event_preventDefault
+object "event.split" as event_split
+object "event.stopPropagation" as event_stopPropagation
+object "eventBus.fire" as eventBus_fire
+object "eventBus.off" as eventBus_off
 object "eventBus.on" as eventBus_on
+object "eventBus.once" as eventBus_once
+object "eventsMatch<br/><small>javascript function</small>" as eventsMatch
+object "executeStep<br/><small>javascript function</small>" as executeStep
+object "executionOrder.map" as executionOrder_map
+object "executionOrder.push" as executionOrder_push
+object "existingConfirm.remove" as existingConfirm_remove
+object "existingImpacts.add" as existingImpacts_add
+object "existingImpacts.has" as existingImpacts_has
 object "exit<br/><small>javascript function</small>" as exit
 object "expect" as expect
+object "expect(colors).to.eql" as expect_colors__to_eql
+object "expect(display).to.equal" as expect_display__to_equal
+object "expect(history, 'history equals').to.eql" as expect_history___history_equals___to_eql
+object "expect(log._elementLog, 'log equals').to.eql" as expect_log__elementLog___log_equals___to_eql
+object "expect(trace).to.eql" as expect_trace__to_eql
 object "expectColors<br/><small>javascript function</small>" as expectColors
+object "expectDestroyed<br/><small>javascript function</small>" as expectDestroyed
+object "expectElementTrigger<br/><small>javascript function</small>" as expectElementTrigger
+object "expectHistory<br/><small>javascript function</small>" as expectHistory
+object "expectLog<br/><small>javascript function</small>" as expectLog
+object "expectNoElementTrigger<br/><small>javascript function</small>" as expectNoElementTrigger
+object "expectPanelRuleInForce<br/><small>javascript function</small>" as expectPanelRuleInForce
+object "expectScopeTrigger<br/><small>javascript function</small>" as expectScopeTrigger
 object "expectTrace<br/><small>javascript function</small>" as expectTrace
+object "expectedTrace.forEach" as expectedTrace_forEach
 object "exportPNG<br/><small>javascript function</small>" as exportPNG
+object "exportSVG<br/><small>javascript function</small>" as exportSVG
+object "ext.$type.endsWith" as ext__type_endsWith
+object "extensionElements.values.filter" as extensionElements_values_filter
+object "extensionElements.values.find" as extensionElements_values_find
+object "extensionElements.values.some" as extensionElements_values_some
+object "fail<br/><small>javascript method</small>" as fail
+object "failed<br/><small>javascript method</small>" as failed
+object "fileName.replace" as fileName_replace
+object "filterLinkThrowEvents<br/><small>javascript function</small>" as filterLinkThrowEvents
+object "filterSequenceFlows<br/><small>javascript function</small>" as filterSequenceFlows
 object "filterSet<br/><small>javascript function</small>" as filterSet
+object "find" as find
 object "findGenericJoin<br/><small>javascript function</small>" as findGenericJoin
+object "findJoin<br/><small>javascript function</small>" as findJoin
 object "findScope<br/><small>javascript function</small>" as findScope
+object "findScopes<br/><small>javascript function</small>" as findScopes
+object "findSet<br/><small>javascript function</small>" as findSet
+object "findSubscription<br/><small>javascript function</small>" as findSubscription
+object "findSubscriptionScope<br/><small>javascript function</small>" as findSubscriptionScope
+object "findSubscriptions<br/><small>javascript function</small>" as findSubscriptions
+object "firsts.forEach" as firsts_forEach
+object "fitViewportClearOfPalette<br/><small>javascript function</small>" as fitViewportClearOfPalette
+object "flow.waypoints.map" as flow_waypoints_map
+' flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join["flow.waypoints.map(point =#gt;
+' `#lt;di:waypoint x=#quot;${ point[0] }#quot; y=#quot;${ point[1] }#quot; /#gt;`).join"]
+object "flows.filter" as flows_filter
+object "flows.map" as flows_map
+' flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join["flows.map(flow =#gt;
+' `#lt;bpmn:${ flow.type === undefined ? 'sequenceFlow' : flow.type }${
+' attributes({ id: flow.id, name: flow.name, sourceRef: flow.source, targetRef: flow.target }) } /#gt;`
+' ).join"]
+' flows_map_flow__________bpmndi_BPMNEdge_id_____flow_id___di__bpmnElement_____flow_id_______flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join_________labelXml_flow_label_____bpmndi_BPMNEdge_______join["flows.map(flow =#gt;
+' `#lt;bpmndi:BPMNEdge id=#quot;${ flow.id }_di#quot; bpmnElement=#quot;${ flow.id }#quot;#gt;${ flow.waypoints.map(point =#gt;
+' `#lt;di:waypoint x=#quot;${ point[0] }#quot; y=#quot;${ point[1] }#quot; /#gt;`).join('') }${ labelXml(flow.label) }#lt;/bpmndi:BPMNEdge#gt;`
+' ).join"]
+object "fn" as fn
+object "footer.insertBefore" as footer_insertBefore
+object "footer.querySelector" as footer_querySelector
+object "forEachCellKey<br/><small>javascript function</small>" as forEachCellKey
+object "forEachNearCrossPair<br/><small>javascript function</small>" as forEachNearCrossPair
+object "forEachNearPair<br/><small>javascript function</small>" as forEachNearPair
+object "freqData.forEach" as freqData_forEach
+object "from.concat" as from_concat
+object "from.map" as from_map
+object "fs.readFileSync" as fs_readFileSync
+object "fs.writeFileSync" as fs_writeFileSync
+object "gateway.outgoing.filter" as gateway_outgoing_filter
+object "gateway.outgoing.find" as gateway_outgoing_find
+object "gatewayMap.forEach" as gatewayMap_forEach
+object "gatewayMap.get" as gatewayMap_get
+object "gatewayMap.has" as gatewayMap_has
+object "gatewayMap.set" as gatewayMap_set
+object "gateways.forEach" as gateways_forEach
 object "getAllReachable<br/><small>javascript function</small>" as getAllReachable
+object "getAnimationDuration<br/><small>javascript function</small>" as getAnimationDuration
+object "getBehavior<br/><small>javascript function</small>" as getBehavior
+object "getBehavior(element).enter" as getBehavior_element__enter
+object "getBehavior(element).exit" as getBehavior_element__exit
+object "getBehavior(element).signal" as getBehavior_element__signal
 object "getBpmnJS" as getBpmnJS
+object "getBpmnJS().get" as getBpmnJS___get
 object "getBpmnJS().invoke" as getBpmnJS___invoke
 object "getBusinessObject" as getBusinessObject
+object "getChildren<br/><small>javascript function</small>" as getChildren
+object "getChildren(childElement, elementRegistry).filter" as getChildren_childElement__elementRegistry__filter
+object "getColors<br/><small>javascript function</small>" as getColors
+object "getConfig<br/><small>javascript function</small>" as getConfig
+object "getContrastYIQ<br/><small>javascript function</small>" as getContrastYIQ
+object "getDefaultFlow<br/><small>javascript function</small>" as getDefaultFlow
+object "getElementName<br/><small>javascript function</small>" as getElementName
 object "getEvent<br/><small>javascript function</small>" as getEvent
 object "getEventDefinition<br/><small>javascript function</small>" as getEventDefinition
+object "getEventDefinitions<br/><small>javascript function</small>" as getEventDefinitions
 object "getEventTypeString<br/><small>javascript function</small>" as getEventTypeString
 object "getExecutionOrderMap<br/><small>javascript function</small>" as getExecutionOrderMap
+object "getGroups<br/><small>javascript method</small>" as getGroups
 object "getHeatmapFrequencyData<br/><small>javascript function</small>" as getHeatmapFrequencyData
+object "getIconForIntermediateEvent<br/><small>javascript function</small>" as getIconForIntermediateEvent
+object "getIntId<br/><small>javascript function</small>" as getIntId
+object "getLatestScopeId<br/><small>javascript function</small>" as getLatestScopeId
+object "getLinkDefinition<br/><small>javascript function</small>" as getLinkDefinition
+object "getLinkName<br/><small>javascript function</small>" as getLinkName
+object "getNext<br/><small>javascript function</small>" as getNext
+object "getNonDefaultFlows<br/><small>javascript function</small>" as getNonDefaultFlows
+object "getNoneEvent<br/><small>javascript function</small>" as getNoneEvent
+object "getNumber<br/><small>javascript function</small>" as getNumber
+object "getOverallStatus<br/><small>javascript function</small>" as getOverallStatus
+object "getPlaneIdFromShape" as getPlaneIdFromShape
+object "getProcessId<br/><small>javascript function</small>" as getProcessId
+object "getScopeElements<br/><small>javascript function</small>" as getScopeElements
 object "getSimulationSupport<br/><small>javascript function</small>" as getSimulationSupport
+object "getSimulationSupport().elementEnter" as getSimulationSupport___elementEnter
+object "getSimulationSupport().elementExit" as getSimulationSupport___elementExit
+object "getSimulationSupport().getElementTrigger" as getSimulationSupport___getElementTrigger
+object "getSimulationSupport().getHistory" as getSimulationSupport___getHistory
+object "getSimulationSupport().getScopeTrigger" as getSimulationSupport___getScopeTrigger
+object "getSimulationSupport().scopeDestroyed" as getSimulationSupport___scopeDestroyed
+object "getSimulationSupport().triggerElement" as getSimulationSupport___triggerElement
+object "getSimulationSupport().triggerScope" as getSimulationSupport___triggerScope
+object "getSortedTriggers<br/><small>javascript function</small>" as getSortedTriggers
+object "getTokens<br/><small>javascript method</small>" as getTokens
+object "getTokensByElement<br/><small>javascript method</small>" as getTokensByElement
+object "getTriggers<br/><small>javascript function</small>" as getTriggers
+object "getType<br/><small>javascript function</small>" as getType
+object "getValue<br/><small>javascript function</small>" as getValue
+object "gfx.getBoundingClientRect" as gfx_getBoundingClientRect
+object "grid.get" as grid_get
+object "grid.set" as grid_set
+object "gridOf<br/><small>javascript function</small>" as gridOf
+object "group.appendChild" as group_appendChild
+object "groups.push" as groups_push
+object "h337.create" as h337_create
+object "handleKeyEvent<br/><small>javascript function</small>" as handleKeyEvent
+object "hasTrait<br/><small>javascript method</small>" as hasTrait
+object "heatmapContainer.getBoundingClientRect" as heatmapContainer_getBoundingClientRect
+object "heatmapContainer.parentNode.removeChild" as heatmapContainer_parentNode_removeChild
+object "heatmapInstance.setData" as heatmapInstance_setData
+object "heatmapMetric.slice" as heatmapMetric_slice
+object "heatmapMetric.startsWith" as heatmapMetric_startsWith
+object "hexcolor.substr" as hexcolor_substr
+object "hideBranchDialog<br/><small>javascript function</small>" as hideBranchDialog
+object "hideMessage<br/><small>javascript function</small>" as hideMessage
+object "history.keys" as history_keys
+object "idMap.entries" as idMap_entries
+object "idMap.get" as idMap_get
+object "idMap.has" as idMap_has
+object "idMap.set" as idMap_set
+object "ids.next" as ids_next
+object "ids.sort" as ids_sort
+object "ifElement<br/><small>javascript function</small>" as ifElement
+object "iit" as iit
+object "illegalTransition<br/><small>javascript function</small>" as illegalTransition
+object "impactNamesSeen.add" as impactNamesSeen_add
+object "impactNamesSeen.clear" as impactNamesSeen_clear
+object "impactNamesSeen.has" as impactNamesSeen_has
+object "index.byElement.get" as index_byElement_get
+object "index.grid.get" as index_grid_get
+object "indexShapes<br/><small>javascript function</small>" as indexShapes
 object "init<br/><small>javascript function</small>" as init
 object "initializeRootScopes<br/><small>javascript function</small>" as initializeRootScopes
 object "initializeScope<br/><small>javascript function</small>" as initializeScope
 object "initializeSimulationToStart<br/><small>javascript function</small>" as initializeSimulationToStart
-object "is" as is
+object "injectStyles<br/><small>javascript function</small>" as injectStyles
+object "injector.get" as injector_get
+object "injector.invoke" as injector_invoke
+object "insertCSS" as insertCSS
+object "interrupt.triggerFn" as interrupt_triggerFn
+object "interrupting.find" as interrupting_find
+object "intersection<br/><small>javascript function</small>" as intersection
+object "ioGroup.appendChild" as ioGroup_appendChild
+object "is<br/><small>javascript function</small>" as is
+object "isAncestor<br/><small>javascript function</small>" as isAncestor
 object "isAny<br/><small>javascript function</small>" as isAny
+object "isAttachedTo<br/><small>javascript function</small>" as isAttachedTo
 object "isBoundaryEvent<br/><small>javascript function</small>" as isBoundaryEvent
 object "isCatchEvent<br/><small>javascript function</small>" as isCatchEvent
+object "isCompensationActivity<br/><small>javascript function</small>" as isCompensationActivity
+object "isCompensationEvent<br/><small>javascript function</small>" as isCompensationEvent
+object "isEventSubProcess<br/><small>javascript function</small>" as isEventSubProcess
+object "isExpandedSubProcess<br/><small>javascript function</small>" as isExpandedSubProcess
+object "isFrame<br/><small>javascript function</small>" as isFrame
+object "isImplicitMessageCatch<br/><small>javascript function</small>" as isImplicitMessageCatch
 object "isImplicitStartEvent<br/><small>javascript function</small>" as isImplicitStartEvent
+object "isInterrupting<br/><small>javascript function</small>" as isInterrupting
+object "isKey<br/><small>javascript function</small>" as isKey
+object "isKeyboardTrigger<br/><small>javascript function</small>" as isKeyboardTrigger
+object "isLabel<br/><small>javascript function</small>" as isLabel
+object "isLabelExternal<br/><small>javascript function</small>" as isLabelExternal
+object "isLinkCatch<br/><small>javascript function</small>" as isLinkCatch
+object "isLinkThrow<br/><small>javascript function</small>" as isLinkThrow
+object "isMessageCatch<br/><small>javascript function</small>" as isMessageCatch
+object "isMessageFlow<br/><small>javascript function</small>" as isMessageFlow
+object "isNoneStartEvent<br/><small>javascript function</small>" as isNoneStartEvent
+object "isOnLine<br/><small>javascript function</small>" as isOnLine
+object "isRethrow<br/><small>javascript function</small>" as isRethrow
+object "isSequenceFlow<br/><small>javascript function</small>" as isSequenceFlow
+object "isSpecialBoundaryEvent<br/><small>javascript function</small>" as isSpecialBoundaryEvent
+object "isStartEvent<br/><small>javascript function</small>" as isStartEvent
+object "isSubscribed" as isSubscribed
+object "isTask<br/><small>javascript function</small>" as isTask
+object "isTransaction<br/><small>javascript function</small>" as isTransaction
 object "isTypedEvent<br/><small>javascript function</small>" as isTypedEvent
+object "isWide<br/><small>javascript function</small>" as isWide
+object "items.concat" as items_concat
+object "items.forEach" as items_forEach
+object "items.map" as items_map
+object "items.push" as items_push
+object "items.slice" as items_slice
+object "jobs.push" as jobs_push
+object "jobs.shift" as jobs_shift
+object "joinPieces<br/><small>javascript function</small>" as joinPieces
+object "joined.splice" as joined_splice
+object "k.startsWith" as k_startsWith
+object "key.indexOf" as key_indexOf
+object "key.replace" as key_replace
+object "key.replace(`./${baseName}/`, '').replace" as key_replace______baseName_________replace
+object "key.substring" as key_substring
+object "keyWithoutToken.split" as keyWithoutToken_split
+object "keyboard.addListener" as keyboard_addListener
+object "keys.indexOf" as keys_indexOf
+object "labelText<br/><small>javascript function</small>" as labelText
+object "labelXml<br/><small>javascript function</small>" as labelXml
+object "labels.push" as labels_push
+object "lane.nodes.map" as lane_nodes_map
+' lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join["lane.nodes.map(node =#gt;
+' `#lt;bpmn:flowNodeRef#gt;${ node }#lt;/bpmn:flowNodeRef#gt;`).join"]
+object "lateStartIds.forEach" as lateStartIds_forEach
+object "leafScopes.map" as leafScopes_map
+object "leafScopes.map(s =#gt; `${s.element?.id}(${s.id})`).join" as leafScopes_map_s_______s_element__id____s_id_____join
+object "left.findIndex" as left_findIndex
+object "left.splice" as left_splice
+object "lint<br/><small>javascript function</small>" as lint
+object "lintWith<br/><small>javascript function</small>" as lintWith
+object "list.appendChild" as list_appendChild
+object "listToBinarySequence<br/><small>javascript function</small>" as listToBinarySequence
+object "listener<br/><small>javascript function</small>" as listener
 object "loadStateSequenceForCurrentDiagram<br/><small>javascript function</small>" as loadStateSequenceForCurrentDiagram
+object "localStorage.setItem" as localStorage_setItem
+object "log.info" as log_info
+object "log.log" as log_log
+object "log.toggle" as log_toggle
+object "logError<br/><small>javascript function</small>" as logError
+object "logInfo<br/><small>javascript function</small>" as logInfo
+object "logMessage<br/><small>javascript function</small>" as logMessage
+object "logger.create" as logger_create
+object "matchFn" as matchFn
+object "matched.push" as matched_push
+object "matchingSubscriptions.every" as matchingSubscriptions_every
+object "matchingSubscriptions.filter" as matchingSubscriptions_filter
+object "messageLogs.forEach" as messageLogs_forEach
+object "mkdir" as mkdir
 object "modeler.get" as modeler_get
+object "modeler.get('eventBus').fire" as modeler_get__eventBus___fire
+object "modeler.importXML" as modeler_importXML
+' modeler_importXML_diagram________then["modeler.importXML(diagram)
+' .then"]
+' modeler_importXML_diagram________then____warnings________________if__warnings_length_____________console_warn_warnings_____________________sanitizeDiagram_modeler____persist__persistent______________if__persistent_____________localStorage__diagram_xml_____diagram_______________________Not__canvas_zoom__fit_viewport_____that_fit_draws_the_leftmost_elements___________under_the_palette__see_fit_viewport_js___A_canvas_with_no_size_yet______________an_iframe_that_is_not_visible____cannot_be_fitted__say_so_instead_of___________dropping_the_reason_________try____________fitViewportClearOfPalette_modeler_get__canvas______________catch__err_____________console_warn___openDiagram__diagram_not_fitted_to_the_canvas____err_message________________________Force_ALL_tasks_to_behave_as_wait_states_so_tokens_stay_visible_on_them________const_registry___modeler_get__elementRegistry___________const_simulator___modeler_get__simulator___________registry_getAll___forEach_el_______________if__el_type______bpmn_Task_____el_type______bpmn_UserTask_____el_type______bpmn_ServiceTask________________simulator_waitAtElement_el__true_____________________________________Auto_start_simulation_at_t0________initializeSimulationToStart________________Retry_pending_API_states___they_may_have_arrived_before_importXML___________completed_and_been_deferred_because_the_diagram_wasn_t_ready_yet_________if___pendingApiStates_____________const_retryKey___Object_keys__pendingApiStates_length____pendingApiStates_0__state_______0____________const_retryId___retryKey___parseStateKey_retryKey__registryId___null___________if__retryId____registry_get_retryId________________console_log___openDiagram__Retrying_deferred_API_states_______________stateSequence____pendingApiStates______________statesInjectedViaApi___true______________pendingApiStates___null_____________buildProcessToTokenMap_______________if___pendingApiNavData__________________treeTopology____pendingApiNavData_topology________________allPaths____pendingApiNavData_allPaths________________allPathNodeIds____pendingApiNavData_allPathNodeIds________________pathNodeIds_____allPathNodeIds_____pendingApiNavData_nodeId____null____________________allPathNodeIds_String__pendingApiNavData_nodeId______null___null________________currentNodeId____pendingApiNavData_nodeId____null__________________String__pendingApiNavData_nodeId____null________________navigationMode______treeTopology________________pendingApiNavData___null_______________setNavigationVisible__navigationMode___________________________if___pendingApiTargetIndex_____null_________________const_target____pendingApiTargetIndex________________pendingApiTargetIndex___null_______________replayToIndex_target__then_______updateNavigationUI____________________________________________________catch["modeler.importXML(diagram)
+' .then(({ warnings }) =#gt; {
+' if (warnings.length) {
+' console.warn(warnings);
+' }
+' sanitizeDiagram(modeler, { persist: persistent });
+' if (persistent) {
+' localStorage['diagram-xml'] = diagram;
+' }
+' // Not `canvas.zoom('fit-viewport')`: that fit draws the leftmost elements
+' // under the palette (see fit-viewport.js). A canvas with no size yet --
+' // an iframe that is not visible -- cannot be fitted; say so instead of
+' // dropping the reason.
+' try {
+' fitViewportClearOfPalette(modeler.get('canvas'));
+' } catch (err) {
+' console.warn('[openDiagram] diagram not fitted to the canvas:', err.message);
+' }
+' // Force ALL tasks to behave as wait states so tokens stay visible on them
+' const registry = modeler.get('elementRegistry');
+' const simulator = modeler.get('simulator');
+' registry.getAll().forEach(el =#gt; {
+' if (el.type === 'bpmn:Task' || el.type === 'bpmn:UserTask' || el.type === 'bpmn:ServiceTask') {
+' simulator.waitAtElement(el, true);
+' }
+' });
+' // Auto-start simulation at t0
+' initializeSimulationToStart();
+' // Retry pending API states — they may have arrived before importXML
+' // completed and been deferred because the diagram wasn't ready yet.
+' if (_pendingApiStates) {
+' const retryKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
+' const retryId = retryKey ? parseStateKey(retryKey).registryId : null;
+' if (retryId && registry.get(retryId)) {
+' console.log('[openDiagram] Retrying deferred API states');
+' stateSequence = _pendingApiStates;
+' _statesInjectedViaApi = true;
+' _pendingApiStates = null;
+' buildProcessToTokenMap();
+' if (_pendingApiNavData) {
+' _treeTopology = _pendingApiNavData.topology;
+' _allPaths = _pendingApiNavData.allPaths;
+' _allPathNodeIds = _pendingApiNavData.allPathNodeIds;
+' _pathNodeIds = (_allPathNodeIds && _pendingApiNavData.nodeId != null)
+' ? _allPathNodeIds[String(_pendingApiNavData.nodeId)] || null : null;
+' _currentNodeId = _pendingApiNavData.nodeId != null
+' ? String(_pendingApiNavData.nodeId) : null;
+' _navigationMode = !!_treeTopology;
+' _pendingApiNavData = null;
+' setNavigationVisible(_navigationMode);
+' }
+' if (_pendingApiTargetIndex !== null) {
+' const target = _pendingApiTargetIndex;
+' _pendingApiTargetIndex = null;
+' replayToIndex(target).then(() =#gt; updateNavigationUI());
+' }
+' }
+' }
+' })
+' .catch"]
+object "modeler.saveSVG" as modeler_saveSVG
+object "modeler.saveSVG().then" as modeler_saveSVG___then
+object "modeler.saveXML" as modeler_saveXML
+object "modeler.saveXML({ format: true }).then" as modeler_saveXML___format__true____then
+' modeler_saveXML___format__true____then____xml________________localStorage__diagram_xml_____xml__________catch["modeler.saveXML({ format: true }).then(({ xml }) =#gt; {
+' localStorage['diagram-xml'] = xml;
+' }).catch"]
+object "modeling.updateModdleProperties" as modeling_updateModdleProperties
+object "modeling.updateProperties" as modeling_updateProperties
+object "monitorGroup.appendChild" as monitorGroup_appendChild
 object "moveSimulationControls<br/><small>javascript function</small>" as moveSimulationControls
+object "n.outgoing.forEach" as n_outgoing_forEach
+object "name<br/><small>javascript function</small>" as name
 object "navigateBackward<br/><small>javascript function</small>" as navigateBackward
 object "navigateForward<br/><small>javascript function</small>" as navigateForward
+object "nc" as nc
+object "new BpmnModdle(extensions).fromXML" as new_BpmnModdle_extensions__fromXML
+object "new Date().toLocaleTimeString" as new_Date___toLocaleTimeString
+object "new URL(window.location.href).searchParams.get" as new_URL_window_location_href__searchParams_get
+object "nextName<br/><small>javascript function</small>" as nextName
+object "noDiagramOverlaps" as noDiagramOverlaps
+object "nonInterrupting.map" as nonInterrupting_map
+' nonInterrupting_map__________subscription____subscription_triggerFn_initiator__________flat["nonInterrupting.map(
+' subscription =#gt; subscription.triggerFn(initiator)
+' ).flat"]
+object "normalizeStatusClass<br/><small>javascript function</small>" as normalizeStatusClass
+object "npm" as npm
+object "off<br/><small>javascript function</small>" as off
+object "old.remove" as old_remove
+object "oldConfirm.remove" as oldConfirm_remove
+object "on<br/><small>javascript function</small>" as on
 object "openDiagram<br/><small>javascript function</small>" as openDiagram
+object "openFile<br/><small>javascript function</small>" as openFile
+object "opt.value.slice" as opt_value_slice
+object "opt.value.startsWith" as opt_value_startsWith
+object "optContainer.appendChild" as optContainer_appendChild
+object "optContainer.querySelectorAll" as optContainer_querySelectorAll
+object "optContainer.querySelectorAll('button').forEach" as optContainer_querySelectorAll__button___forEach
+object "options.forEach" as options_forEach
+object "options.keys" as options_keys
+object "opts.has" as opts_has
+object "opts.set" as opts_set
+object "orSelf<br/><small>javascript function</small>" as orSelf
+object "orderMap.get" as orderMap_get
+object "orderMap.has" as orderMap_has
+object "out.set" as out_set
+object "outgoing.find" as outgoing_find
+object "outgoing.forEach" as outgoing_forEach
+object "outgoing.indexOf" as outgoing_indexOf
+object "overlays.add" as overlays_add
+object "paletteFootprint<br/><small>javascript function</small>" as paletteFootprint
+object "panel.classList.add" as panel_classList_add
+object "panel.remove" as panel_remove
+object "parentScope.children.push" as parentScope_children_push
 object "parseBPMN<br/><small>javascript function</small>" as parseBPMN
 object "parseSequence<br/><small>javascript function</small>" as parseSequence
 object "parseStateKey<br/><small>javascript function</small>" as parseStateKey
+object "parse_args<br/><small>batch function</small>" as parse_args
+object "partners.add" as partners_add
+object "parts.slice" as parts_slice
+object "parts.slice(0, 2).join" as parts_slice_0__2__join
+object "path.join" as path_join
+object "pauseSimulation.toggle" as pauseSimulation_toggle
+object "picked.add" as picked_add
+object "pieces.map" as pieces_map
+' pieces_map_function_piece________return__from____point_piece_from____to____point_piece_to___________join["pieces.map(function(piece) {
+' return `from ${ point(piece.from) } to ${ point(piece.to) }`;
+' }).join"]
+object "pieces.push" as pieces_push
+object "pieces.slice" as pieces_slice
+object "pkg.devDependencies.rollup.replace" as pkg_devDependencies_rollup_replace
+object "plane.get" as plane_get
+object "plane.get('planeElement').forEach" as plane_get__planeElement___forEach
 object "playStates<br/><small>javascript function</small>" as playStates
+object "point<br/><small>javascript function</small>" as point
+object "pointAlong<br/><small>javascript function</small>" as pointAlong
+object "points.reduce" as points_reduce
+object "pool.lanes.map" as pool_lanes_map
+' pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join["pool.lanes.map(lane =#gt;
+' `#lt;bpmn:lane id=#quot;${ lane.id }#quot; name=#quot;${ lane.name }#quot;#gt;${ lane.nodes.map(node =#gt;
+' `#lt;bpmn:flowNodeRef#gt;${ node }#lt;/bpmn:flowNodeRef#gt;`).join('') }#lt;/bpmn:lane#gt;`
+' ).join"]
+object "positions.forEach" as positions_forEach
+object "positions.push" as positions_push
+object "processScopes.includes" as processScopes_includes
+object "processToTokenMap.clear" as processToTokenMap_clear
+object "processToTokenMap.get" as processToTokenMap_get
+object "processToTokenMap.has" as processToTokenMap_has
+object "processToTokenMap.set" as processToTokenMap_set
+object "propertiesPanel.registerProvider" as propertiesPanel_registerProvider
+object "pwd" as pwd
 object "queue<br/><small>javascript function</small>" as queue
+object "randomBetween<br/><small>javascript function</small>" as randomBetween
+object "randomColor" as randomColor
+' randomColor_______count__60______filter["randomColor({
+' count: 60
+' }).filter"]
+object "ranges.forEach" as ranges_forEach
+object "reachables[i].has" as reachables_i__has
+object "readPlane<br/><small>javascript function</small>" as readPlane
+object "readRollupVersion<br/><small>javascript function</small>" as readRollupVersion
+object "rect<br/><small>javascript function</small>" as rect
+object "referenceSubscriptions.some" as referenceSubscriptions_some
+object "references<br/><small>javascript function</small>" as references
+object "refsMatch<br/><small>javascript function</small>" as refsMatch
 object "registry.get" as registry_get
+object "registry.getAll" as registry_getAll
+object "registry.getAll().filter" as registry_getAll___filter
+object "registry.getAll().filter(el =#gt; el.type === 'bpmn:ExclusiveGateway').forEach" as registry_getAll___filter_el____el_type______bpmn_ExclusiveGateway___forEach
+object "registry.getAll().forEach" as registry_getAll___forEach
+object "remainingScopes.delete" as remainingScopes_delete
+object "remainingSubscriptions.includes" as remainingSubscriptions_includes
+object "remove<br/><small>javascript method</small>" as remove
 object "renderMessageLogs<br/><small>javascript function</small>" as renderMessageLogs
 object "renderStateSnapshot<br/><small>javascript function</small>" as renderStateSnapshot
 object "replayToIndex<br/><small>javascript function</small>" as replayToIndex
-object "run<br/><small>bash module</small>" as run
+object "replayToIndex(target).then" as replayToIndex_target__then
+object "reportEdgesOverLabels<br/><small>javascript function</small>" as reportEdgesOverLabels
+object "reportEdgesThroughShapes<br/><small>javascript function</small>" as reportEdgesThroughShapes
+object "reportLabelOverlaps<br/><small>javascript function</small>" as reportLabelOverlaps
+object "reportShapeOverlaps<br/><small>javascript function</small>" as reportShapeOverlaps
+object "reportSharedLines<br/><small>javascript function</small>" as reportSharedLines
+object "reportedId<br/><small>javascript function</small>" as reportedId
+object "reporter.report" as reporter_report
+object "requestAnimationFrame" as requestAnimationFrame
+object "requestBranchSwitch<br/><small>javascript function</small>" as requestBranchSwitch
+object "reset<br/><small>javascript function</small>" as reset
+object "resetSimulation.resetSimulation" as resetSimulation_resetSimulation
+object "resolve" as resolve
+object "resolveTokenId<br/><small>javascript function</small>" as resolveTokenId
+object "response.json" as response_json
+object "response.text" as response_text
+object "result.push" as result_push
+object "root.children.forEach" as root_children_forEach
+object "rootScopes.push" as rootScopes_push
+object "row.appendChild" as row_appendChild
+object "run<br/><small>batch module</small>" as run
+object "running<br/><small>javascript method</small>" as running
 object "sanitizeDiagram<br/><small>javascript function</small>" as sanitizeDiagram
+object "scope.children.filter" as scope_children_filter
+object "scope.complete" as scope_complete
+object "scope.destroy" as scope_destroy
+object "scope.getTokensByElement" as scope_getTokensByElement
+object "scope.hasTrait" as scope_hasTrait
+object "scope.start" as scope_start
+object "scope.subscriptions.add" as scope_subscriptions_add
+object "scope.subscriptions.delete" as scope_subscriptions_delete
+object "scopeChanged<br/><small>javascript function</small>" as scopeChanged
+object "scopeDestroyed<br/><small>javascript function</small>" as scopeDestroyed
 object "scopeFilter<br/><small>javascript function</small>" as scopeFilter
+object "scopeFilter.isShown" as scopeFilter_isShown
+object "scopeIdToTokenMap.set" as scopeIdToTokenMap_set
+object "scopeIds.some" as scopeIds_some
+object "scopeSubscriptionFilter<br/><small>javascript function</small>" as scopeSubscriptionFilter
+object "scopes.add" as scopes_add
+object "scopes.delete" as scopes_delete
+object "scopes.forEach" as scopes_forEach
+object "scopes.push" as scopes_push
+object "seconds.forEach" as seconds_forEach
+object "seconds.map" as seconds_map
+object "sed" as sed
+object "seenNames.has" as seenNames_has
+object "seenNames.set" as seenNames_set
+object "seenTasks.add" as seenTasks_add
+object "seenTasks.has" as seenTasks_has
+object "segments<br/><small>javascript function</small>" as segments
+object "segments(a.points).forEach" as segments_a_points__forEach
+object "segments(b.points).forEach" as segments_b_points__forEach
+object "segments(points).forEach" as segments_points__forEach
+object "sel.appendChild" as sel_appendChild
+object "sel.removeChild" as sel_removeChild
+object "semver.satisfies" as semver_satisfies
+object "sequenceItems.push" as sequenceItems_push
+object "set" as set
+object "set.add" as set_add
+object "set.has" as set_has
 object "setConfig<br/><small>javascript function</small>" as setConfig
+object "setNavigationVisible<br/><small>javascript function</small>" as setNavigationVisible
+object "setTransitions<br/><small>javascript method</small>" as setTransitions
+object "setValue<br/><small>javascript function</small>" as setValue
+object "shape.type.includes" as shape_type_includes
+' shapes________filter["shapes
+' .filter"]
+' shapes________filter_child____child_parent_____shape_id_________map["shapes
+' .filter(child =#gt; child.parent === shape.id)
+' .map"]
+' shapes________filter_child____child_parent_____shape_id_________map_elementXml_________join["shapes
+' .filter(child =#gt; child.parent === shape.id)
+' .map(elementXml)
+' .join"]
+object "shapes.filter" as shapes_filter
+object "shapes.filter(shape =#gt; shape.parent === undefined).map" as shapes_filter_shape____shape_parent_____undefined__map
+object "shapes.filter(shape =#gt; shape.parent === undefined).map(elementXml).join" as shapes_filter_shape____shape_parent_____undefined__map_elementXml__join
+object "shapes.forEach" as shapes_forEach
+object "shapes.map" as shapes_map
+object "shapes.push" as shapes_push
+object "shapesA.some" as shapesA_some
+object "shapesB.indexOf" as shapesB_indexOf
+object "shapesCovering<br/><small>javascript function</small>" as shapesCovering
+object "shapesCovering(point, shapes, index).forEach" as shapesCovering_point__shapes__index__forEach
+object "shared.reduce" as shared_reduce
+object "sharedDockings<br/><small>javascript function</small>" as sharedDockings
+object "sharedPiece<br/><small>javascript function</small>" as sharedPiece
+object "shift" as shift
 object "showAdvanceDecisionDialog<br/><small>javascript function</small>" as showAdvanceDecisionDialog
 object "showBranchDialog<br/><small>javascript function</small>" as showBranchDialog
+object "showMessage<br/><small>javascript function</small>" as showMessage
 object "showStatePanelMessage<br/><small>javascript function</small>" as showStatePanelMessage
+object "sidePositions<br/><small>javascript function</small>" as sidePositions
 object "signal<br/><small>javascript function</small>" as signal
+object "simDbg.findScopes" as simDbg_findScopes
+object "simulationLog<br/><small>javascript function</small>" as simulationLog
+object "simulationStyles.get" as simulationStyles_get
+object "simulationSupport.toggleSimulation" as simulationSupport_toggleSimulation
+object "simulationSupport.triggerElement" as simulationSupport_triggerElement
+object "simulationTrace.push" as simulationTrace_push
+object "simulationTrace.slice" as simulationTrace_slice
+object "simulationTrace.slice().map" as simulationTrace_slice___map
+object "simulator.findScope" as simulator_findScope
+object "simulator.findScopes" as simulator_findScopes
+' simulator_findScopes______________element__element_____________find["simulator.findScopes({
+' element: element
+' }).find"]
+' simulator_findScopes_________________filter["simulator.findScopes({})
+' .filter"]
+object "simulator.findSubscription" as simulator_findSubscription
+object "simulator.injector.get" as simulator_injector_get
+object "simulator.on" as simulator_on
+object "simulator.registerBehavior" as simulator_registerBehavior
+object "simulator.reset" as simulator_reset
 object "simulator.setConfig" as simulator_setConfig
+object "simulator.signal" as simulator_signal
+object "simulator.trigger" as simulator_trigger
+object "simulator.waitAtElement" as simulator_waitAtElement
+object "snapName.startsWith" as snapName_startsWith
+object "some" as some
+object "splitNode.outgoing.forEach" as splitNode_outgoing_forEach
+object "splitNode.outgoing.map" as splitNode_outgoing_map
+object "stack.pop" as stack_pop
+object "stack.push" as stack_push
+object "start<br/><small>javascript method</small>" as start
+object "startEventIds.forEach" as startEventIds_forEach
+object "startEventRegistryIds.add" as startEventRegistryIds_add
+object "statePanel.classList.add" as statePanel_classList_add
+object "statePanelBody.appendChild" as statePanelBody_appendChild
+object "stateSequence.forEach" as stateSequence_forEach
+object "stateSequence.slice" as stateSequence_slice
+object "statesContext" as statesContext
+object "statesContext.keys" as statesContext_keys
+object "statusCell.appendChild" as statusCell_appendChild
+object "statusCell.classList.add" as statusCell_classList_add
+object "str.match" as str_match
+object "stretches<br/><small>javascript function</small>" as stretches
+object "stretches.slice" as stretches_slice
 object "subscribe<br/><small>javascript function</small>" as subscribe
+object "subscription<br/><small>javascript function</small>" as subscription
+object "subscription.remove" as subscription_remove
+object "subscription.triggerFn" as subscription_triggerFn
 object "subscriptionFilter<br/><small>javascript function</small>" as subscriptionFilter
+object "subscriptions.add" as subscriptions_add
+object "subscriptions.delete" as subscriptions_delete
+object "subscriptions.forEach" as subscriptions_forEach
+object "subscriptions.slice" as subscriptions_slice
+object "subscriptions.slice().sort" as subscriptions_slice___sort
 object "svgToPng<br/><small>javascript function</small>" as svgToPng
+object "svgToPng(svg).then" as svgToPng_svg__then
+object "task<br/><small>javascript function</small>" as task
+object "tbody.appendChild" as tbody_appendChild
+object "tee" as tee
+object "terminate<br/><small>javascript method</small>" as terminate
+object "testRule" as testRule
+object "testRule({ moddleRoot: rootElement, rule: noDiagramOverlaps() }).map" as testRule___moddleRoot__rootElement__rule__noDiagramOverlaps______map
+object "text.replace" as text_replace
+object "text.replace(/\\s+/g, ' ').trim" as text_replace___s__g_______trim
+object "text.trim" as text_trim
+object "themeService.setTheme" as themeService_setTheme
+object "this._applyCustomColors" as this__applyCustomColors
+object "this._applyOriginalColors" as this__applyOriginalColors
+object "this._canvas.getContainer" as this__canvas_getContainer
+object "this._elementLog.push" as this__elementLog_push
+object "this._exclusiveGatewaySettings.setSequenceFlow" as this__exclusiveGatewaySettings_setSequenceFlow
+object "this._findSubscriptions" as this__findSubscriptions
+object "this._handleSelectionChanged" as this__handleSelectionChanged
+object "this._inclusiveGatewaySettings.toggleSequenceFlow" as this__inclusiveGatewaySettings_toggleSequenceFlow
 object "this._init" as this__init
+object "this._log.bind" as this__log_bind
+object "this._paletteEntry.removeAttribute" as this__paletteEntry_removeAttribute
+object "this._saveOriginalColors" as this__saveOriginalColors
+object "this._scopeFilter.isFocused" as this__scopeFilter_isFocused
+object "this._scopeFilter.isShown" as this__scopeFilter_isShown
+object "this._setNeutralColors" as this__setNeutralColors
+object "this._simulator.trigger" as this__simulator_trigger
+object "this._togglePaused" as this__togglePaused
+object "this.activate" as this_activate
+object "this.addScope" as this_addScope
+object "this.addTokenCounts" as this_addTokenCounts
+object "this.children.filter" as this_children_filter
+object "this.clear" as this_clear
+object "this.clearAnimations" as this_clearAnimations
+object "this.closeContextPads" as this_closeContextPads
+object "this.create" as this_create
+object "this.deactivate" as this_deactivate
+object "this.each" as this_each
+object "this.enable" as this_enable
+object "this.getScopeElements" as this_getScopeElements
+object "this.hasTrait" as this_hasTrait
+object "this.log" as this_log
+object "this.openContextPads" as this_openContextPads
+object "this.pause" as this_pause
+object "this.play" as this_play
+object "this.registerHandler" as this_registerHandler
+object "this.removeAllInstances" as this_removeAllInstances
+object "this.removeScope" as this_removeScope
+object "this.removeTokenCounts" as this_removeTokenCounts
+object "this.reset" as this_reset
+object "this.resetSequenceFlows" as this_resetSequenceFlows
+object "this.resetSimulation" as this_resetSimulation
+object "this.setActive" as this_setActive
+object "this.setDefaults" as this_setDefaults
+object "this.setSequenceFlowsDefault" as this_setSequenceFlowsDefault
+object "this.setTransitions" as this_setTransitions
+object "this.state.cancel" as this_state_cancel
+object "this.state.compensable" as this_state_compensable
+object "this.state.complete" as this_state_complete
+object "this.state.destroy" as this_state_destroy
+object "this.state.fail" as this_state_fail
+object "this.state.hasTrait" as this_state_hasTrait
+object "this.state.start" as this_state_start
+object "this.state.terminate" as this_state_terminate
+object "this.toggle" as this_toggle
+object "this.toggleMode" as this_toggleMode
+object "this.unhighlightScope" as this_unhighlightScope
+object "this.unpause" as this_unpause
+object "this.updateElementContextPads" as this_updateElementContextPads
+object "this.updateScope" as this_updateScope
+object "to.map" as to_map
+object "toBox<br/><small>javascript function</small>" as toBox
+object "toggle.addEventListener" as toggle_addEventListener
+object "toggle.setAttribute" as toggle_setAttribute
 object "toggleHeatmap<br/><small>javascript function</small>" as toggleHeatmap
+object "toggleMode.toggleMode" as toggleMode_toggleMode
+object "tokenId.split" as tokenId_split
+object "tokenId.split('_').slice" as tokenId_split______slice
+object "tokenId.split('_').slice(0, 2).join" as tokenId_split______slice_0__2__join
+object "tokenMap.entries" as tokenMap_entries
 object "trace<br/><small>javascript function</small>" as trace
+object "trace[ index ].split" as trace__index___split
+object "translate" as translate
 object "trigger<br/><small>javascript function</small>" as trigger
-object "update-example<br/><small>bash module</small>" as update_example
+object "triggerAction<br/><small>javascript function</small>" as triggerAction
+object "triggerElement<br/><small>javascript function</small>" as triggerElement
+object "triggerScope<br/><small>javascript function</small>" as triggerScope
+object "true" as true
+object "types.some" as types_some
+object "unsubscribe<br/><small>javascript function</small>" as unsubscribe
+object "updateBtn<br/><small>javascript function</small>" as updateBtn
 object "updateHeatmapData<br/><small>javascript function</small>" as updateHeatmapData
 object "updateNavigationUI<br/><small>javascript function</small>" as updateNavigationUI
+object "useService" as useService
 object "validateSESE<br/><small>javascript function</small>" as validateSESE
+object "value.slice" as value_slice
+object "values.every" as values_every
+object "values.includes" as values_includes
 object "verify<br/><small>javascript function</small>" as verify
+object "verifyOnly<br/><small>javascript function</small>" as verifyOnly
+object "verifySkip<br/><small>javascript function</small>" as verifySkip
 object "verifyTrace<br/><small>javascript function</small>" as verifyTrace
+object "viewboxClearOfReserve<br/><small>javascript function</small>" as viewboxClearOfReserve
+object "waitAtElement<br/><small>javascript function</small>" as waitAtElement
+object "waitForScopes<br/><small>javascript function</small>" as waitForScopes
 object "waitForTokenDrain<br/><small>javascript function</small>" as waitForTokenDrain
+object "warnings.map" as warnings_map
+object "wide.forEach" as wide_forEach
+object "wide.push" as wide_push
+object "widePositions<br/><small>javascript function</small>" as widePositions
+object "window.getComputedStyle" as window_getComputedStyle
+object "window.parent.postMessage" as window_parent_postMessage
+object "withBpmnJs<br/><small>javascript function</small>" as withBpmnJs
+object "without<br/><small>javascript function</small>" as without
+object "withoutTrunks<br/><small>javascript function</small>" as withoutTrunks
+object "withoutTrunks(joinPieces(pieces), sharedDockings(a, b)).filter" as withoutTrunks_joinPieces_pieces___sharedDockings_a__b___filter
+ActivityBehavior --> simulator_registerBehavior
+AnimatedMessageFlowBehavior --> injector_invoke
+AnimatedSequenceFlowBehavior --> injector_invoke
+Animation --> animation_hide
+Animation --> animation_show
 Animation --> eventBus_on
+Animation --> this__scopeFilter_isShown
+Animation --> this_clearAnimations
+Animation --> this_each
+Animation --> this_pause
+Animation --> this_play
+BoundaryEventBehavior --> simulator_registerBehavior
+ColoredScopes --> c_substring
 ColoredScopes --> eventBus_on
+ColoredScopes --> getColors
+ColoredScopes --> getContrastYIQ
+ColoredScopes --> randomColor
+ColoredScopes --> randomColor_______count__60______filter
 ContextPads --> domClasses
+ContextPads --> domClasses_element__toggle
+ContextPads --> domQueryAll
+ContextPads --> element_dataset_hideScopeIds_split
+ContextPads --> element_dataset_scopeIds_split
 ContextPads --> eventBus_on
+ContextPads --> scopeFilter_isShown
+ContextPads --> scopeIds_some
+ContextPads --> this_closeContextPads
+ContextPads --> this_openContextPads
+ContextPads --> this_registerHandler
+ContextPads --> this_updateElementContextPads
+DisableModeling --> SIMULATION_EDITOR_ACTIONS_includes
+DisableModeling --> canvasLock_lock
+DisableModeling --> canvasLock_unlock
+DisableModeling --> eventBus_on
+DurationProps --> TextFieldEntry
+DurationProps --> translate
+DurationProps --> useService
+EditorActions --> editorActions_register
 EditorActions --> eventBus_on
+EditorActions --> injector_get
+EditorActions --> log_toggle
+EditorActions --> pauseSimulation_toggle
+EditorActions --> resetSimulation_resetSimulation
+EditorActions --> toggleMode_toggleMode
 ElementColors --> eventBus_on
+ElementColors --> eventBus_once
+ElementColors --> this__applyCustomColors
+ElementColors --> this__applyOriginalColors
+ElementColors --> this__saveOriginalColors
+ElementNotifications --> eventBus_on
+ElementNotifications --> this_clear
+ElementSupport --> canvas_getContainer
+ElementSupport --> eventBus_on
+ElementSupport --> this_clear
+ElementSupport --> this_enable
+EndEventBehavior --> simulator_registerBehavior
+EventBasedGatewayBehavior --> simulator_registerBehavior
+EventBehaviors --> injector_get
+ExclusiveGatewayBehavior --> simulator_registerBehavior
+ExclusiveGatewaySettings --> eventBus_on
+ExclusiveGatewaySettings --> this_resetSequenceFlows
+ExclusiveGatewaySettings --> this_setSequenceFlowsDefault
+FixtureReporter --> _Cannot_find_module______Simulator___________json___exec
+FixtureReporter --> _expected_trace____________exec
+FixtureReporter --> baseReporterDecorator
+FixtureReporter --> done
+FixtureReporter --> error_actual_replace
+FixtureReporter --> fs_writeFileSync
+FixtureReporter --> log_info
+FixtureReporter --> logger_create
+InclusiveGatewayBehavior --> simulator_registerBehavior
+InclusiveGatewaySettings --> eventBus_on
+InclusiveGatewaySettings --> this_reset
+InclusiveGatewaySettings --> this_setDefaults
+IntermediateCatchEventBehavior --> simulator_registerBehavior
+IntermediateThrowEventBehavior --> simulator_registerBehavior
+KeyboardBindings --> eventBus_on
+KeyboardBindings --> handleKeyEvent
+KeyboardBindings --> injector_get
+KeyboardBindings --> keyboard_addListener
+Log --> CheckCircleIcon
+Log --> TimesCircleIcon
 Log --> domClasses
+Log --> domClasses_element__toggle
+Log --> domQueryAll
 Log --> eventBus_on
+Log --> getElementName
 Log --> getEventTypeString
+Log --> getIconForIntermediateEvent
 Log --> is
 Log --> isAny
 Log --> this__init
+Log --> this__scopeFilter_isShown
+Log --> this_clear
+Log --> this_log
+Log --> this_toggle
+MessageFlowBehavior --> simulator_registerBehavior
+NeutralElementColors --> eventBus_on
+NeutralElementColors --> this__setNeutralColors
+Notifications --> eventBus_on
+Notifications --> this__init
+Notifications --> this_clear
 Palette --> domClasses
+Palette --> domClasses_self_container__add
+Palette --> domClasses_self_container__remove
 Palette --> eventBus_on
 Palette --> this__init
+ParallelGatewayBehavior --> simulator_registerBehavior
+PauseSimulation --> canvas_getContainer
 PauseSimulation --> eventBus_on
 PauseSimulation --> this__init
+PauseSimulation --> this_activate
+PauseSimulation --> this_deactivate
+PauseSimulation --> this_pause
+PauseSimulation --> this_unpause
+ProcessBehavior --> simulator_registerBehavior
 ResetSimulation --> domClasses
+ResetSimulation --> domClasses_this__paletteEntry__remove
 ResetSimulation --> eventBus_on
 ResetSimulation --> this__init
+ResetSimulation --> this__paletteEntry_removeAttribute
+ResetSimulation --> this_resetSimulation
+ScopeFilter --> eventBus_on
+ScopeFilter --> isAncestor
+ScopeFilter --> this_toggle
+SelectionAPI --> eventBus_on
+SelectionAPI --> this__handleSelectionChanged
+SequenceFlowBehavior --> simulator_registerBehavior
+SetAnimationSpeed --> animation_getAnimationSpeed
 SetAnimationSpeed --> domClasses
+SetAnimationSpeed --> domClasses_this__container__add
+SetAnimationSpeed --> domClasses_this__container__remove
 SetAnimationSpeed --> eventBus_on
 SetAnimationSpeed --> this__init
+SetAnimationSpeed --> this_setActive
 ShowScopes --> domClasses
+ShowScopes --> domClasses_element__toggle
+ShowScopes --> domClasses_this__container__add
+ShowScopes --> domClasses_this__container__remove
+ShowScopes --> domClear
+ShowScopes --> element_setAttribute
 ShowScopes --> eventBus_on
 ShowScopes --> this__init
+ShowScopes --> this__scopeFilter_isFocused
+ShowScopes --> this__scopeFilter_isShown
+ShowScopes --> this_addScope
+ShowScopes --> this_getScopeElements
+ShowScopes --> this_removeAllInstances
+ShowScopes --> this_removeScope
+ShowScopes --> this_unhighlightScope
+ShowScopes --> this_updateScope
+SimulationState --> CheckCircleIcon
+SimulationState --> elementNotifications_addElementNotification
+SimulationState --> eventBus_on
+SimulationState --> processScopes_includes
+SimulationTrace --> this__log_bind
+SimulationTraceEvents --> eventBus_fire
+SimulationTraceEvents --> eventBus_on
+Simulator --> changedElements_clear
+Simulator --> emit
+Simulator --> injector_get
+Simulator --> on
+StartEventBehavior --> simulator_registerBehavior
+SubProcessBehavior --> simulator_injector_get
+SubProcessBehavior --> simulator_registerBehavior
+ToggleMode --> domQuery
 ToggleMode --> eventBus_on
+ToggleMode --> eventBus_once
+ToggleMode --> this__canvas_getContainer
 ToggleMode --> this__init
+ToggleMode --> this_toggleMode
+TokenAnimation --> this_create
 TokenCount --> domClasses
+TokenCount --> domClasses_element__toggle
+TokenCount --> domQueryAll
 TokenCount --> eventBus_on
+TokenCount --> this__scopeFilter_isShown
+TokenCount --> this_addTokenCounts
+TokenCount --> this_removeTokenCounts
+_origPlayStatesEnd --> updateHeatmapData
+_readMetric --> elementMetrics_get
+_readMetric --> heatmapMetric_slice
+_readMetric --> heatmapMetric_startsWith
+_recordMetricsForElement --> String_e_name________trim
+_recordMetricsForElement --> _scheduleDropdownRefresh
+_recordMetricsForElement --> elementMetrics_get
+_recordMetricsForElement --> elementMetrics_set
+_recordMetricsForElement --> impactNamesSeen_add
+_recordMetricsForElement --> impactNamesSeen_has
 _refreshHeatmapMetricOptions --> document_createElement
 _refreshHeatmapMetricOptions --> document_getElementById
+_refreshHeatmapMetricOptions --> existingImpacts_add
+_refreshHeatmapMetricOptions --> existingImpacts_has
+_refreshHeatmapMetricOptions --> opt_value_slice
+_refreshHeatmapMetricOptions --> opt_value_startsWith
+_refreshHeatmapMetricOptions --> sel_appendChild
+_resetHeatmapAccumulators --> elementMetrics_clear
+_resetHeatmapAccumulators --> heatmapInstance_setData
+_resetHeatmapImpactDiscovery --> _sel_value________startsWith
 _resetHeatmapImpactDiscovery --> document_getElementById
+_resetHeatmapImpactDiscovery --> impactNamesSeen_clear
+_resetHeatmapImpactDiscovery --> opt_value_startsWith
+_resetHeatmapImpactDiscovery --> sel_removeChild
 _resetHeatmapImpactDiscovery --> updateHeatmapData
+_scheduleDropdownRefresh --> _refreshHeatmapMetricOptions
+_setDisplayId --> _scopeProcessId
+_setDisplayId --> processToTokenMap_get
+_setDisplayId --> scopeIdToTokenMap_set
+action --> this__exclusiveGatewaySettings_setSequenceFlow
+action --> this__inclusiveGatewaySettings_toggleSequenceFlow
+action --> this__simulator_trigger
+action --> this__togglePaused
+active --> this_hasTrait
 aggregateByElement --> parseStateKey
+along --> distance
+applyTheme --> bpmnjs_get
+applyTheme --> document_documentElement_classList_toggle
+applyTheme --> themeService_setTheme
+applyTheme --> toggle_setAttribute
+belongTogether --> isAncestor
+belongTogether --> isAttachedTo
+bootstrapModeler --> _bootstrapModeler
+boundsOf --> points_reduce
+boxesOf --> items_map
+bpmnJsSatisfies --> semver_satisfies
+buildProcessToTokenMap --> contextId_split
 buildProcessToTokenMap --> parseStateKey
+buildProcessToTokenMap --> processToTokenMap_clear
+buildProcessToTokenMap --> processToTokenMap_has
+buildProcessToTokenMap --> processToTokenMap_set
+buildProcessToTokenMap --> tokenId_split
+buildProcessToTokenMap --> tokenId_split______slice
+buildProcessToTokenMap --> tokenId_split______slice_0__2__join
+canTriggerElement --> getSimulationSupport
+canTriggerElement --> getSimulationSupport___getElementTrigger
+cancel --> illegalTransition
+cancel --> this_state_cancel
+canceled --> this_hasTrait
+check --> ext__type_endsWith
+check --> extensionElements_values_some
+check --> is
+check --> isTask
+check --> readPlane
+check --> reportEdgesOverLabels
+check --> reportEdgesThroughShapes
+check --> reportLabelOverlaps
+check --> reportShapeOverlaps
+check --> reportSharedLines
+check --> reporter_report
+checkDrain --> requestAnimationFrame
+checkDrain --> resolve
+clipPolyline --> clipSegment
+clipPolyline --> pieces_push
+clipPolyline --> segments
+clipPolyline --> segments_points__forEach
+common --> shapesA_some
+common --> shapesB_indexOf
+commonGateway --> is
+commonGateway --> shapesA_some
+commonGateway --> shapesB_indexOf
+compensable --> illegalTransition
+compensable --> this_state_compensable
+complete --> illegalTransition
+complete --> this_state_complete
+completed --> this_hasTrait
+configureExclusiveGateways --> activations_find
 configureExclusiveGateways --> aggregateByElement
+configureExclusiveGateways --> child_incoming_find
+configureExclusiveGateways --> child_incoming_some
+configureExclusiveGateways --> diffActivations
 configureExclusiveGateways --> elementRegistry
+configureExclusiveGateways --> gateways_forEach
 configureExclusiveGateways --> modeler_get
 configureExclusiveGateways --> registry_get
+configureExclusiveGateways --> registry_getAll
+configureExclusiveGateways --> registry_getAll___filter
 configureExclusiveGateways --> simulator_setConfig
+constructor --> eventBus_on
+constructor --> overlays_add
+constructor --> propertiesPanel_registerProvider
+constructor --> this__elementLog_push
+constructor --> this_setTransitions
+contexts --> subscriptions_slice
+contexts --> subscriptions_slice___sort
+contexts --> this__findSubscriptions
+createHeatmapOverlay --> canvasEl_appendChild
+createHeatmapOverlay --> controlsObserver_disconnect
+createHeatmapOverlay --> controlsObserver_observe
 createHeatmapOverlay --> document_createElement
 createHeatmapOverlay --> document_querySelector
+createHeatmapOverlay --> h337_create
+createHeatmapOverlay --> heatmapContainer_parentNode_removeChild
+createHeatmapOverlay --> requestAnimationFrame
+createInternalRef --> getBusinessObject
+createInternalRef --> is
+createInternalRef --> isSpecialBoundaryEvent
 createScope --> elementChanged
 createScope --> emit
+createScope --> ids_next
+createScope --> parentScope_children_push
+createScope --> scopes_add
 createScope --> trace
+definitions --> _pool_____pool___concat_pool_lanes________concat
+definitions --> _pool_____pool___concat_pool_lanes________concat_shapes__map
+definitions --> _pool_____pool___concat_pool_lanes________concat_shapes__map_shape__________bpmndi_BPMNShape___attributes_________id______shape_id___di_________bpmnElement__shape_id________isExpanded__shape_expanded____true____undefined_____________boundsXml_shape_bounds______labelXml_shape_label_____bpmndi_BPMNShape_______join
+definitions --> ______pool_____bpmn_laneSet_id__LaneSet_1_____pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join________bpmn_laneSet_____________shapes_filter_shape____shape_parent_____undefined__map_elementXml__join__________flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join_________join
+definitions --> __pool___concat
+definitions --> attributes
+definitions --> boundsXml
+definitions --> flow_waypoints_map
+definitions --> flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join
+definitions --> flows_map
+definitions --> flows_map_flow____________bpmn____flow_type_____undefined____sequenceFlow____flow_type_____________attributes___id__flow_id__name__flow_name__sourceRef__flow_source__targetRef__flow_target________________join
+definitions --> flows_map_flow__________bpmndi_BPMNEdge_id_____flow_id___di__bpmnElement_____flow_id_______flow_waypoints_map_point____________di_waypoint_x_____point_0_____y_____point_1__________join_________labelXml_flow_label_____bpmndi_BPMNEdge_______join
+definitions --> labelXml
+definitions --> lane_nodes_map
+definitions --> lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join
+definitions --> pool_lanes_map
+definitions --> pool_lanes_map_lane____________bpmn_lane_id_____lane_id____name_____lane_name_______lane_nodes_map_node______________bpmn_flowNodeRef____node____bpmn_flowNodeRef____join________bpmn_lane_________join
+definitions --> shapes_filter
+definitions --> shapes_filter_shape____shape_parent_____undefined__map
+definitions --> shapes_filter_shape____shape_parent_____undefined__map_elementXml__join
+describe --> labelText
+describe --> text_replace
+describe --> text_replace___s__g_______trim
+describe --> text_trim
+destroy --> illegalTransition
+destroy --> this_state_destroy
+destroyListener --> off
+destroyListener --> remainingScopes_delete
+destroyListener --> trigger
 destroyScope --> elementChanged
 destroyScope --> emit
+destroyScope --> scope_destroy
+destroyScope --> scope_hasTrait
+destroyScope --> scopes_delete
 destroyScope --> trace
+destroyScope --> unsubscribe
+destroyed --> this_hasTrait
+diffActivations --> aggregateByElement
+diffCompletions --> aggregateByElement
+docker_entrypoint --> dirname
+docker_entrypoint --> mkdir
+docker_entrypoint --> npm
+docker_entrypoint --> sed
+docker_entrypoint --> set
+docker_entrypoint --> tee
+downloadDiagram --> download
+downloadDiagram --> modeler_saveXML
+downloadDiagram --> modeler_saveXML___format__true____then
 drainSimulationQueues --> modeler_get
+drainSimulationQueues --> requestAnimationFrame
+element --> elementRegistry_get
+element --> getBpmnJS
+element --> getBpmnJS___invoke
+elementChanged --> changedElements_add
 elementChanged --> emit
+elementEnter --> getSimulationSupport
+elementEnter --> getSimulationSupport___elementEnter
+elementExit --> getSimulationSupport
+elementExit --> getSimulationSupport___elementExit
 elementRegistry --> modeler_get
+elementXml --> attributes
+elementXml --> shape_type_includes
+elementXml --> shapes________filter
+elementXml --> shapes________filter_child____child_parent_____shape_id_________map
+elementXml --> shapes________filter_child____child_parent_____shape_id_________map_elementXml_________join
+elementsUnderPalette --> canvas_getContainer
+elementsUnderPalette --> canvas_getContainer___querySelector
+elementsUnderPalette --> canvas_getContainer___querySelector___djs_palette___getBoundingClientRect
+elementsUnderPalette --> canvas_getGraphics
+elementsUnderPalette --> canvas_getGraphics_element__getBoundingClientRect
+elementsUnderPalette --> canvas_getRootElement
+elementsUnderPalette --> elementRegistry_filter
+elementsUnderPalette --> elementRegistry_filter_function_element__________if__element_____root____________return_false_________________const_box___canvas_getGraphics_element__getBoundingClientRect___________return_box_width___0____box_height___0____________box_right___palette_left____box_left___palette_right____________box_bottom___palette_top____box_top___palette_bottom_________map
+elementsUnderPalette --> getBpmnJS
+elementsUnderPalette --> getBpmnJS___invoke
+emit --> eventBus_fire
+end_parse --> docker
+end_parse --> echo
+end_parse --> mkdir
+enter --> getBehavior
+enter --> getBehavior_element__enter
 enter --> initializeScope
 enter --> queue
+enter --> scope_start
+enter --> scopeChanged
 enter --> trace
+eventsMatch --> ___type____name____iref____every
+eventsMatch --> refsMatch
+executeStep --> String_window__apiBaseUrl__replace
+executeStep --> response_json
+executeStep --> response_text
 exit --> destroyScope
+exit --> getBehavior
+exit --> getBehavior_element__exit
 exit --> queue
+exit --> scope_complete
+exit --> scopeChanged
 exit --> trace
+expectColors --> elementColors__get
+expectColors --> elementRegistry_get
 expectColors --> expect
+expectColors --> expect_colors__to_eql
 expectColors --> getBpmnJS
 expectColors --> getBpmnJS___invoke
+expectDestroyed --> expect
+expectElementTrigger --> expect
+expectElementTrigger --> getSimulationSupport
+expectElementTrigger --> getSimulationSupport___getElementTrigger
+expectHistory --> expect
+expectHistory --> expect_history___history_equals___to_eql
+expectHistory --> getSimulationSupport
+expectHistory --> getSimulationSupport___getHistory
+expectLog --> expect
+expectLog --> expect_log__elementLog___log_equals___to_eql
+expectLog --> getBpmnJS
+expectLog --> getBpmnJS___get
+expectNoElementTrigger --> expect
+expectNoElementTrigger --> getSimulationSupport
+expectNoElementTrigger --> getSimulationSupport___getElementTrigger
+expectPanelRuleInForce --> document_body_appendChild
+expectPanelRuleInForce --> document_createElement
+expectPanelRuleInForce --> expect
+expectPanelRuleInForce --> expect_display__to_equal
+expectPanelRuleInForce --> panel_remove
+expectPanelRuleInForce --> window_getComputedStyle
+expectScopeTrigger --> expect
+expectScopeTrigger --> getSimulationSupport
+expectScopeTrigger --> getSimulationSupport___getScopeTrigger
+expectTrace --> ____________t_action____________t_element____t_element_id_____null_____________t_scope____t_scope_id_____null____________join
 expectTrace --> getBpmnJS
 expectTrace --> getBpmnJS___invoke
+expectTrace --> simulationTrace_slice
+expectTrace --> simulationTrace_slice___map
 expectTrace --> verifyTrace
+exportPNG --> download
+exportPNG --> fileName_replace
+exportPNG --> modeler_saveSVG
+exportPNG --> modeler_saveSVG___then
 exportPNG --> svgToPng
+exportPNG --> svgToPng_svg__then
+exportSVG --> download
+exportSVG --> fileName_replace
+exportSVG --> modeler_saveSVG
+exportSVG --> modeler_saveSVG___then
+fail --> illegalTransition
+fail --> this_state_fail
+failed --> this_hasTrait
+filterLinkThrowEvents --> elements_filter
+filterLinkThrowEvents --> getLinkName
+filterLinkThrowEvents --> isLinkThrow
+filterSequenceFlows --> flows_filter
+filterSequenceFlows --> is
+filterSet --> matchFn
+filterSet --> matched_push
+findGenericJoin --> _____intersection___filter
+findGenericJoin --> branches_map
 findGenericJoin --> getAllReachable
+findGenericJoin --> reachables_i__has
+findGenericJoin --> splitNode_outgoing_map
+findJoin --> along
+findJoin --> distance
+findJoin --> isOnLine
+findJoin --> pointAlong
+findScope --> findSet
 findScope --> getBpmnJS
 findScope --> getBpmnJS___invoke
 findScope --> scopeFilter
+findScope --> simulator_findScope
+findScopes --> filterSet
+findScopes --> scopeFilter
+findSet --> matchFn
+findSubscription --> findSet
+findSubscription --> subscriptionFilter
+findSubscriptionScope --> isEventSubProcess
+findSubscriptions --> filterSet
+findSubscriptions --> subscriptionFilter
+fitViewportClearOfPalette --> canvas_getContainer
+fitViewportClearOfPalette --> canvas_viewbox
+fitViewportClearOfPalette --> paletteFootprint
+fitViewportClearOfPalette --> viewboxClearOfReserve
+forEachCellKey --> cellKey
+forEachCellKey --> fn
+forEachNearCrossPair --> cellsOf
+forEachNearCrossPair --> firsts_forEach
+forEachNearCrossPair --> fn
+forEachNearCrossPair --> forEachCellKey
+forEachNearCrossPair --> grid_get
+forEachNearCrossPair --> gridOf
+forEachNearCrossPair --> isWide
+forEachNearCrossPair --> items_forEach
+forEachNearCrossPair --> partners_add
+forEachNearCrossPair --> seconds_forEach
+forEachNearCrossPair --> seconds_map
+forEachNearCrossPair --> widePositions
+forEachNearPair --> boxes_map
+forEachNearPair --> fn
+forEachNearPair --> forEachCellKey
+forEachNearPair --> grid_get
+forEachNearPair --> gridOf
+forEachNearPair --> isWide
+forEachNearPair --> items_forEach
+forEachNearPair --> partners_add
+forEachNearPair --> ranges_forEach
+forEachNearPair --> wide_forEach
+forEachNearPair --> widePositions
+getAllReachable --> n_outgoing_forEach
+getAllReachable --> set_add
+getAllReachable --> set_has
+getAllReachable --> stack_pop
+getAllReachable --> stack_push
+getAnimationDuration --> randomBetween
+getChildren --> elementRegistry_get
+getChildren --> getPlaneIdFromShape
+getChildren --> is
+getColors --> getContrastYIQ
+getContrastYIQ --> hexcolor_substr
+getDefaultFlow --> gateway_outgoing_find
+getDefaultFlow --> getBusinessObject
+getElementName --> escapeHTML
+getEvent --> createInternalRef
+getEvent --> elementRegistry_get
+getEvent --> getEventDefinitions
 getEvent --> is
 getEvent --> isBoundaryEvent
+getEvent --> isEventSubProcess
+getEvent --> isImplicitMessageCatch
+getEvent --> isInterrupting
+getEvent --> isStartEvent
+getEventDefinition --> find
 getEventDefinition --> getBusinessObject
 getEventDefinition --> is
+getEventDefinitions --> element_businessObject_get
+getEventTypeString --> bo_get
 getEventTypeString --> getBusinessObject
 getEventTypeString --> is
 getExecutionOrderMap --> elementRegistry
+getExecutionOrderMap --> executionOrder_map
+getExecutionOrderMap --> executionOrder_push
 getExecutionOrderMap --> parseStateKey
 getExecutionOrderMap --> registry_get
+getExecutionOrderMap --> seenTasks_add
+getExecutionOrderMap --> seenTasks_has
+getExecutionOrderMap --> stateSequence_forEach
+getGroups --> createDurationGroup
+getGroups --> groups_push
+getHeatmapFrequencyData --> _readMetric
+getHeatmapFrequencyData --> elementMetrics_forEach
+getHeatmapFrequencyData --> elementTokenHistory_forEach
+getHeatmapFrequencyData --> out_set
+getIconForIntermediateEvent --> getEventTypeString
+getIntId --> idMap_get
+getIntId --> idMap_has
+getIntId --> idMap_set
+getLatestScopeId --> ____history_keys____pop
+getLatestScopeId --> elementTokenHistory_get
+getLatestScopeId --> elementTokenHistory_has
+getLatestScopeId --> history_keys
+getLinkDefinition --> getEventDefinition
+getLinkName --> getEventDefinition
+getNext --> gateway_outgoing_filter
+getNext --> outgoing_indexOf
+getNonDefaultFlows --> gateway_outgoing_filter
+getNonDefaultFlows --> getBusinessObject
+getNonDefaultFlows --> getDefaultFlow
+getNumber --> str_match
+getOverallStatus --> values_every
+getOverallStatus --> values_includes
+getScopeElements --> domQueryAll
 getSimulationSupport --> getBpmnJS
+getSimulationSupport --> getBpmnJS___get
+getSortedTriggers --> elementRegistry
+getSortedTriggers --> ids_sort
+getSortedTriggers --> registry_get
+getTokens --> this_children_filter
+getTokensByElement --> this_children_filter
+getTriggers --> element_outgoing_map
+getTriggers --> element_outgoing_map______outgoing____outgoing_target_____filter
+getTriggers --> isAny
+getValue --> extensionElements_values_find
+gridOf --> forEachCellKey
+gridOf --> grid_get
+gridOf --> grid_set
+gridOf --> isWide
+gridOf --> items_push
+gridOf --> ranges_forEach
+handleKeyEvent --> editorActions_trigger
+handleKeyEvent --> isKey
+hasTrait --> this_state_hasTrait
+hideBranchDialog --> document_getElementById
+hideMessage --> document_querySelector
+ifElement --> fn
+indexShapes --> byElement_get
+indexShapes --> byElement_set
+indexShapes --> cellsOf
+indexShapes --> gridOf
+indexShapes --> positions_push
+indexShapes --> shapes_forEach
+indexShapes --> shapes_map
+indexShapes --> widePositions
 init --> applyTheme
+init --> document_documentElement_classList_contains
 init --> document_getElementById
+init --> localStorage_setItem
+init --> toggle_addEventListener
 initializeRootScopes --> createScope
+initializeRootScopes --> element_children_filter
+initializeRootScopes --> elementRegistry_forEach
 initializeRootScopes --> getEvent
+initializeRootScopes --> getNoneEvent
 initializeRootScopes --> isAny
+initializeRootScopes --> rootScopes_push
 initializeRootScopes --> signal
 initializeRootScopes --> subscribe
 initializeScope --> createScope
+initializeScope --> getChildren
+initializeScope --> getChildren_childElement__elementRegistry__filter
 initializeScope --> isBoundaryEvent
+initializeScope --> isCompensationEvent
+initializeScope --> isEventSubProcess
+initializeScope --> isStartEvent
 initializeScope --> signal
 initializeScope --> subscribe
 initializeSimulationToStart --> buildProcessToTokenMap
 initializeSimulationToStart --> configureExclusiveGateways
+initializeSimulationToStart --> elementRegistry_getAll
+initializeSimulationToStart --> elementRegistry_getAll___forEach
+initializeSimulationToStart --> elementTokenHistory_clear
 initializeSimulationToStart --> loadStateSequenceForCurrentDiagram
+initializeSimulationToStart --> logInfo
 initializeSimulationToStart --> modeler_get
+initializeSimulationToStart --> new_URL_window_location_href__searchParams_get
 initializeSimulationToStart --> parseStateKey
 initializeSimulationToStart --> registry_get
 initializeSimulationToStart --> renderMessageLogs
 initializeSimulationToStart --> renderStateSnapshot
 initializeSimulationToStart --> replayToIndex
+initializeSimulationToStart --> replayToIndex_target__then
+initializeSimulationToStart --> setNavigationVisible
 initializeSimulationToStart --> showStatePanelMessage
+initializeSimulationToStart --> simulationSupport_toggleSimulation
 initializeSimulationToStart --> simulator_setConfig
 initializeSimulationToStart --> updateNavigationUI
+injectStyles --> bpmnJsSatisfies
+injectStyles --> insertCSS
+is --> element__instanceOf
 isAny --> is
+isAny --> types_some
+isAttachedTo --> is
 isBoundaryEvent --> is
+isBoundaryEvent --> isLabel
 isCatchEvent --> is
+isCatchEvent --> isLabel
+isCompensationActivity --> is
+isCompensationEvent --> isCatchEvent
+isCompensationEvent --> isTypedEvent
+isEventSubProcess --> getBusinessObject
+isExpandedSubProcess --> is
+isFrame --> is
+isImplicitMessageCatch --> element_incoming_some
+isImplicitMessageCatch --> is
+isImplicitStartEvent --> element_incoming_find
 isImplicitStartEvent --> isAny
+isImplicitStartEvent --> isCompensationActivity
+isImplicitStartEvent --> isEventSubProcess
+isImplicitStartEvent --> isLabel
+isImplicitStartEvent --> isLinkCatch
+isInterrupting --> getBusinessObject
+isInterrupting --> is
+isKey --> keys_indexOf
+isKeyboardTrigger --> ___Enter_________Spacebar____includes
+isLabelExternal --> is
+isLinkCatch --> isCatchEvent
+isLinkCatch --> isTypedEvent
+isLinkThrow --> is
+isLinkThrow --> isTypedEvent
+isMessageCatch --> isCatchEvent
+isMessageCatch --> isTypedEvent
+isMessageFlow --> is
+isNoneStartEvent --> isStartEvent
+isNoneStartEvent --> isTypedEvent
+isOnLine --> distance
+isSequenceFlow --> is
+isSpecialBoundaryEvent --> getEventDefinitions
+isSpecialBoundaryEvent --> isAny
+isSpecialBoundaryEvent --> isBoundaryEvent
+isStartEvent --> is
+isStartEvent --> isLabel
+isTransaction --> is
 isTypedEvent --> getBusinessObject
 isTypedEvent --> is
+isTypedEvent --> some
+joinPieces --> findJoin
+joinPieces --> joined_splice
+joinPieces --> pieces_slice
+labelText --> is
+labelXml --> boundsXml
+lint --> expect
+lint --> lintWith
+lintWith --> definitions
+lintWith --> new_BpmnModdle_extensions__fromXML
+lintWith --> noDiagramOverlaps
+lintWith --> testRule
+lintWith --> testRule___moddleRoot__rootElement__rule__noDiagramOverlaps______map
+lintWith --> warnings_map
+listToBinarySequence --> items_slice
+listener --> eventBus_off
+listener --> isAny
+listener --> resolve
+loadStateSequenceForCurrentDiagram --> allKeys_filter
 loadStateSequenceForCurrentDiagram --> buildProcessToTokenMap
+loadStateSequenceForCurrentDiagram --> diagramKeys_sort
+loadStateSequenceForCurrentDiagram --> diagramKeys_sort__a__b____________const_getNumber____str______________const_match___str_match__t__d____json____________return_match___parseInt_match_1___10____0_______________return_getNumber_a____getNumber_b_________map
+loadStateSequenceForCurrentDiagram --> fileName_replace
+loadStateSequenceForCurrentDiagram --> getNumber
+loadStateSequenceForCurrentDiagram --> k_startsWith
+loadStateSequenceForCurrentDiagram --> key_replace
+loadStateSequenceForCurrentDiagram --> key_replace______baseName_________replace
+loadStateSequenceForCurrentDiagram --> statesContext
+loadStateSequenceForCurrentDiagram --> statesContext_keys
+logError --> logMessage
+logInfo --> logMessage
+logMessage --> log_log
+logMessage --> simulationLog
+moveSimulationControls --> controlGroup_appendChild
 moveSimulationControls --> document_getElementById
 moveSimulationControls --> document_querySelector
+moveSimulationControls --> ioGroup_appendChild
+moveSimulationControls --> monitorGroup_appendChild
+name --> describe
+navigateBackward --> animation_getAnimationSpeed
+navigateBackward --> animation_setAnimationSpeed
 navigateBackward --> document_querySelector
 navigateBackward --> modeler_get
 navigateBackward --> replayToIndex
+navigateBackward --> stateSequence_slice
 navigateBackward --> updateNavigationUI
+navigateForward --> _gw_outgoing________filter
+navigateForward --> ____completedInTarget__join
 navigateForward --> aggregateByElement
+navigateForward --> allScopesAfter_filter
+navigateForward --> allScopesAfter_filter_s_____s_destroyed__forEach
+navigateForward --> animation_getAnimationSpeed
+navigateForward --> animation_setAnimationSpeed
+navigateForward --> completedInTarget_add
+navigateForward --> completedInTarget_has
 navigateForward --> document_getElementById
 navigateForward --> drainSimulationQueues
+navigateForward --> el_incoming_filter
+navigateForward --> leafScopes_map
+navigateForward --> leafScopes_map_s_______s_element__id____s_id_____join
+navigateForward --> logInfo
 navigateForward --> modeler_get
+navigateForward --> modeler_get__eventBus___fire
+navigateForward --> outgoing_find
 navigateForward --> parseStateKey
 navigateForward --> registry_get
+navigateForward --> registry_getAll
+navigateForward --> registry_getAll___filter
+navigateForward --> registry_getAll___filter_el____el_type______bpmn_ExclusiveGateway___forEach
+navigateForward --> registry_getAll___forEach
 navigateForward --> renderStateSnapshot
+navigateForward --> requestBranchSwitch
 navigateForward --> showBranchDialog
+navigateForward --> simulationSupport_triggerElement
+navigateForward --> simulator_findScopes
+navigateForward --> simulator_findScopes_________________filter
 navigateForward --> simulator_setConfig
+navigateForward --> simulator_signal
 navigateForward --> updateNavigationUI
+navigateForward --> window_parent_postMessage
+nextName --> seenNames_has
+nextName --> seenNames_set
+normalizeStatusClass --> ACTIVITY_STATE_NAME_get
+off --> eventBus_off
+on --> eventBus_on
 openDiagram --> buildProcessToTokenMap
+openDiagram --> fitViewportClearOfPalette
 openDiagram --> initializeSimulationToStart
 openDiagram --> modeler_get
+openDiagram --> modeler_importXML
+openDiagram --> modeler_importXML_diagram________then
+openDiagram --> modeler_importXML_diagram________then____warnings________________if__warnings_length_____________console_warn_warnings_____________________sanitizeDiagram_modeler____persist__persistent______________if__persistent_____________localStorage__diagram_xml_____diagram_______________________Not__canvas_zoom__fit_viewport_____that_fit_draws_the_leftmost_elements___________under_the_palette__see_fit_viewport_js___A_canvas_with_no_size_yet______________an_iframe_that_is_not_visible____cannot_be_fitted__say_so_instead_of___________dropping_the_reason_________try____________fitViewportClearOfPalette_modeler_get__canvas______________catch__err_____________console_warn___openDiagram__diagram_not_fitted_to_the_canvas____err_message________________________Force_ALL_tasks_to_behave_as_wait_states_so_tokens_stay_visible_on_them________const_registry___modeler_get__elementRegistry___________const_simulator___modeler_get__simulator___________registry_getAll___forEach_el_______________if__el_type______bpmn_Task_____el_type______bpmn_UserTask_____el_type______bpmn_ServiceTask________________simulator_waitAtElement_el__true_____________________________________Auto_start_simulation_at_t0________initializeSimulationToStart________________Retry_pending_API_states___they_may_have_arrived_before_importXML___________completed_and_been_deferred_because_the_diagram_wasn_t_ready_yet_________if___pendingApiStates_____________const_retryKey___Object_keys__pendingApiStates_length____pendingApiStates_0__state_______0____________const_retryId___retryKey___parseStateKey_retryKey__registryId___null___________if__retryId____registry_get_retryId________________console_log___openDiagram__Retrying_deferred_API_states_______________stateSequence____pendingApiStates______________statesInjectedViaApi___true______________pendingApiStates___null_____________buildProcessToTokenMap_______________if___pendingApiNavData__________________treeTopology____pendingApiNavData_topology________________allPaths____pendingApiNavData_allPaths________________allPathNodeIds____pendingApiNavData_allPathNodeIds________________pathNodeIds_____allPathNodeIds_____pendingApiNavData_nodeId____null____________________allPathNodeIds_String__pendingApiNavData_nodeId______null___null________________currentNodeId____pendingApiNavData_nodeId____null__________________String__pendingApiNavData_nodeId____null________________navigationMode______treeTopology________________pendingApiNavData___null_______________setNavigationVisible__navigationMode___________________________if___pendingApiTargetIndex_____null_________________const_target____pendingApiTargetIndex________________pendingApiTargetIndex___null_______________replayToIndex_target__then_______updateNavigationUI____________________________________________________catch
 openDiagram --> parseStateKey
 openDiagram --> registry_get
+openDiagram --> registry_getAll
+openDiagram --> registry_getAll___forEach
 openDiagram --> replayToIndex
+openDiagram --> replayToIndex_target__then
 openDiagram --> sanitizeDiagram
+openDiagram --> setNavigationVisible
+openDiagram --> simulator_waitAtElement
 openDiagram --> updateNavigationUI
+openFile --> hideMessage
+openFile --> openDiagram
+paletteFootprint --> container_querySelector
+paletteFootprint --> window_getComputedStyle
+parseBPMN --> canvas_getRootElement
+parseBPMN --> elementRegistry_filter
+parseBPMN --> idMap_entries
+parseBPMN --> listToBinarySequence
 parseBPMN --> modeler_get
 parseBPMN --> parseSequence
+parseSequence --> children_push
 parseSequence --> findGenericJoin
+parseSequence --> getIntId
+parseSequence --> getNext
+parseSequence --> getType
+parseSequence --> listToBinarySequence
+parseSequence --> sequenceItems_push
+parseSequence --> splitNode_outgoing_forEach
+parseStateKey --> key_indexOf
+parseStateKey --> key_substring
+parseStateKey --> keyWithoutToken_split
+parse_args --> shift
+playStates --> ____activations_____completions__filter
 playStates --> aggregateByElement
+playStates --> allScopes_map
+playStates --> bo_eventDefinitions_some
 playStates --> configureExclusiveGateways
+playStates --> diffActivations
+playStates --> diffActivations_prev__next__filter
+playStates --> diffCompletions
 playStates --> drainSimulationQueues
 playStates --> elementRegistry
+playStates --> lateStartIds_forEach
+playStates --> logError
+playStates --> logInfo
 playStates --> modeler_get
 playStates --> registry_get
 playStates --> renderStateSnapshot
 playStates --> showStatePanelMessage
+playStates --> simDbg_findScopes
+playStates --> simulationSupport_toggleSimulation
+playStates --> simulationSupport_triggerElement
+playStates --> startEventIds_forEach
 playStates --> waitForTokenDrain
+pointAlong --> distance
 queue --> emit
+queue --> jobs_push
+queue --> jobs_shift
+queue --> task
+readPlane --> boundsOf
+readPlane --> di_get
+readPlane --> di_get__waypoint___map
+readPlane --> edges_forEach
+readPlane --> edges_push
+readPlane --> from_concat
+readPlane --> from_map
+readPlane --> indexShapes
+readPlane --> is
+readPlane --> isExpandedSubProcess
+readPlane --> isFrame
+readPlane --> isLabelExternal
+readPlane --> labelText
+readPlane --> labels_push
+readPlane --> plane_get
+readPlane --> plane_get__planeElement___forEach
+readPlane --> shapes_push
+readPlane --> sidePositions
+readPlane --> to_map
+readPlane --> toBox
+readRollupVersion --> fs_readFileSync
+readRollupVersion --> path_join
+readRollupVersion --> pkg_devDependencies_rollup_replace
+rect --> document_querySelector
+rect --> document_querySelector_selector__getBoundingClientRect
+references --> connection_get
+references --> value_slice
+remove --> unsubscribe
 renderMessageLogs --> document_createElement
 renderMessageLogs --> document_getElementById
+renderMessageLogs --> messageLogs_forEach
+renderMessageLogs --> panel_classList_add
+renderMessageLogs --> tbody_appendChild
+renderStateSnapshot --> ACTIVITY_STATE_NAME_get
+renderStateSnapshot --> div_classList_add
 renderStateSnapshot --> document_createElement
+renderStateSnapshot --> elementEntries_get
+renderStateSnapshot --> elementEntries_get_elementKey__get
+renderStateSnapshot --> elementEntries_get_elementKey__set
+renderStateSnapshot --> elementEntries_has
+renderStateSnapshot --> elementEntries_set
+renderStateSnapshot --> elementOrder_forEach
+renderStateSnapshot --> elementOrder_push
 renderStateSnapshot --> elementRegistry
+renderStateSnapshot --> elementRegistry___get
+renderStateSnapshot --> entries_forEach
 renderStateSnapshot --> getExecutionOrderMap
+renderStateSnapshot --> new_Date___toLocaleTimeString
+renderStateSnapshot --> normalizeStatusClass
+renderStateSnapshot --> orderMap_get
+renderStateSnapshot --> orderMap_has
 renderStateSnapshot --> parseStateKey
+renderStateSnapshot --> parts_slice
+renderStateSnapshot --> parts_slice_0__2__join
+renderStateSnapshot --> row_appendChild
+renderStateSnapshot --> statePanel_classList_add
+renderStateSnapshot --> statePanelBody_appendChild
+renderStateSnapshot --> statusCell_appendChild
+renderStateSnapshot --> statusCell_classList_add
+renderStateSnapshot --> tokenId_split
+renderStateSnapshot --> tokenMap_entries
+replayToIndex --> _gateway_outgoing________filter
+replayToIndex --> _resetHeatmapAccumulators
+replayToIndex --> completedInTarget_add
+replayToIndex --> completedInTarget_has
 replayToIndex --> drainSimulationQueues
+replayToIndex --> el_incoming_filter
+replayToIndex --> elementColors_add
+replayToIndex --> gateways_forEach
 replayToIndex --> modeler_get
+replayToIndex --> modeler_get__eventBus___fire
+replayToIndex --> outgoing_find
+replayToIndex --> outgoing_forEach
 replayToIndex --> parseStateKey
 replayToIndex --> registry_get
+replayToIndex --> registry_getAll
+replayToIndex --> registry_getAll___filter
+replayToIndex --> registry_getAll___forEach
 replayToIndex --> renderStateSnapshot
+replayToIndex --> simulationStyles_get
+replayToIndex --> simulationSupport_toggleSimulation
+replayToIndex --> simulationSupport_triggerElement
+replayToIndex --> simulator_reset
 replayToIndex --> simulator_setConfig
+replayToIndex --> startEventRegistryIds_add
+reportEdgesOverLabels --> boxesOf
+reportEdgesOverLabels --> clipPolyline
+reportEdgesOverLabels --> describe
+reportEdgesOverLabels --> forEachNearCrossPair
+reportEdgesOverLabels --> name
+reportEdgesOverLabels --> reportedId
+reportEdgesOverLabels --> reporter_report
+reportEdgesOverLabels --> stretches
+reportEdgesThroughShapes --> boxesOf
+reportEdgesThroughShapes --> clipPolyline
+reportEdgesThroughShapes --> edge_ends_indexOf
+reportEdgesThroughShapes --> edge_ends_some
+reportEdgesThroughShapes --> forEachNearCrossPair
+reportEdgesThroughShapes --> isAncestor
+reportEdgesThroughShapes --> name
+reportEdgesThroughShapes --> reportedId
+reportEdgesThroughShapes --> reporter_report
+reportEdgesThroughShapes --> stretches
+reportLabelOverlaps --> area
+reportLabelOverlaps --> boxesOf
+reportLabelOverlaps --> contains
+reportLabelOverlaps --> describe
+reportLabelOverlaps --> forEachNearCrossPair
+reportLabelOverlaps --> forEachNearPair
+reportLabelOverlaps --> intersection
+reportLabelOverlaps --> name
+reportLabelOverlaps --> reporter_report
+reportShapeOverlaps --> area
+reportShapeOverlaps --> belongTogether
+reportShapeOverlaps --> boxesOf
+reportShapeOverlaps --> drawing_shapes_filter
+reportShapeOverlaps --> forEachNearPair
+reportShapeOverlaps --> intersection
+reportShapeOverlaps --> name
+reportShapeOverlaps --> reportedId
+reportShapeOverlaps --> reporter_report
+reportSharedLines --> boxesOf
+reportSharedLines --> distance
+reportSharedLines --> forEachNearPair
+reportSharedLines --> joinPieces
+reportSharedLines --> name
+reportSharedLines --> pieces_push
+reportSharedLines --> reportedId
+reportSharedLines --> reporter_report
+reportSharedLines --> segments
+reportSharedLines --> segments_a_points__forEach
+reportSharedLines --> segments_b_points__forEach
+reportSharedLines --> shared_reduce
+reportSharedLines --> sharedDockings
+reportSharedLines --> sharedPiece
+reportSharedLines --> stretches
+reportSharedLines --> withoutTrunks
+reportSharedLines --> withoutTrunks_joinPieces_pieces___sharedDockings_a__b___filter
+requestBranchSwitch --> buildProcessToTokenMap
+requestBranchSwitch --> window_parent_postMessage
+reset --> destroyScope
+reset --> emit
+reset --> initializeRootScopes
+reset --> scopes_add
+resolveTokenId --> getProcessId
+resolveTokenId --> processToTokenMap_get
+resolveTokenId --> scopeIdToTokenMap_set
+run --> command
+run --> docker
+run --> echo
 run --> exit
+run --> mkdir
+run --> nc
+run --> pwd
+run --> set
+run --> shift
+run --> true
+running --> this_hasTrait
+sanitizeDiagram --> _bo_name________trim
+sanitizeDiagram --> _element_type________replace
+sanitizeDiagram --> _rawName________element_type________replace__bpmn____________Element_____bo_id____________replace
+sanitizeDiagram --> bo__instanceOf
+sanitizeDiagram --> elementRegistry_getAll
+sanitizeDiagram --> elementRegistry_getAll___forEach
 sanitizeDiagram --> modeler_get
+sanitizeDiagram --> modeler_saveXML
+sanitizeDiagram --> modeler_saveXML___format__true____then
+sanitizeDiagram --> modeler_saveXML___format__true____then____xml________________localStorage__diagram_xml_____xml__________catch
+sanitizeDiagram --> nextName
+scopeChanged --> emit
+scopeDestroyed --> getSimulationSupport
+scopeDestroyed --> getSimulationSupport___scopeDestroyed
+scopeFilter --> isSubscribed
+scopeFilter --> scope_getTokensByElement
+scopeFilter --> scope_hasTrait
+scopeFilter --> scopeSubscriptionFilter
+scopeSubscriptionFilter --> subscriptionFilter
+segments --> result_push
 setConfig --> elementChanged
 setConfig --> getBpmnJS
 setConfig --> getBpmnJS___invoke
+setConfig --> getConfig
 setConfig --> simulator_setConfig
+setNavigationVisible --> document_getElementById
+setTransitions --> orSelf
+setValue --> bpmnFactory_create
+setValue --> extensionElements_values_filter
+setValue --> extensionElements_values_find
+setValue --> modeling_updateModdleProperties
+setValue --> modeling_updateProperties
+shapesCovering --> candidates_filter
+shapesCovering --> cellKey
+shapesCovering --> covers
+shapesCovering --> index_grid_get
+shapesCovering --> items_concat
+sharedDockings --> common
+sharedDockings --> commonGateway
+sharedDockings --> distance
+sharedDockings --> docks_push
+sharedPiece --> along
+sharedPiece --> distance
+sharedPiece --> isOnLine
+sharedPiece --> pointAlong
+showAdvanceDecisionDialog --> _cd_decisions________every
+showAdvanceDecisionDialog --> _cd_decisions________forEach
+showAdvanceDecisionDialog --> btn_addEventListener
+showAdvanceDecisionDialog --> childrenDecisions_find
+showAdvanceDecisionDialog --> childrenDecisions_forEach
+showAdvanceDecisionDialog --> confirmBtn_addEventListener
+showAdvanceDecisionDialog --> dialog_querySelector
 showAdvanceDecisionDialog --> document_createElement
 showAdvanceDecisionDialog --> document_getElementById
+showAdvanceDecisionDialog --> footer_insertBefore
+showAdvanceDecisionDialog --> footer_querySelector
+showAdvanceDecisionDialog --> gatewayMap_forEach
+showAdvanceDecisionDialog --> gatewayMap_get
+showAdvanceDecisionDialog --> gatewayMap_has
+showAdvanceDecisionDialog --> gatewayMap_set
+showAdvanceDecisionDialog --> group_appendChild
+showAdvanceDecisionDialog --> hideBranchDialog
+showAdvanceDecisionDialog --> list_appendChild
+showAdvanceDecisionDialog --> old_remove
+showAdvanceDecisionDialog --> oldConfirm_remove
+showAdvanceDecisionDialog --> optContainer_appendChild
+showAdvanceDecisionDialog --> optContainer_querySelectorAll
+showAdvanceDecisionDialog --> optContainer_querySelectorAll__button___forEach
+showAdvanceDecisionDialog --> options_forEach
+showAdvanceDecisionDialog --> options_keys
+showAdvanceDecisionDialog --> opts_has
+showAdvanceDecisionDialog --> opts_set
+showAdvanceDecisionDialog --> updateBtn
+showAdvanceDecisionDialog --> window_parent_postMessage
+showBranchDialog --> _child_decisions________forEach
+showBranchDialog --> btn_addEventListener
+showBranchDialog --> child_decisions_every
+showBranchDialog --> children_find
+showBranchDialog --> children_forEach
+showBranchDialog --> children_some
+showBranchDialog --> confirmBtn_addEventListener
+showBranchDialog --> dialog_querySelector
 showBranchDialog --> document_createElement
 showBranchDialog --> document_getElementById
+showBranchDialog --> existingConfirm_remove
+showBranchDialog --> footer_insertBefore
+showBranchDialog --> footer_querySelector
+showBranchDialog --> gatewayMap_forEach
+showBranchDialog --> gatewayMap_get
+showBranchDialog --> gatewayMap_has
+showBranchDialog --> gatewayMap_set
+showBranchDialog --> group_appendChild
+showBranchDialog --> hideBranchDialog
+showBranchDialog --> list_appendChild
 showBranchDialog --> navigateForward
+showBranchDialog --> oldConfirm_remove
+showBranchDialog --> optContainer_appendChild
+showBranchDialog --> optContainer_querySelectorAll
+showBranchDialog --> optContainer_querySelectorAll__button___forEach
+showBranchDialog --> options_forEach
+showBranchDialog --> options_keys
+showBranchDialog --> opts_has
+showBranchDialog --> opts_set
+showBranchDialog --> requestBranchSwitch
+showBranchDialog --> updateBtn
+showMessage --> document_querySelector
 showStatePanelMessage --> document_createElement
+showStatePanelMessage --> row_appendChild
+showStatePanelMessage --> statePanel_classList_add
+showStatePanelMessage --> statePanelBody_appendChild
+sidePositions --> elements_forEach
+sidePositions --> elements_push
+sidePositions --> index_byElement_get
+sidePositions --> is
+sidePositions --> picked_add
+sidePositions --> positions_forEach
+sidePositions --> references
+sidePositions --> shapesCovering
+sidePositions --> shapesCovering_point__shapes__index__forEach
+signal --> getBehavior
+signal --> getBehavior_element__signal
 signal --> getBpmnJS
 signal --> getBpmnJS___invoke
 signal --> initializeScope
 signal --> queue
+signal --> scope_start
+signal --> scopeChanged
+signal --> simulator_signal
 signal --> trace
+simulationLog --> modeler_get
+start --> illegalTransition
+start --> this_state_start
+stretches --> pieces_map
+stretches --> pieces_map_function_piece________return__from____point_piece_from____to____point_piece_to___________join
+stretches --> point
 subscribe --> elementChanged
 subscribe --> getEvent
+subscribe --> scope_subscriptions_add
+subscribe --> subscriptions_add
+subscription --> getBpmnJS
+subscription --> getBpmnJS___invoke
+subscription --> simulator_findSubscription
+subscriptionFilter --> elements_includes
+subscriptionFilter --> eventsMatch
 subscriptionFilter --> getEvent
+svgToPng --> URL_createObjectURL
+svgToPng --> URL_revokeObjectURL
+svgToPng --> canvas_getContext
+svgToPng --> canvas_toBlob
+svgToPng --> context_drawImage
 svgToPng --> document_createElement
+svgToPng --> resolve
+terminate --> illegalTransition
+terminate --> this_state_terminate
+toggleHeatmap --> controlsObserver_disconnect
+toggleHeatmap --> controlsObserver_observe
 toggleHeatmap --> createHeatmapOverlay
 toggleHeatmap --> document_getElementById
+toggleHeatmap --> event_preventDefault
+toggleHeatmap --> event_stopPropagation
+toggleHeatmap --> heatmapContainer_parentNode_removeChild
+toggleHeatmap --> requestAnimationFrame
 toggleHeatmap --> updateHeatmapData
 trace --> emit
+trigger --> __interrupt_triggerFn_initiator____flat
+trigger --> __interrupt_triggerFn_initiator____flat___filter
+trigger --> eventsMatch
 trigger --> expect
 trigger --> filterSet
 trigger --> getBpmnJS
 trigger --> getBpmnJS___invoke
 trigger --> getEvent
+trigger --> interrupt_triggerFn
+trigger --> interrupting_find
+trigger --> isRethrow
+trigger --> matchingSubscriptions_every
+trigger --> matchingSubscriptions_filter
+trigger --> nonInterrupting_map
+trigger --> nonInterrupting_map__________subscription____subscription_triggerFn_initiator__________flat
+trigger --> referenceSubscriptions_some
+trigger --> refsMatch
+trigger --> remainingSubscriptions_includes
+trigger --> simulator_trigger
+trigger --> subscription
+trigger --> subscription_remove
+trigger --> subscription_triggerFn
+trigger --> subscriptions_forEach
+triggerAction --> _action
+triggerAction --> _contexts
+triggerAction --> _contexts___filter
+triggerAction --> this__scopeFilter_isShown
+triggerElement --> getSimulationSupport
+triggerElement --> getSimulationSupport___triggerElement
+triggerScope --> getSimulationSupport
+triggerScope --> getSimulationSupport___triggerScope
+unsubscribe --> elementChanged
+unsubscribe --> scope_subscriptions_delete
+unsubscribe --> subscriptions_delete
+updateHeatmapData --> canvas_getGraphics
+updateHeatmapData --> data_push
+updateHeatmapData --> freqData_forEach
 updateHeatmapData --> getHeatmapFrequencyData
+updateHeatmapData --> gfx_getBoundingClientRect
+updateHeatmapData --> heatmapContainer_getBoundingClientRect
+updateHeatmapData --> heatmapInstance_setData
 updateHeatmapData --> modeler_get
 updateHeatmapData --> registry_get
+updateNavigationUI --> _syncCurrentNodeId
 updateNavigationUI --> document_getElementById
+updateNavigationUI --> setNavigationVisible
+updateNavigationUI --> snapName_startsWith
+validateSESE --> allElements_forEach
+validateSESE --> canvas_getRootElement
+validateSESE --> elementRegistry_getAll
+validateSESE --> errors_push
 validateSESE --> modeler_get
+validateSESE --> root_children_forEach
+validateSESE --> scope_children_filter
+validateSESE --> scopes_forEach
+validateSESE --> scopes_push
+verify --> bootstrapModeler
+verify --> bootstrapModeler_diagram__________additionalModules____________SimulatorModule________________________init__________________function_simulator__simulationTrace__________________simulator_on__trace___function_event____________________simulationTrace_push_event________________________________________________function_eventBus__simulator__________________eventBus_once__import_done___________________________simulator_reset___________________________________________________________scopeIds_____factory___function__________________let_idx___0_______________const_alphabet___Array_from__ABCDEFGHIJKLMNOPQRSTUVWXYZ____________________generate_IDs_in_alphabetic_order_________________when_overflowing_the_alphabet__attach_a_numeric_runner_suffix________________________________A_B_C_D_E_____Z_A1_B1_C1_________________function_next___________________const_i___idx___________________const_runner___Math_trunc_i___alphabet_length_________________const_char___i___alphabet_length_________________return_alphabet_char_____runner____________________________________return_________________next_________________________________________simulationScopes_____value___________________simulationTrace_____value_________________________________call
+verify --> eventBus_once
 verify --> expect
 verify --> getBpmnJS
 verify --> getBpmnJS___invoke
+verify --> iit
+verify --> simulationTrace_push
+verify --> simulator_on
+verify --> simulator_reset
+verifyOnly --> verify
+verifySkip --> verify
+verifyTrace --> __split__0____split__1____scopes__scope_____join
+verifyTrace --> adjustedExpectedTrace_push
+verifyTrace --> event_split
 verifyTrace --> expect
+verifyTrace --> expect_trace__to_eql
+verifyTrace --> expectedTrace_forEach
+verifyTrace --> trace__index___split
+waitAtElement --> getBpmnJS
+waitAtElement --> getBpmnJS___invoke
+waitAtElement --> setConfig
+waitAtElement --> simulator_waitAtElement
+waitForScopes --> on
 waitForTokenDrain --> drainSimulationQueues
 waitForTokenDrain --> elementRegistry
+waitForTokenDrain --> elementRegistry___get
+waitForTokenDrain --> getSortedTriggers
 waitForTokenDrain --> modeler_get
+waitForTokenDrain --> simulationSupport_triggerElement
+waitForTokenDrain --> simulator_findScopes
+waitForTokenDrain --> simulator_findScopes______________element__element_____________find
+waitForTokenDrain --> simulator_signal
+widePositions --> isWide
+widePositions --> ranges_forEach
+widePositions --> wide_push
+withBpmnJs --> bpmnJsSatisfies
+without --> array_filter
+withoutTrunks --> distance
+withoutTrunks --> docks_forEach
+withoutTrunks --> left_findIndex
+withoutTrunks --> left_splice
+withoutTrunks --> stretches_slice
 @enduml

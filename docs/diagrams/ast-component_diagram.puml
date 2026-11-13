@@ -1,4 +1,15 @@
 @startuml
+' Component diagram, 138 of 138 file(s) drawn.
+' Not truncated: all 138 file(s) are drawn.
+' EDGES: 0 drawn of 0 resolved import edge(s); 0 dropped because an endpoint is outside the cap (0 importer outside, 0 imported file outside, 0 both). Until 2026-10-13 those 0 were DRAWN, to ids no subgraph declares, which mermaid renders as bare boxes labelled with the raw path.
+' 5 module stem(s) resolve to more than one file and carry NO edge: a wrong edge is worse than a missing one.
+package ".bpmnlint.js (javascript)" {
+}
+package "bpmnlint-plugin-sese/index.js (javascript)" {
+}
+package "bpmnlint-plugin-sese/rules/no-diagram-overlaps.js (javascript)" {
+object "52 functions" as bpmnlint_plugin_sese_rules_no_diagram_overlaps_js_funcs
+}
 package "bpmnlint-plugin-sese/rules/task-has-duration.js (javascript)" {
 object "2 functions" as bpmnlint_plugin_sese_rules_task_has_duration_js_funcs
 }
@@ -7,11 +18,18 @@ object "2 functions" as bpmnlint_plugin_sese_rules_task_has_impact_js_funcs
 }
 package "docker-entrypoint.sh (bash)" {
 }
+package "eslint.config.mjs (javascript)" {
+}
+package "example/basic/src/app.js (javascript)" {
+}
 package "example/src/api-client.js (javascript)" {
 object "1 functions" as example_src_api_client_js_funcs
 }
 package "example/src/bpmn-to-json.js (javascript)" {
 object "2 functions" as example_src_bpmn_to_json_js_funcs
+}
+package "example/src/fit-viewport.js (javascript)" {
+object "3 functions" as example_src_fit_viewport_js_funcs
 }
 package "example/src/modeler.js (javascript)" {
 object "58 functions" as example_src_modeler_js_funcs
@@ -29,6 +47,8 @@ object "1 functions" as example_src_utils_js_funcs
 package "example/theme-toggle.js (javascript)" {
 object "2 functions" as example_theme_toggle_js_funcs
 }
+package "karma.conf.js (javascript)" {
+}
 package "lib/animation/Animation.js (javascript)" {
 object "11 functions" as lib_animation_Animation_js_funcs
 }
@@ -38,11 +58,19 @@ object "1 functions" as lib_animation_behaviors_AnimatedMessageFlowBehavior_js_f
 package "lib/animation/behaviors/AnimatedSequenceFlowBehavior.js (javascript)" {
 object "1 functions" as lib_animation_behaviors_AnimatedSequenceFlowBehavior_js_funcs
 }
+package "lib/animation/behaviors/index.js (javascript)" {
+}
+package "lib/animation/index.js (javascript)" {
+}
+package "lib/base.js (javascript)" {
+}
 package "lib/features/colored-scopes/ColoredScopes.js (javascript)" {
 object "1 functions" as lib_features_colored_scopes_ColoredScopes_js_funcs
 }
+package "lib/features/colored-scopes/index.js (javascript)" {
+}
 package "lib/features/context-pads/ContextPads.js (javascript)" {
-object "5 functions" as lib_features_context_pads_ContextPads_js_funcs
+object "4 functions" as lib_features_context_pads_ContextPads_js_funcs
 }
 package "lib/features/context-pads/handler/ExclusiveGatewayHandler.js (javascript)" {
 object "2 functions" as lib_features_context_pads_handler_ExclusiveGatewayHandler_js_funcs
@@ -56,37 +84,288 @@ object "3 functions" as lib_features_context_pads_handler_PauseHandler_js_funcs
 package "lib/features/context-pads/handler/TriggerHandler.js (javascript)" {
 object "3 functions" as lib_features_context_pads_handler_TriggerHandler_js_funcs
 }
+package "lib/features/context-pads/index.js (javascript)" {
+}
 package "lib/features/disable-modeling/DisableModeling.js (javascript)" {
 object "1 functions" as lib_features_disable_modeling_DisableModeling_js_funcs
+}
+package "lib/features/disable-modeling/index.js (javascript)" {
 }
 package "lib/features/editor-actions/EditorActions.js (javascript)" {
 object "1 functions" as lib_features_editor_actions_EditorActions_js_funcs
 }
+package "lib/features/editor-actions/index.js (javascript)" {
+}
 package "lib/features/element-colors/ElementColors.js (javascript)" {
 object "3 functions" as lib_features_element_colors_ElementColors_js_funcs
+}
+package "lib/features/element-colors/index.js (javascript)" {
 }
 package "lib/features/element-notifications/ElementNotifications.js (javascript)" {
 object "1 functions" as lib_features_element_notifications_ElementNotifications_js_funcs
 }
+package "lib/features/element-notifications/index.js (javascript)" {
+}
 package "lib/features/element-support/ElementSupport.js (javascript)" {
 object "2 functions" as lib_features_element_support_ElementSupport_js_funcs
+}
+package "lib/features/element-support/index.js (javascript)" {
 }
 package "lib/features/exclusive-gateway-settings/ExclusiveGatewaySettings.js (javascript)" {
 object "3 functions" as lib_features_exclusive_gateway_settings_ExclusiveGatewaySettings_js_funcs
 }
+package "lib/features/exclusive-gateway-settings/index.js (javascript)" {
+}
 package "lib/features/inclusive-gateway-settings/InclusiveGatewaySettings.js (javascript)" {
 object "4 functions" as lib_features_inclusive_gateway_settings_InclusiveGatewaySettings_js_funcs
+}
+package "lib/features/inclusive-gateway-settings/index.js (javascript)" {
 }
 package "lib/features/keyboard-bindings/KeyboardBindings.js (javascript)" {
 object "2 functions" as lib_features_keyboard_bindings_KeyboardBindings_js_funcs
 }
+package "lib/features/keyboard-bindings/index.js (javascript)" {
+}
 package "lib/features/log/Log.js (javascript)" {
 object "4 functions" as lib_features_log_Log_js_funcs
+}
+package "lib/features/log/index.js (javascript)" {
 }
 package "lib/features/neutral-element-colors/NeutralElementColors.js (javascript)" {
 object "1 functions" as lib_features_neutral_element_colors_NeutralElementColors_js_funcs
 }
+package "lib/features/neutral-element-colors/index.js (javascript)" {
+}
 package "lib/features/notifications/Notifications.js (javascript)" {
 object "1 functions" as lib_features_notifications_Notifications_js_funcs
+}
+package "lib/features/notifications/index.js (javascript)" {
+}
+package "lib/features/palette/Palette.js (javascript)" {
+object "1 functions" as lib_features_palette_Palette_js_funcs
+}
+package "lib/features/palette/index.js (javascript)" {
+}
+package "lib/features/pause-simulation/PauseSimulation.js (javascript)" {
+object "1 functions" as lib_features_pause_simulation_PauseSimulation_js_funcs
+}
+package "lib/features/pause-simulation/index.js (javascript)" {
+}
+package "lib/features/reset-simulation/ResetSimulation.js (javascript)" {
+object "1 functions" as lib_features_reset_simulation_ResetSimulation_js_funcs
+}
+package "lib/features/reset-simulation/index.js (javascript)" {
+}
+package "lib/features/scope-filter/ScopeFilter.js (javascript)" {
+object "3 functions" as lib_features_scope_filter_ScopeFilter_js_funcs
+}
+package "lib/features/scope-filter/index.js (javascript)" {
+}
+package "lib/features/selection-api/SelectionAPI.js (javascript)" {
+object "1 functions" as lib_features_selection_api_SelectionAPI_js_funcs
+}
+package "lib/features/selection-api/index.js (javascript)" {
+}
+package "lib/features/set-animation-speed/SetAnimationSpeed.js (javascript)" {
+object "1 functions" as lib_features_set_animation_speed_SetAnimationSpeed_js_funcs
+}
+package "lib/features/set-animation-speed/index.js (javascript)" {
+}
+package "lib/features/show-scopes/ShowScopes.js (javascript)" {
+object "1 functions" as lib_features_show_scopes_ShowScopes_js_funcs
+}
+package "lib/features/show-scopes/index.js (javascript)" {
+}
+package "lib/features/simulation-state/SimulationState.js (javascript)" {
+object "1 functions" as lib_features_simulation_state_SimulationState_js_funcs
+}
+package "lib/features/simulation-state/index.js (javascript)" {
+}
+package "lib/features/simulation-styles/SimulationStyles.js (javascript)" {
+object "2 functions" as lib_features_simulation_styles_SimulationStyles_js_funcs
+}
+package "lib/features/simulation-styles/index.js (javascript)" {
+}
+package "lib/features/toggle-mode/modeler/ToggleMode.js (javascript)" {
+object "1 functions" as lib_features_toggle_mode_modeler_ToggleMode_js_funcs
+}
+package "lib/features/toggle-mode/modeler/index.js (javascript)" {
+}
+package "lib/features/toggle-mode/viewer/ToggleMode.js (javascript)" {
+object "1 functions" as lib_features_toggle_mode_viewer_ToggleMode_js_funcs
+}
+package "lib/features/toggle-mode/viewer/index.js (javascript)" {
+}
+package "lib/features/token-count/TokenCount.js (javascript)" {
+object "1 functions" as lib_features_token_count_TokenCount_js_funcs
+}
+package "lib/features/token-count/index.js (javascript)" {
+}
+package "lib/index.js (javascript)" {
+}
+package "lib/modeler.js (javascript)" {
+}
+package "lib/simulation-support/SimulationSupport.js (javascript)" {
+object "3 functions" as lib_simulation_support_SimulationSupport_js_funcs
+}
+package "lib/simulation-support/SimulationTrace.js (javascript)" {
+object "1 functions" as lib_simulation_support_SimulationTrace_js_funcs
+}
+package "lib/simulation-support/SimulationTraceEvents.js (javascript)" {
+object "1 functions" as lib_simulation_support_SimulationTraceEvents_js_funcs
+}
+package "lib/simulation-support/index.js (javascript)" {
+}
+package "lib/simulator/Scope.js (javascript)" {
+' lib_simulator_Scope_js_Scope(("Scope"))
+}
+package "lib/simulator/ScopeStates.js (javascript)" {
+' lib_simulator_ScopeStates_js_ScopeState(("ScopeState"))
+object "2 functions" as lib_simulator_ScopeStates_js_funcs
+}
+package "lib/simulator/ScopeTraits.js (javascript)" {
+}
+package "lib/simulator/Simulator.js (javascript)" {
+object "6 functions" as lib_simulator_Simulator_js_funcs
+}
+package "lib/simulator/behaviors/ActivityBehavior.js (javascript)" {
+object "4 functions" as lib_simulator_behaviors_ActivityBehavior_js_funcs
+}
+package "lib/simulator/behaviors/BoundaryEventBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_BoundaryEventBehavior_js_funcs
+}
+package "lib/simulator/behaviors/EndEventBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_EndEventBehavior_js_funcs
+}
+package "lib/simulator/behaviors/EventBasedGatewayBehavior.js (javascript)" {
+object "2 functions" as lib_simulator_behaviors_EventBasedGatewayBehavior_js_funcs
+}
+package "lib/simulator/behaviors/EventBehaviors.js (javascript)" {
+object "3 functions" as lib_simulator_behaviors_EventBehaviors_js_funcs
+}
+package "lib/simulator/behaviors/ExclusiveGatewayBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_ExclusiveGatewayBehavior_js_funcs
+}
+package "lib/simulator/behaviors/InclusiveGatewayBehavior.js (javascript)" {
+object "3 functions" as lib_simulator_behaviors_InclusiveGatewayBehavior_js_funcs
+}
+package "lib/simulator/behaviors/IntermediateCatchEventBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_IntermediateCatchEventBehavior_js_funcs
+}
+package "lib/simulator/behaviors/IntermediateThrowEventBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_IntermediateThrowEventBehavior_js_funcs
+}
+package "lib/simulator/behaviors/MessageFlowBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_MessageFlowBehavior_js_funcs
+}
+package "lib/simulator/behaviors/ParallelGatewayBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_ParallelGatewayBehavior_js_funcs
+}
+package "lib/simulator/behaviors/ProcessBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_ProcessBehavior_js_funcs
+}
+package "lib/simulator/behaviors/ScopeBehavior.js (javascript)" {
+object "2 functions" as lib_simulator_behaviors_ScopeBehavior_js_funcs
+}
+package "lib/simulator/behaviors/SequenceFlowBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_SequenceFlowBehavior_js_funcs
+}
+package "lib/simulator/behaviors/StartEventBehavior.js (javascript)" {
+object "1 functions" as lib_simulator_behaviors_StartEventBehavior_js_funcs
+}
+package "lib/simulator/behaviors/SubProcessBehavior.js (javascript)" {
+object "2 functions" as lib_simulator_behaviors_SubProcessBehavior_js_funcs
+}
+package "lib/simulator/behaviors/TransactionBehavior.js (javascript)" {
+object "2 functions" as lib_simulator_behaviors_TransactionBehavior_js_funcs
+}
+package "lib/simulator/behaviors/index.js (javascript)" {
+}
+package "lib/simulator/index.js (javascript)" {
+}
+package "lib/simulator/util/EventsUtil.js (javascript)" {
+object "2 functions" as lib_simulator_util_EventsUtil_js_funcs
+}
+package "lib/simulator/util/ModelUtil.js (javascript)" {
+object "19 functions" as lib_simulator_util_ModelUtil_js_funcs
+}
+package "lib/simulator/util/SetUtil.js (javascript)" {
+object "2 functions" as lib_simulator_util_SetUtil_js_funcs
+}
+package "lib/util/ElementHelper.js (javascript)" {
+object "2 functions" as lib_util_ElementHelper_js_funcs
+}
+package "lib/util/EventHelper.js (javascript)" {
+}
+package "lib/viewer.js (javascript)" {
+}
+package "rollup.config.js (javascript)" {
+}
+package "run.bat (batch)" {
+object "2 functions" as run_bat_funcs
+}
+package "run.sh (bash)" {
+}
+package "src/icons/index.js (javascript)" {
+object "1 functions" as src_icons_index_js_funcs
+}
+package "tasks/ensure-rollup-binary.js (javascript)" {
+object "1 functions" as tasks_ensure_rollup_binary_js_funcs
+}
+package "tasks/sync-state-identifiers.js (javascript)" {
+}
+package "test/TestHelper.js (javascript)" {
+object "3 functions" as test_TestHelper_js_funcs
+}
+package "test/all.js (javascript)" {
+}
+package "test/globals.js (javascript)" {
+}
+package "test/mocks/Animation.js (javascript)" {
+object "2 functions" as test_mocks_Animation_js_funcs
+}
+package "test/reporters/fixture-reporter.js (javascript)" {
+object "1 functions" as test_reporters_fixture_reporter_js_funcs
+}
+package "test/spec/DisableModelingSpec.js (javascript)" {
+}
+package "test/spec/ExamplePaletteSpec.js (javascript)" {
+object "4 functions" as test_spec_ExamplePaletteSpec_js_funcs
+}
+package "test/spec/ModelerSpec.js (javascript)" {
+' test_spec_ModelerSpec_js_FoobarOverlays(("FoobarOverlays"))
+object "1 functions" as test_spec_ModelerSpec_js_funcs
+}
+package "test/spec/SeseNoDiagramOverlapsSpec.js (javascript)" {
+object "4 functions" as test_spec_SeseNoDiagramOverlapsSpec_js_funcs
+}
+package "test/spec/SimulationSpec.js (javascript)" {
+object "11 functions" as test_spec_SimulationSpec_js_funcs
+}
+package "test/spec/ViewerSpec.js (javascript)" {
+}
+package "test/spec/animation/AnimationSpec.js (javascript)" {
+object "3 functions" as test_spec_animation_AnimationSpec_js_funcs
+}
+package "test/spec/features/context-pads/ContextPadsSpec.js (javascript)" {
+object "5 functions" as test_spec_features_context_pads_ContextPadsSpec_js_funcs
+}
+package "test/spec/features/gateway-settings/GatewaySettingsSpec.js (javascript)" {
+}
+package "test/spec/features/log/LogSpec.js (javascript)" {
+' test_spec_features_log_LogSpec_js_LogCollector(("LogCollector"))
+object "6 functions" as test_spec_features_log_LogSpec_js_funcs
+}
+package "test/spec/features/show-scopes/ShowScopesSpec.js (javascript)" {
+object "5 functions" as test_spec_features_show_scopes_ShowScopesSpec_js_funcs
+}
+package "test/spec/simulator/ScopeStatesSpec.js (javascript)" {
+}
+package "test/spec/simulator/SimulatorSpec.js (javascript)" {
+object "13 functions" as test_spec_simulator_SimulatorSpec_js_funcs
+}
+package "test/suite.js (javascript)" {
+}
+package "webpack.config.js (javascript)" {
 }
 @enduml

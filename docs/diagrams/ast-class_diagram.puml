@@ -1,4 +1,5 @@
 @startuml
+' INHERITANCE: 0 edge(s) drawn, 0 declined -- every base name that resolves here resolves to exactly one class. The check ran; it is not absent.
 ' example/src/sese-properties-provider.js:6
 class "SesePropertiesProvider" as example_src_sese_properties_provider_js_SesePropertiesProvider {
   <<javascript>>
@@ -50,14 +51,14 @@ class "Scope" as lib_simulator_Scope_js_Scope {
   +getTokens()
   +getTokensByElement()
 }
+class "run" as run_Functions {
+  <<batch module>>
+  +parse_args()
+  +end_parse()
+}
 class "tasks.ensure-rollup-binary" as tasks_ensure_rollup_binary_Functions {
   <<javascript module>>
   +readRollupVersion()
-}
-class "example.theme-toggle" as example_theme_toggle_Functions {
-  <<javascript module>>
-  +applyTheme()
-  +init()
 }
 class "test.TestHelper" as test_TestHelper_Functions {
   <<javascript module>>
@@ -65,26 +66,14 @@ class "test.TestHelper" as test_TestHelper_Functions {
   +withBpmnJs()
   +bpmnJsSatisfies()
 }
+class "example.theme-toggle" as example_theme_toggle_Functions {
+  <<javascript module>>
+  +applyTheme()
+  +init()
+}
 class "icons.index" as icons_index_Functions {
   <<javascript module>>
   +createIcon()
-}
-class "example.api-client" as example_api_client_Functions {
-  <<javascript module>>
-  +executeStep()
-}
-class "example.sese-properties-provider" as example_sese_properties_provider_Functions {
-  <<javascript module>>
-  +createDurationGroup()
-  +DurationProps()
-}
-class "example.sese-validator" as example_sese_validator_Functions {
-  <<javascript module>>
-  +validateSESE()
-}
-class "example.utils" as example_utils_Functions {
-  <<javascript module>>
-  +svgToPng()
 }
 class "example.modeler" as example_modeler_Functions {
   <<javascript module>>
@@ -108,22 +97,72 @@ class "example.modeler" as example_modeler_Functions {
   +getProcessId()
   +getLatestScopeId()
   +_scopeProcessId()
-  +... (38 more)
+  +_setDisplayId()
+  +elementRegistry()
+  +loadStateSequenceForCurrentDiagram()
+  +getExecutionOrderMap()
+  +showStatePanelMessage()
+  +normalizeStatusClass()
+  +renderStateSnapshot()
+  +replayToIndex()
+  +getOverallStatus()
+  +aggregateByElement()
+  +diffCompletions()
+  +diffActivations()
+  +getSortedTriggers()
+  +waitForTokenDrain()
+  +drainSimulationQueues()
+  +configureExclusiveGateways()
+  +initializeSimulationToStart()
+  +playStates()
+  +_scheduleDropdownRefresh()
+  +_recordMetricsForElement()
+  +_resetHeatmapAccumulators()
+  +_resetHeatmapImpactDiscovery()
+  +_readMetric()
+  +_refreshHeatmapMetricOptions()
+  +createHeatmapOverlay()
+  +getHeatmapFrequencyData()
+  +updateHeatmapData()
+  +toggleHeatmap()
+  +_origPlayStatesEnd()
+  +_syncCurrentNodeId()
+  +navigateForward()
+  +navigateBackward()
+  +requestBranchSwitch()
+  +showBranchDialog()
+  +hideBranchDialog()
+  +showAdvanceDecisionDialog()
+  +updateNavigationUI()
+  +setNavigationVisible()
+}
+class "example.fit-viewport" as example_fit_viewport_Functions {
+  <<javascript module>>
+  +paletteFootprint()
+  +viewboxClearOfReserve()
+  +fitViewportClearOfPalette()
+}
+class "example.api-client" as example_api_client_Functions {
+  <<javascript module>>
+  +executeStep()
+}
+class "example.sese-validator" as example_sese_validator_Functions {
+  <<javascript module>>
+  +validateSESE()
+}
+class "example.utils" as example_utils_Functions {
+  <<javascript module>>
+  +svgToPng()
 }
 class "example.bpmn-to-json" as example_bpmn_to_json_Functions {
   <<javascript module>>
   +getType()
   +parseBPMN()
 }
-class "bpmnlint-plugin-sese.rules.task-has-impact" as bpmnlint_plugin_sese_rules_task_has_impact_Functions {
+class "example.sese-properties-provider" as example_sese_properties_provider_Functions {
   <<javascript module>>
-  +check()
-  +isTask()
-}
-class "bpmnlint-plugin-sese.rules.task-has-duration" as bpmnlint_plugin_sese_rules_task_has_duration_Functions {
-  <<javascript module>>
-  +check()
-  +isTask()
+  +createDurationGroup()
+  +DurationProps()
 }
 class "test.mocks.Animation" as test_mocks_Animation_Functions {
   <<javascript module>>
@@ -138,6 +177,20 @@ class "test.spec.ModelerSpec" as test_spec_ModelerSpec_Functions {
   <<javascript module>>
   +expectColors()
 }
+class "test.spec.SeseNoDiagramOverlapsSpec" as test_spec_SeseNoDiagramOverlapsSpec_Functions {
+  <<javascript module>>
+  +definitions()
+  +lintWith()
+  +lint()
+  +task()
+}
+class "test.spec.ExamplePaletteSpec" as test_spec_ExamplePaletteSpec_Functions {
+  <<javascript module>>
+  +screenBox()
+  +elementsUnderPalette()
+  +rect()
+  +expectPanelRuleInForce()
+}
 class "test.spec.SimulationSpec" as test_spec_SimulationSpec_Functions {
   <<javascript module>>
   +bootstrapModeler()
@@ -151,12 +204,6 @@ class "test.spec.SimulationSpec" as test_spec_SimulationSpec_Functions {
   +elementExit()
   +triggerScope()
   +scopeDestroyed()
-}
-class "spec.animation.AnimationSpec" as spec_animation_AnimationSpec_Functions {
-  <<javascript module>>
-  +getSimulationSupport()
-  +triggerElement()
-  +elementEnter()
 }
 class "spec.simulator.SimulatorSpec" as spec_simulator_SimulatorSpec_Functions {
   <<javascript module>>
@@ -173,6 +220,20 @@ class "spec.simulator.SimulatorSpec" as spec_simulator_SimulatorSpec_Functions {
   +expectDestroyed()
   +expectTrace()
   +verifyTrace()
+}
+class "spec.animation.AnimationSpec" as spec_animation_AnimationSpec_Functions {
+  <<javascript module>>
+  +getSimulationSupport()
+  +triggerElement()
+  +elementEnter()
+}
+class "features.context-pads.ContextPadsSpec" as features_context_pads_ContextPadsSpec_Functions {
+  <<javascript module>>
+  +bootstrapModeler()
+  +getSimulationSupport()
+  +canTriggerElement()
+  +triggerElement()
+  +elementEnter()
 }
 class "features.log.LogSpec" as features_log_LogSpec_Functions {
   <<javascript module>>
@@ -191,27 +252,19 @@ class "features.show-scopes.ShowScopesSpec" as features_show_scopes_ShowScopesSp
   +triggerElement()
   +elementEnter()
 }
-class "features.context-pads.ContextPadsSpec" as features_context_pads_ContextPadsSpec_Functions {
+class "simulator.Simulator" as simulator_Simulator_Functions {
   <<javascript module>>
-  +bootstrapModeler()
-  +getSimulationSupport()
-  +canTriggerElement()
-  +triggerElement()
-  +elementEnter()
+  +Simulator()
+  +NoopBehavior()
+  +isRethrow()
+  +isImplicitMessageCatch()
+  +isSpecialBoundaryEvent()
+  +getEventDefinitions()
 }
-class "simulation-support.SimulationTraceEvents" as simulation_support_SimulationTraceEvents_Functions {
+class "simulator.ScopeStates" as simulator_ScopeStates_Functions {
   <<javascript module>>
-  +SimulationTraceEvents()
-}
-class "simulation-support.SimulationSupport" as simulation_support_SimulationSupport_Functions {
-  <<javascript module>>
-  +SimulationSupport()
-  +listener()
-  +ifElement()
-}
-class "simulation-support.SimulationTrace" as simulation_support_SimulationTrace_Functions {
-  <<javascript module>>
-  +SimulationTrace()
+  +illegalTransition()
+  +orSelf()
 }
 class "animation.Animation" as animation_Animation_Functions {
   <<javascript module>>
@@ -227,24 +280,164 @@ class "animation.Animation" as animation_Animation_Functions {
   +randomBetween()
   +distance()
 }
-class "simulator.Simulator" as simulator_Simulator_Functions {
+class "simulation-support.SimulationTrace" as simulation_support_SimulationTrace_Functions {
   <<javascript module>>
-  +Simulator()
-  +NoopBehavior()
-  +isRethrow()
-  +isImplicitMessageCatch()
-  +isSpecialBoundaryEvent()
-  +getEventDefinitions()
+  +SimulationTrace()
 }
-class "simulator.ScopeStates" as simulator_ScopeStates_Functions {
+class "simulation-support.SimulationTraceEvents" as simulation_support_SimulationTraceEvents_Functions {
   <<javascript module>>
-  +illegalTransition()
-  +orSelf()
+  +SimulationTraceEvents()
+}
+class "simulation-support.SimulationSupport" as simulation_support_SimulationSupport_Functions {
+  <<javascript module>>
+  +SimulationSupport()
+  +listener()
+  +ifElement()
 }
 class "util.ElementHelper" as util_ElementHelper_Functions {
   <<javascript module>>
   +getEventDefinition()
   +isTypedEvent()
+}
+class "features.neutral-element-colors.NeutralElementColors" as features_neutral_element_colors_NeutralElementColors_Functions {
+  <<javascript module>>
+  +NeutralElementColors()
+}
+class "features.inclusive-gateway-settings.InclusiveGatewaySettings" as features_inclusive_gateway_settings_InclusiveGatewaySettings_Functions {
+  <<javascript module>>
+  +InclusiveGatewaySettings()
+  +getDefaultFlow()
+  +getNonDefaultFlows()
+  +without()
+}
+class "features.context-pads.ContextPads" as features_context_pads_ContextPads_Functions {
+  <<javascript module>>
+  +ContextPads()
+  +triggerAction()
+  +isAncestor()
+  +isKeyboardTrigger()
+}
+class "features.editor-actions.EditorActions" as features_editor_actions_EditorActions_Functions {
+  <<javascript module>>
+  +EditorActions()
+}
+class "features.token-count.TokenCount" as features_token_count_TokenCount_Functions {
+  <<javascript module>>
+  +TokenCount()
+}
+class "features.disable-modeling.DisableModeling" as features_disable_modeling_DisableModeling_Functions {
+  <<javascript module>>
+  +DisableModeling()
+}
+class "features.scope-filter.ScopeFilter" as features_scope_filter_ScopeFilter_Functions {
+  <<javascript module>>
+  +DEFAULT_SCOPE_FILTER()
+  +ScopeFilter()
+  +isAncestor()
+}
+class "features.element-notifications.ElementNotifications" as features_element_notifications_ElementNotifications_Functions {
+  <<javascript module>>
+  +ElementNotifications()
+}
+class "features.set-animation-speed.SetAnimationSpeed" as features_set_animation_speed_SetAnimationSpeed_Functions {
+  <<javascript module>>
+  +SetAnimationSpeed()
+}
+class "features.element-colors.ElementColors" as features_element_colors_ElementColors_Functions {
+  <<javascript module>>
+  +ElementColors()
+  +isLabel()
+  +getColorsWithHighestPriority()
+}
+class "features.log.Log" as features_log_Log_Functions {
+  <<javascript module>>
+  +getElementName()
+  +getIconForIntermediateEvent()
+  +getEventTypeString()
+  +Log()
+}
+class "features.selection-api.SelectionAPI" as features_selection_api_SelectionAPI_Functions {
+  <<javascript module>>
+  +SelectionAPI()
+}
+class "features.notifications.Notifications" as features_notifications_Notifications_Functions {
+  <<javascript module>>
+  +Notifications()
+}
+class "features.keyboard-bindings.KeyboardBindings" as features_keyboard_bindings_KeyboardBindings_Functions {
+  <<javascript module>>
+  +KeyboardBindings()
+  +isKey()
+}
+class "features.element-support.ElementSupport" as features_element_support_ElementSupport_Functions {
+  <<javascript module>>
+  +isLabel()
+  +ElementSupport()
+}
+class "features.colored-scopes.ColoredScopes" as features_colored_scopes_ColoredScopes_Functions {
+  <<javascript module>>
+  +ColoredScopes()
+}
+class "features.show-scopes.ShowScopes" as features_show_scopes_ShowScopes_Functions {
+  <<javascript module>>
+  +ShowScopes()
+}
+class "features.simulation-state.SimulationState" as features_simulation_state_SimulationState_Functions {
+  <<javascript module>>
+  +SimulationState()
+}
+class "features.simulation-styles.SimulationStyles" as features_simulation_styles_SimulationStyles_Functions {
+  <<javascript module>>
+  +SimulationStyles()
+  +getComputedStyleMock()
+}
+class "features.reset-simulation.ResetSimulation" as features_reset_simulation_ResetSimulation_Functions {
+  <<javascript module>>
+  +ResetSimulation()
+}
+class "features.exclusive-gateway-settings.ExclusiveGatewaySettings" as features_exclusive_gateway_settings_ExclusiveGatewaySettings_Functions {
+  <<javascript module>>
+  +getNext()
+  +isSequenceFlow()
+  +ExclusiveGatewaySettings()
+}
+class "features.palette.Palette" as features_palette_Palette_Functions {
+  <<javascript module>>
+  +Palette()
+}
+class "features.pause-simulation.PauseSimulation" as features_pause_simulation_PauseSimulation_Functions {
+  <<javascript module>>
+  +PauseSimulation()
+}
+class "toggle-mode.modeler.ToggleMode" as toggle_mode_modeler_ToggleMode_Functions {
+  <<javascript module>>
+  +ToggleMode()
+}
+class "toggle-mode.viewer.ToggleMode" as toggle_mode_viewer_ToggleMode_Functions {
+  <<javascript module>>
+  +ToggleMode()
+}
+class "context-pads.handler.TriggerHandler" as context_pads_handler_TriggerHandler_Functions {
+  <<javascript module>>
+  +TriggerHandler()
+  +contexts()
+  +action()
+}
+class "context-pads.handler.InclusiveGatewayHandler" as context_pads_handler_InclusiveGatewayHandler_Functions {
+  <<javascript module>>
+  +InclusiveGatewayHandler()
+  +action()
+}
+class "context-pads.handler.ExclusiveGatewayHandler" as context_pads_handler_ExclusiveGatewayHandler_Functions {
+  <<javascript module>>
+  +ExclusiveGatewayHandler()
+  +action()
+}
+class "context-pads.handler.PauseHandler" as context_pads_handler_PauseHandler_Functions {
+  <<javascript module>>
+  +PauseHandler()
+  +contexts()
+  +action()
 }
 class "animation.behaviors.AnimatedMessageFlowBehavior" as animation_behaviors_AnimatedMessageFlowBehavior_Functions {
   <<javascript module>>
@@ -254,89 +447,15 @@ class "animation.behaviors.AnimatedSequenceFlowBehavior" as animation_behaviors_
   <<javascript module>>
   +AnimatedSequenceFlowBehavior()
 }
-class "simulator.behaviors.ExclusiveGatewayBehavior" as simulator_behaviors_ExclusiveGatewayBehavior_Functions {
-  <<javascript module>>
-  +ExclusiveGatewayBehavior()
-}
-class "simulator.behaviors.ScopeBehavior" as simulator_behaviors_ScopeBehavior_Functions {
-  <<javascript module>>
-  +ScopeBehavior()
-  +matchScope()
-}
-class "simulator.behaviors.IntermediateCatchEventBehavior" as simulator_behaviors_IntermediateCatchEventBehavior_Functions {
-  <<javascript module>>
-  +IntermediateCatchEventBehavior()
-}
-class "simulator.behaviors.ParallelGatewayBehavior" as simulator_behaviors_ParallelGatewayBehavior_Functions {
-  <<javascript module>>
-  +ParallelGatewayBehavior()
-}
-class "simulator.behaviors.EventBasedGatewayBehavior" as simulator_behaviors_EventBasedGatewayBehavior_Functions {
-  <<javascript module>>
-  +EventBasedGatewayBehavior()
-  +getTriggers()
-}
-class "simulator.behaviors.StartEventBehavior" as simulator_behaviors_StartEventBehavior_Functions {
-  <<javascript module>>
-  +StartEventBehavior()
-}
-class "simulator.behaviors.EndEventBehavior" as simulator_behaviors_EndEventBehavior_Functions {
-  <<javascript module>>
-  +EndEventBehavior()
-}
-class "simulator.behaviors.SequenceFlowBehavior" as simulator_behaviors_SequenceFlowBehavior_Functions {
-  <<javascript module>>
-  +SequenceFlowBehavior()
-}
-class "simulator.behaviors.SubProcessBehavior" as simulator_behaviors_SubProcessBehavior_Functions {
-  <<javascript module>>
-  +SubProcessBehavior()
-  +isTransaction()
-}
-class "simulator.behaviors.ActivityBehavior" as simulator_behaviors_ActivityBehavior_Functions {
-  <<javascript module>>
-  +ActivityBehavior()
-  +sortByReference()
-  +first()
-  +last()
-}
-class "simulator.behaviors.EventBehaviors" as simulator_behaviors_EventBehaviors_Functions {
-  <<javascript module>>
-  +EventBehaviors()
-  +getLinkDefinition()
-  +findSubscriptionScope()
-}
-class "simulator.behaviors.MessageFlowBehavior" as simulator_behaviors_MessageFlowBehavior_Functions {
-  <<javascript module>>
-  +MessageFlowBehavior()
-}
-class "simulator.behaviors.InclusiveGatewayBehavior" as simulator_behaviors_InclusiveGatewayBehavior_Functions {
-  <<javascript module>>
-  +InclusiveGatewayBehavior()
-  +getLinkName()
-  +filterLinkThrowEvents()
-}
-class "simulator.behaviors.IntermediateThrowEventBehavior" as simulator_behaviors_IntermediateThrowEventBehavior_Functions {
-  <<javascript module>>
-  +IntermediateThrowEventBehavior()
-}
-class "simulator.behaviors.TransactionBehavior" as simulator_behaviors_TransactionBehavior_Functions {
-  <<javascript module>>
-  +TransactionBehavior()
-  +noTransactionContext()
-}
-class "simulator.behaviors.BoundaryEventBehavior" as simulator_behaviors_BoundaryEventBehavior_Functions {
-  <<javascript module>>
-  +BoundaryEventBehavior()
-}
-class "simulator.behaviors.ProcessBehavior" as simulator_behaviors_ProcessBehavior_Functions {
-  <<javascript module>>
-  +ProcessBehavior()
-}
 class "simulator.util.EventsUtil" as simulator_util_EventsUtil_Functions {
   <<javascript module>>
   +eventsMatch()
   +refsMatch()
+}
+class "simulator.util.SetUtil" as simulator_util_SetUtil_Functions {
+  <<javascript module>>
+  +filterSet()
+  +findSet()
 }
 class "simulator.util.ModelUtil" as simulator_util_ModelUtil_Functions {
   <<javascript module>>
@@ -360,150 +479,148 @@ class "simulator.util.ModelUtil" as simulator_util_ModelUtil_Functions {
   +isTypedEvent()
   +getChildren()
 }
-class "simulator.util.SetUtil" as simulator_util_SetUtil_Functions {
+class "simulator.behaviors.SubProcessBehavior" as simulator_behaviors_SubProcessBehavior_Functions {
   <<javascript module>>
-  +filterSet()
-  +findSet()
+  +SubProcessBehavior()
+  +isTransaction()
 }
-class "features.log.Log" as features_log_Log_Functions {
+class "simulator.behaviors.ParallelGatewayBehavior" as simulator_behaviors_ParallelGatewayBehavior_Functions {
   <<javascript module>>
-  +getElementName()
-  +getIconForIntermediateEvent()
-  +getEventTypeString()
-  +Log()
+  +ParallelGatewayBehavior()
 }
-class "features.show-scopes.ShowScopes" as features_show_scopes_ShowScopes_Functions {
+class "simulator.behaviors.StartEventBehavior" as simulator_behaviors_StartEventBehavior_Functions {
   <<javascript module>>
-  +ShowScopes()
+  +StartEventBehavior()
 }
-class "features.token-count.TokenCount" as features_token_count_TokenCount_Functions {
+class "simulator.behaviors.EventBehaviors" as simulator_behaviors_EventBehaviors_Functions {
   <<javascript module>>
-  +TokenCount()
+  +EventBehaviors()
+  +getLinkDefinition()
+  +findSubscriptionScope()
 }
-class "features.scope-filter.ScopeFilter" as features_scope_filter_ScopeFilter_Functions {
+class "simulator.behaviors.EventBasedGatewayBehavior" as simulator_behaviors_EventBasedGatewayBehavior_Functions {
   <<javascript module>>
-  +DEFAULT_SCOPE_FILTER()
-  +ScopeFilter()
+  +EventBasedGatewayBehavior()
+  +getTriggers()
+}
+class "simulator.behaviors.IntermediateCatchEventBehavior" as simulator_behaviors_IntermediateCatchEventBehavior_Functions {
+  <<javascript module>>
+  +IntermediateCatchEventBehavior()
+}
+class "simulator.behaviors.ProcessBehavior" as simulator_behaviors_ProcessBehavior_Functions {
+  <<javascript module>>
+  +ProcessBehavior()
+}
+class "simulator.behaviors.MessageFlowBehavior" as simulator_behaviors_MessageFlowBehavior_Functions {
+  <<javascript module>>
+  +MessageFlowBehavior()
+}
+class "simulator.behaviors.SequenceFlowBehavior" as simulator_behaviors_SequenceFlowBehavior_Functions {
+  <<javascript module>>
+  +SequenceFlowBehavior()
+}
+class "simulator.behaviors.BoundaryEventBehavior" as simulator_behaviors_BoundaryEventBehavior_Functions {
+  <<javascript module>>
+  +BoundaryEventBehavior()
+}
+class "simulator.behaviors.ScopeBehavior" as simulator_behaviors_ScopeBehavior_Functions {
+  <<javascript module>>
+  +ScopeBehavior()
+  +matchScope()
+}
+class "simulator.behaviors.ActivityBehavior" as simulator_behaviors_ActivityBehavior_Functions {
+  <<javascript module>>
+  +ActivityBehavior()
+  +sortByReference()
+  +first()
+  +last()
+}
+class "simulator.behaviors.ExclusiveGatewayBehavior" as simulator_behaviors_ExclusiveGatewayBehavior_Functions {
+  <<javascript module>>
+  +ExclusiveGatewayBehavior()
+}
+class "simulator.behaviors.TransactionBehavior" as simulator_behaviors_TransactionBehavior_Functions {
+  <<javascript module>>
+  +TransactionBehavior()
+  +noTransactionContext()
+}
+class "simulator.behaviors.EndEventBehavior" as simulator_behaviors_EndEventBehavior_Functions {
+  <<javascript module>>
+  +EndEventBehavior()
+}
+class "simulator.behaviors.IntermediateThrowEventBehavior" as simulator_behaviors_IntermediateThrowEventBehavior_Functions {
+  <<javascript module>>
+  +IntermediateThrowEventBehavior()
+}
+class "simulator.behaviors.InclusiveGatewayBehavior" as simulator_behaviors_InclusiveGatewayBehavior_Functions {
+  <<javascript module>>
+  +InclusiveGatewayBehavior()
+  +getLinkName()
+  +filterLinkThrowEvents()
+}
+class "bpmnlint-plugin-sese.rules.task-has-duration" as bpmnlint_plugin_sese_rules_task_has_duration_Functions {
+  <<javascript module>>
+  +check()
+  +isTask()
+}
+class "bpmnlint-plugin-sese.rules.task-has-impact" as bpmnlint_plugin_sese_rules_task_has_impact_Functions {
+  <<javascript module>>
+  +check()
+  +isTask()
+}
+class "bpmnlint-plugin-sese.rules.no-diagram-overlaps" as bpmnlint_plugin_sese_rules_no_diagram_overlaps_Functions {
+  <<javascript module>>
+  +check()
+  +reportShapeOverlaps()
+  +reportLabelOverlaps()
+  +reportEdgesThroughShapes()
+  +reportEdgesOverLabels()
+  +reportSharedLines()
+  +sharedDockings()
+  +withoutTrunks()
+  +readPlane()
+  +isFrame()
+  +isExpandedSubProcess()
+  +sidePositions()
+  +indexShapes()
+  +shapesCovering()
+  +references()
+  +isLabelExternal()
+  +labelText()
+  +toBox()
+  +intersection()
+  +contains()
+  +covers()
+  +segments()
+  +clipPolyline()
+  +clipSegment()
+  +sharedPiece()
+  +joinPieces()
+  +findJoin()
+  +isOnLine()
+  +along()
+  +pointAlong()
+  +distance()
+  +boundsOf()
+  +cellsOf()
+  +isWide()
+  +widePositions()
+  +cellKey()
+  +forEachCellKey()
+  +gridOf()
+  +forEachNearPair()
+  +forEachNearCrossPair()
+  +boxesOf()
+  +ascending()
   +isAncestor()
-}
-class "features.selection-api.SelectionAPI" as features_selection_api_SelectionAPI_Functions {
-  <<javascript module>>
-  +SelectionAPI()
-}
-class "features.reset-simulation.ResetSimulation" as features_reset_simulation_ResetSimulation_Functions {
-  <<javascript module>>
-  +ResetSimulation()
-}
-class "features.simulation-state.SimulationState" as features_simulation_state_SimulationState_Functions {
-  <<javascript module>>
-  +SimulationState()
-}
-class "features.palette.Palette" as features_palette_Palette_Functions {
-  <<javascript module>>
-  +Palette()
-}
-class "features.set-animation-speed.SetAnimationSpeed" as features_set_animation_speed_SetAnimationSpeed_Functions {
-  <<javascript module>>
-  +SetAnimationSpeed()
-}
-class "features.exclusive-gateway-settings.ExclusiveGatewaySettings" as features_exclusive_gateway_settings_ExclusiveGatewaySettings_Functions {
-  <<javascript module>>
-  +getNext()
-  +isSequenceFlow()
-  +ExclusiveGatewaySettings()
-}
-class "features.element-colors.ElementColors" as features_element_colors_ElementColors_Functions {
-  <<javascript module>>
-  +ElementColors()
-  +isLabel()
-  +getColorsWithHighestPriority()
-}
-class "features.notifications.Notifications" as features_notifications_Notifications_Functions {
-  <<javascript module>>
-  +Notifications()
-}
-class "features.element-notifications.ElementNotifications" as features_element_notifications_ElementNotifications_Functions {
-  <<javascript module>>
-  +ElementNotifications()
-}
-class "features.disable-modeling.DisableModeling" as features_disable_modeling_DisableModeling_Functions {
-  <<javascript module>>
-  +DisableModeling()
-}
-class "features.editor-actions.EditorActions" as features_editor_actions_EditorActions_Functions {
-  <<javascript module>>
-  +EditorActions()
-}
-class "features.neutral-element-colors.NeutralElementColors" as features_neutral_element_colors_NeutralElementColors_Functions {
-  <<javascript module>>
-  +NeutralElementColors()
-}
-class "features.keyboard-bindings.KeyboardBindings" as features_keyboard_bindings_KeyboardBindings_Functions {
-  <<javascript module>>
-  +KeyboardBindings()
-  +isKey()
-}
-class "features.colored-scopes.ColoredScopes" as features_colored_scopes_ColoredScopes_Functions {
-  <<javascript module>>
-  +ColoredScopes()
-}
-class "features.context-pads.ContextPads" as features_context_pads_ContextPads_Functions {
-  <<javascript module>>
-  +ContextPads()
-  +handler()
-  +triggerAction()
-  +isAncestor()
-  +isKeyboardTrigger()
-}
-class "features.element-support.ElementSupport" as features_element_support_ElementSupport_Functions {
-  <<javascript module>>
-  +isLabel()
-  +ElementSupport()
-}
-class "features.simulation-styles.SimulationStyles" as features_simulation_styles_SimulationStyles_Functions {
-  <<javascript module>>
-  +SimulationStyles()
-  +getComputedStyleMock()
-}
-class "features.inclusive-gateway-settings.InclusiveGatewaySettings" as features_inclusive_gateway_settings_InclusiveGatewaySettings_Functions {
-  <<javascript module>>
-  +InclusiveGatewaySettings()
-  +getDefaultFlow()
-  +getNonDefaultFlows()
-  +without()
-}
-class "features.pause-simulation.PauseSimulation" as features_pause_simulation_PauseSimulation_Functions {
-  <<javascript module>>
-  +PauseSimulation()
-}
-class "toggle-mode.modeler.ToggleMode" as toggle_mode_modeler_ToggleMode_Functions {
-  <<javascript module>>
-  +ToggleMode()
-}
-class "toggle-mode.viewer.ToggleMode" as toggle_mode_viewer_ToggleMode_Functions {
-  <<javascript module>>
-  +ToggleMode()
-}
-class "context-pads.handler.PauseHandler" as context_pads_handler_PauseHandler_Functions {
-  <<javascript module>>
-  +PauseHandler()
-  +contexts()
-  +action()
-}
-class "context-pads.handler.ExclusiveGatewayHandler" as context_pads_handler_ExclusiveGatewayHandler_Functions {
-  <<javascript module>>
-  +ExclusiveGatewayHandler()
-  +action()
-}
-class "context-pads.handler.InclusiveGatewayHandler" as context_pads_handler_InclusiveGatewayHandler_Functions {
-  <<javascript module>>
-  +InclusiveGatewayHandler()
-  +action()
-}
-class "context-pads.handler.TriggerHandler" as context_pads_handler_TriggerHandler_Functions {
-  <<javascript module>>
-  +TriggerHandler()
-  +contexts()
-  +action()
+  +isAttachedTo()
+  +belongTogether()
+  +is()
+  +name()
+  +reportedId()
+  +describe()
+  +area()
+  +point()
+  +stretches()
 }
 @enduml

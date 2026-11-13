@@ -1,4 +1,5 @@
 classDiagram
+%% INHERITANCE: 0 edge(s) drawn, 0 declined -- every base name that resolves here resolves to exactly one class. The check ran; it is not absent.
     %% example/src/sese-properties-provider.js:6
     class example_src_sese_properties_provider_js_SesePropertiesProvider["SesePropertiesProvider"] {
         <<javascript>>
@@ -50,14 +51,14 @@ classDiagram
         +getTokens()
         +getTokensByElement()
     }
+    class run_Functions["run"] {
+        <<batch module>>
+        +parse_args()
+        +end_parse()
+    }
     class tasks_ensure_rollup_binary_Functions["tasks.ensure-rollup-binary"] {
         <<javascript module>>
         +readRollupVersion()
-    }
-    class example_theme_toggle_Functions["example.theme-toggle"] {
-        <<javascript module>>
-        +applyTheme()
-        +init()
     }
     class test_TestHelper_Functions["test.TestHelper"] {
         <<javascript module>>
@@ -65,26 +66,14 @@ classDiagram
         +withBpmnJs()
         +bpmnJsSatisfies()
     }
+    class example_theme_toggle_Functions["example.theme-toggle"] {
+        <<javascript module>>
+        +applyTheme()
+        +init()
+    }
     class icons_index_Functions["icons.index"] {
         <<javascript module>>
         +createIcon()
-    }
-    class example_api_client_Functions["example.api-client"] {
-        <<javascript module>>
-        +executeStep()
-    }
-    class example_sese_properties_provider_Functions["example.sese-properties-provider"] {
-        <<javascript module>>
-        +createDurationGroup()
-        +DurationProps()
-    }
-    class example_sese_validator_Functions["example.sese-validator"] {
-        <<javascript module>>
-        +validateSESE()
-    }
-    class example_utils_Functions["example.utils"] {
-        <<javascript module>>
-        +svgToPng()
     }
     class example_modeler_Functions["example.modeler"] {
         <<javascript module>>
@@ -108,22 +97,72 @@ classDiagram
         +getProcessId()
         +getLatestScopeId()
         +_scopeProcessId()
-        +... (38 more)
+        +_setDisplayId()
+        +elementRegistry()
+        +loadStateSequenceForCurrentDiagram()
+        +getExecutionOrderMap()
+        +showStatePanelMessage()
+        +normalizeStatusClass()
+        +renderStateSnapshot()
+        +replayToIndex()
+        +getOverallStatus()
+        +aggregateByElement()
+        +diffCompletions()
+        +diffActivations()
+        +getSortedTriggers()
+        +waitForTokenDrain()
+        +drainSimulationQueues()
+        +configureExclusiveGateways()
+        +initializeSimulationToStart()
+        +playStates()
+        +_scheduleDropdownRefresh()
+        +_recordMetricsForElement()
+        +_resetHeatmapAccumulators()
+        +_resetHeatmapImpactDiscovery()
+        +_readMetric()
+        +_refreshHeatmapMetricOptions()
+        +createHeatmapOverlay()
+        +getHeatmapFrequencyData()
+        +updateHeatmapData()
+        +toggleHeatmap()
+        +_origPlayStatesEnd()
+        +_syncCurrentNodeId()
+        +navigateForward()
+        +navigateBackward()
+        +requestBranchSwitch()
+        +showBranchDialog()
+        +hideBranchDialog()
+        +showAdvanceDecisionDialog()
+        +updateNavigationUI()
+        +setNavigationVisible()
+    }
+    class example_fit_viewport_Functions["example.fit-viewport"] {
+        <<javascript module>>
+        +paletteFootprint()
+        +viewboxClearOfReserve()
+        +fitViewportClearOfPalette()
+    }
+    class example_api_client_Functions["example.api-client"] {
+        <<javascript module>>
+        +executeStep()
+    }
+    class example_sese_validator_Functions["example.sese-validator"] {
+        <<javascript module>>
+        +validateSESE()
+    }
+    class example_utils_Functions["example.utils"] {
+        <<javascript module>>
+        +svgToPng()
     }
     class example_bpmn_to_json_Functions["example.bpmn-to-json"] {
         <<javascript module>>
         +getType()
         +parseBPMN()
     }
-    class bpmnlint_plugin_sese_rules_task_has_impact_Functions["bpmnlint-plugin-sese.rules.task-has-impact"] {
+    class example_sese_properties_provider_Functions["example.sese-properties-provider"] {
         <<javascript module>>
-        +check()
-        +isTask()
-    }
-    class bpmnlint_plugin_sese_rules_task_has_duration_Functions["bpmnlint-plugin-sese.rules.task-has-duration"] {
-        <<javascript module>>
-        +check()
-        +isTask()
+        +createDurationGroup()
+        +DurationProps()
     }
     class test_mocks_Animation_Functions["test.mocks.Animation"] {
         <<javascript module>>
@@ -138,6 +177,20 @@ classDiagram
         <<javascript module>>
         +expectColors()
     }
+    class test_spec_SeseNoDiagramOverlapsSpec_Functions["test.spec.SeseNoDiagramOverlapsSpec"] {
+        <<javascript module>>
+        +definitions()
+        +lintWith()
+        +lint()
+        +task()
+    }
+    class test_spec_ExamplePaletteSpec_Functions["test.spec.ExamplePaletteSpec"] {
+        <<javascript module>>
+        +screenBox()
+        +elementsUnderPalette()
+        +rect()
+        +expectPanelRuleInForce()
+    }
     class test_spec_SimulationSpec_Functions["test.spec.SimulationSpec"] {
         <<javascript module>>
         +bootstrapModeler()
@@ -151,12 +204,6 @@ classDiagram
         +elementExit()
         +triggerScope()
         +scopeDestroyed()
-    }
-    class spec_animation_AnimationSpec_Functions["spec.animation.AnimationSpec"] {
-        <<javascript module>>
-        +getSimulationSupport()
-        +triggerElement()
-        +elementEnter()
     }
     class spec_simulator_SimulatorSpec_Functions["spec.simulator.SimulatorSpec"] {
         <<javascript module>>
@@ -173,6 +220,20 @@ classDiagram
         +expectDestroyed()
         +expectTrace()
         +verifyTrace()
+    }
+    class spec_animation_AnimationSpec_Functions["spec.animation.AnimationSpec"] {
+        <<javascript module>>
+        +getSimulationSupport()
+        +triggerElement()
+        +elementEnter()
+    }
+    class features_context_pads_ContextPadsSpec_Functions["features.context-pads.ContextPadsSpec"] {
+        <<javascript module>>
+        +bootstrapModeler()
+        +getSimulationSupport()
+        +canTriggerElement()
+        +triggerElement()
+        +elementEnter()
     }
     class features_log_LogSpec_Functions["features.log.LogSpec"] {
         <<javascript module>>
@@ -191,27 +252,19 @@ classDiagram
         +triggerElement()
         +elementEnter()
     }
-    class features_context_pads_ContextPadsSpec_Functions["features.context-pads.ContextPadsSpec"] {
+    class simulator_Simulator_Functions["simulator.Simulator"] {
         <<javascript module>>
-        +bootstrapModeler()
-        +getSimulationSupport()
-        +canTriggerElement()
-        +triggerElement()
-        +elementEnter()
+        +Simulator()
+        +NoopBehavior()
+        +isRethrow()
+        +isImplicitMessageCatch()
+        +isSpecialBoundaryEvent()
+        +getEventDefinitions()
     }
-    class simulation_support_SimulationTraceEvents_Functions["simulation-support.SimulationTraceEvents"] {
+    class simulator_ScopeStates_Functions["simulator.ScopeStates"] {
         <<javascript module>>
-        +SimulationTraceEvents()
-    }
-    class simulation_support_SimulationSupport_Functions["simulation-support.SimulationSupport"] {
-        <<javascript module>>
-        +SimulationSupport()
-        +listener()
-        +ifElement()
-    }
-    class simulation_support_SimulationTrace_Functions["simulation-support.SimulationTrace"] {
-        <<javascript module>>
-        +SimulationTrace()
+        +illegalTransition()
+        +orSelf()
     }
     class animation_Animation_Functions["animation.Animation"] {
         <<javascript module>>
@@ -227,24 +280,164 @@ classDiagram
         +randomBetween()
         +distance()
     }
-    class simulator_Simulator_Functions["simulator.Simulator"] {
+    class simulation_support_SimulationTrace_Functions["simulation-support.SimulationTrace"] {
         <<javascript module>>
-        +Simulator()
-        +NoopBehavior()
-        +isRethrow()
-        +isImplicitMessageCatch()
-        +isSpecialBoundaryEvent()
-        +getEventDefinitions()
+        +SimulationTrace()
     }
-    class simulator_ScopeStates_Functions["simulator.ScopeStates"] {
+    class simulation_support_SimulationTraceEvents_Functions["simulation-support.SimulationTraceEvents"] {
         <<javascript module>>
-        +illegalTransition()
-        +orSelf()
+        +SimulationTraceEvents()
+    }
+    class simulation_support_SimulationSupport_Functions["simulation-support.SimulationSupport"] {
+        <<javascript module>>
+        +SimulationSupport()
+        +listener()
+        +ifElement()
     }
     class util_ElementHelper_Functions["util.ElementHelper"] {
         <<javascript module>>
         +getEventDefinition()
         +isTypedEvent()
+    }
+    class features_neutral_element_colors_NeutralElementColors_Functions["features.neutral-element-colors.NeutralElementColors"] {
+        <<javascript module>>
+        +NeutralElementColors()
+    }
+    class features_inclusive_gateway_settings_InclusiveGatewaySettings_Functions["features.inclusive-gateway-settings.InclusiveGatewaySettings"] {
+        <<javascript module>>
+        +InclusiveGatewaySettings()
+        +getDefaultFlow()
+        +getNonDefaultFlows()
+        +without()
+    }
+    class features_context_pads_ContextPads_Functions["features.context-pads.ContextPads"] {
+        <<javascript module>>
+        +ContextPads()
+        +triggerAction()
+        +isAncestor()
+        +isKeyboardTrigger()
+    }
+    class features_editor_actions_EditorActions_Functions["features.editor-actions.EditorActions"] {
+        <<javascript module>>
+        +EditorActions()
+    }
+    class features_token_count_TokenCount_Functions["features.token-count.TokenCount"] {
+        <<javascript module>>
+        +TokenCount()
+    }
+    class features_disable_modeling_DisableModeling_Functions["features.disable-modeling.DisableModeling"] {
+        <<javascript module>>
+        +DisableModeling()
+    }
+    class features_scope_filter_ScopeFilter_Functions["features.scope-filter.ScopeFilter"] {
+        <<javascript module>>
+        +DEFAULT_SCOPE_FILTER()
+        +ScopeFilter()
+        +isAncestor()
+    }
+    class features_element_notifications_ElementNotifications_Functions["features.element-notifications.ElementNotifications"] {
+        <<javascript module>>
+        +ElementNotifications()
+    }
+    class features_set_animation_speed_SetAnimationSpeed_Functions["features.set-animation-speed.SetAnimationSpeed"] {
+        <<javascript module>>
+        +SetAnimationSpeed()
+    }
+    class features_element_colors_ElementColors_Functions["features.element-colors.ElementColors"] {
+        <<javascript module>>
+        +ElementColors()
+        +isLabel()
+        +getColorsWithHighestPriority()
+    }
+    class features_log_Log_Functions["features.log.Log"] {
+        <<javascript module>>
+        +getElementName()
+        +getIconForIntermediateEvent()
+        +getEventTypeString()
+        +Log()
+    }
+    class features_selection_api_SelectionAPI_Functions["features.selection-api.SelectionAPI"] {
+        <<javascript module>>
+        +SelectionAPI()
+    }
+    class features_notifications_Notifications_Functions["features.notifications.Notifications"] {
+        <<javascript module>>
+        +Notifications()
+    }
+    class features_keyboard_bindings_KeyboardBindings_Functions["features.keyboard-bindings.KeyboardBindings"] {
+        <<javascript module>>
+        +KeyboardBindings()
+        +isKey()
+    }
+    class features_element_support_ElementSupport_Functions["features.element-support.ElementSupport"] {
+        <<javascript module>>
+        +isLabel()
+        +ElementSupport()
+    }
+    class features_colored_scopes_ColoredScopes_Functions["features.colored-scopes.ColoredScopes"] {
+        <<javascript module>>
+        +ColoredScopes()
+    }
+    class features_show_scopes_ShowScopes_Functions["features.show-scopes.ShowScopes"] {
+        <<javascript module>>
+        +ShowScopes()
+    }
+    class features_simulation_state_SimulationState_Functions["features.simulation-state.SimulationState"] {
+        <<javascript module>>
+        +SimulationState()
+    }
+    class features_simulation_styles_SimulationStyles_Functions["features.simulation-styles.SimulationStyles"] {
+        <<javascript module>>
+        +SimulationStyles()
+        +getComputedStyleMock()
+    }
+    class features_reset_simulation_ResetSimulation_Functions["features.reset-simulation.ResetSimulation"] {
+        <<javascript module>>
+        +ResetSimulation()
+    }
+    class features_exclusive_gateway_settings_ExclusiveGatewaySettings_Functions["features.exclusive-gateway-settings.ExclusiveGatewaySettings"] {
+        <<javascript module>>
+        +getNext()
+        +isSequenceFlow()
+        +ExclusiveGatewaySettings()
+    }
+    class features_palette_Palette_Functions["features.palette.Palette"] {
+        <<javascript module>>
+        +Palette()
+    }
+    class features_pause_simulation_PauseSimulation_Functions["features.pause-simulation.PauseSimulation"] {
+        <<javascript module>>
+        +PauseSimulation()
+    }
+    class toggle_mode_modeler_ToggleMode_Functions["toggle-mode.modeler.ToggleMode"] {
+        <<javascript module>>
+        +ToggleMode()
+    }
+    class toggle_mode_viewer_ToggleMode_Functions["toggle-mode.viewer.ToggleMode"] {
+        <<javascript module>>
+        +ToggleMode()
+    }
+    class context_pads_handler_TriggerHandler_Functions["context-pads.handler.TriggerHandler"] {
+        <<javascript module>>
+        +TriggerHandler()
+        +contexts()
+        +action()
+    }
+    class context_pads_handler_InclusiveGatewayHandler_Functions["context-pads.handler.InclusiveGatewayHandler"] {
+        <<javascript module>>
+        +InclusiveGatewayHandler()
+        +action()
+    }
+    class context_pads_handler_ExclusiveGatewayHandler_Functions["context-pads.handler.ExclusiveGatewayHandler"] {
+        <<javascript module>>
+        +ExclusiveGatewayHandler()
+        +action()
+    }
+    class context_pads_handler_PauseHandler_Functions["context-pads.handler.PauseHandler"] {
+        <<javascript module>>
+        +PauseHandler()
+        +contexts()
+        +action()
     }
     class animation_behaviors_AnimatedMessageFlowBehavior_Functions["animation.behaviors.AnimatedMessageFlowBehavior"] {
         <<javascript module>>
@@ -254,89 +447,15 @@ classDiagram
         <<javascript module>>
         +AnimatedSequenceFlowBehavior()
     }
-    class simulator_behaviors_ExclusiveGatewayBehavior_Functions["simulator.behaviors.ExclusiveGatewayBehavior"] {
-        <<javascript module>>
-        +ExclusiveGatewayBehavior()
-    }
-    class simulator_behaviors_ScopeBehavior_Functions["simulator.behaviors.ScopeBehavior"] {
-        <<javascript module>>
-        +ScopeBehavior()
-        +matchScope()
-    }
-    class simulator_behaviors_IntermediateCatchEventBehavior_Functions["simulator.behaviors.IntermediateCatchEventBehavior"] {
-        <<javascript module>>
-        +IntermediateCatchEventBehavior()
-    }
-    class simulator_behaviors_ParallelGatewayBehavior_Functions["simulator.behaviors.ParallelGatewayBehavior"] {
-        <<javascript module>>
-        +ParallelGatewayBehavior()
-    }
-    class simulator_behaviors_EventBasedGatewayBehavior_Functions["simulator.behaviors.EventBasedGatewayBehavior"] {
-        <<javascript module>>
-        +EventBasedGatewayBehavior()
-        +getTriggers()
-    }
-    class simulator_behaviors_StartEventBehavior_Functions["simulator.behaviors.StartEventBehavior"] {
-        <<javascript module>>
-        +StartEventBehavior()
-    }
-    class simulator_behaviors_EndEventBehavior_Functions["simulator.behaviors.EndEventBehavior"] {
-        <<javascript module>>
-        +EndEventBehavior()
-    }
-    class simulator_behaviors_SequenceFlowBehavior_Functions["simulator.behaviors.SequenceFlowBehavior"] {
-        <<javascript module>>
-        +SequenceFlowBehavior()
-    }
-    class simulator_behaviors_SubProcessBehavior_Functions["simulator.behaviors.SubProcessBehavior"] {
-        <<javascript module>>
-        +SubProcessBehavior()
-        +isTransaction()
-    }
-    class simulator_behaviors_ActivityBehavior_Functions["simulator.behaviors.ActivityBehavior"] {
-        <<javascript module>>
-        +ActivityBehavior()
-        +sortByReference()
-        +first()
-        +last()
-    }
-    class simulator_behaviors_EventBehaviors_Functions["simulator.behaviors.EventBehaviors"] {
-        <<javascript module>>
-        +EventBehaviors()
-        +getLinkDefinition()
-        +findSubscriptionScope()
-    }
-    class simulator_behaviors_MessageFlowBehavior_Functions["simulator.behaviors.MessageFlowBehavior"] {
-        <<javascript module>>
-        +MessageFlowBehavior()
-    }
-    class simulator_behaviors_InclusiveGatewayBehavior_Functions["simulator.behaviors.InclusiveGatewayBehavior"] {
-        <<javascript module>>
-        +InclusiveGatewayBehavior()
-        +getLinkName()
-        +filterLinkThrowEvents()
-    }
-    class simulator_behaviors_IntermediateThrowEventBehavior_Functions["simulator.behaviors.IntermediateThrowEventBehavior"] {
-        <<javascript module>>
-        +IntermediateThrowEventBehavior()
-    }
-    class simulator_behaviors_TransactionBehavior_Functions["simulator.behaviors.TransactionBehavior"] {
-        <<javascript module>>
-        +TransactionBehavior()
-        +noTransactionContext()
-    }
-    class simulator_behaviors_BoundaryEventBehavior_Functions["simulator.behaviors.BoundaryEventBehavior"] {
-        <<javascript module>>
-        +BoundaryEventBehavior()
-    }
-    class simulator_behaviors_ProcessBehavior_Functions["simulator.behaviors.ProcessBehavior"] {
-        <<javascript module>>
-        +ProcessBehavior()
-    }
     class simulator_util_EventsUtil_Functions["simulator.util.EventsUtil"] {
         <<javascript module>>
         +eventsMatch()
         +refsMatch()
+    }
+    class simulator_util_SetUtil_Functions["simulator.util.SetUtil"] {
+        <<javascript module>>
+        +filterSet()
+        +findSet()
     }
     class simulator_util_ModelUtil_Functions["simulator.util.ModelUtil"] {
         <<javascript module>>
@@ -360,149 +479,147 @@ classDiagram
         +isTypedEvent()
         +getChildren()
     }
-    class simulator_util_SetUtil_Functions["simulator.util.SetUtil"] {
+    class simulator_behaviors_SubProcessBehavior_Functions["simulator.behaviors.SubProcessBehavior"] {
         <<javascript module>>
-        +filterSet()
-        +findSet()
+        +SubProcessBehavior()
+        +isTransaction()
     }
-    class features_log_Log_Functions["features.log.Log"] {
+    class simulator_behaviors_ParallelGatewayBehavior_Functions["simulator.behaviors.ParallelGatewayBehavior"] {
         <<javascript module>>
-        +getElementName()
-        +getIconForIntermediateEvent()
-        +getEventTypeString()
-        +Log()
+        +ParallelGatewayBehavior()
     }
-    class features_show_scopes_ShowScopes_Functions["features.show-scopes.ShowScopes"] {
+    class simulator_behaviors_StartEventBehavior_Functions["simulator.behaviors.StartEventBehavior"] {
         <<javascript module>>
-        +ShowScopes()
+        +StartEventBehavior()
     }
-    class features_token_count_TokenCount_Functions["features.token-count.TokenCount"] {
+    class simulator_behaviors_EventBehaviors_Functions["simulator.behaviors.EventBehaviors"] {
         <<javascript module>>
-        +TokenCount()
+        +EventBehaviors()
+        +getLinkDefinition()
+        +findSubscriptionScope()
     }
-    class features_scope_filter_ScopeFilter_Functions["features.scope-filter.ScopeFilter"] {
+    class simulator_behaviors_EventBasedGatewayBehavior_Functions["simulator.behaviors.EventBasedGatewayBehavior"] {
         <<javascript module>>
-        +DEFAULT_SCOPE_FILTER()
-        +ScopeFilter()
+        +EventBasedGatewayBehavior()
+        +getTriggers()
+    }
+    class simulator_behaviors_IntermediateCatchEventBehavior_Functions["simulator.behaviors.IntermediateCatchEventBehavior"] {
+        <<javascript module>>
+        +IntermediateCatchEventBehavior()
+    }
+    class simulator_behaviors_ProcessBehavior_Functions["simulator.behaviors.ProcessBehavior"] {
+        <<javascript module>>
+        +ProcessBehavior()
+    }
+    class simulator_behaviors_MessageFlowBehavior_Functions["simulator.behaviors.MessageFlowBehavior"] {
+        <<javascript module>>
+        +MessageFlowBehavior()
+    }
+    class simulator_behaviors_SequenceFlowBehavior_Functions["simulator.behaviors.SequenceFlowBehavior"] {
+        <<javascript module>>
+        +SequenceFlowBehavior()
+    }
+    class simulator_behaviors_BoundaryEventBehavior_Functions["simulator.behaviors.BoundaryEventBehavior"] {
+        <<javascript module>>
+        +BoundaryEventBehavior()
+    }
+    class simulator_behaviors_ScopeBehavior_Functions["simulator.behaviors.ScopeBehavior"] {
+        <<javascript module>>
+        +ScopeBehavior()
+        +matchScope()
+    }
+    class simulator_behaviors_ActivityBehavior_Functions["simulator.behaviors.ActivityBehavior"] {
+        <<javascript module>>
+        +ActivityBehavior()
+        +sortByReference()
+        +first()
+        +last()
+    }
+    class simulator_behaviors_ExclusiveGatewayBehavior_Functions["simulator.behaviors.ExclusiveGatewayBehavior"] {
+        <<javascript module>>
+        +ExclusiveGatewayBehavior()
+    }
+    class simulator_behaviors_TransactionBehavior_Functions["simulator.behaviors.TransactionBehavior"] {
+        <<javascript module>>
+        +TransactionBehavior()
+        +noTransactionContext()
+    }
+    class simulator_behaviors_EndEventBehavior_Functions["simulator.behaviors.EndEventBehavior"] {
+        <<javascript module>>
+        +EndEventBehavior()
+    }
+    class simulator_behaviors_IntermediateThrowEventBehavior_Functions["simulator.behaviors.IntermediateThrowEventBehavior"] {
+        <<javascript module>>
+        +IntermediateThrowEventBehavior()
+    }
+    class simulator_behaviors_InclusiveGatewayBehavior_Functions["simulator.behaviors.InclusiveGatewayBehavior"] {
+        <<javascript module>>
+        +InclusiveGatewayBehavior()
+        +getLinkName()
+        +filterLinkThrowEvents()
+    }
+    class bpmnlint_plugin_sese_rules_task_has_duration_Functions["bpmnlint-plugin-sese.rules.task-has-duration"] {
+        <<javascript module>>
+        +check()
+        +isTask()
+    }
+    class bpmnlint_plugin_sese_rules_task_has_impact_Functions["bpmnlint-plugin-sese.rules.task-has-impact"] {
+        <<javascript module>>
+        +check()
+        +isTask()
+    }
+    class bpmnlint_plugin_sese_rules_no_diagram_overlaps_Functions["bpmnlint-plugin-sese.rules.no-diagram-overlaps"] {
+        <<javascript module>>
+        +check()
+        +reportShapeOverlaps()
+        +reportLabelOverlaps()
+        +reportEdgesThroughShapes()
+        +reportEdgesOverLabels()
+        +reportSharedLines()
+        +sharedDockings()
+        +withoutTrunks()
+        +readPlane()
+        +isFrame()
+        +isExpandedSubProcess()
+        +sidePositions()
+        +indexShapes()
+        +shapesCovering()
+        +references()
+        +isLabelExternal()
+        +labelText()
+        +toBox()
+        +intersection()
+        +contains()
+        +covers()
+        +segments()
+        +clipPolyline()
+        +clipSegment()
+        +sharedPiece()
+        +joinPieces()
+        +findJoin()
+        +isOnLine()
+        +along()
+        +pointAlong()
+        +distance()
+        +boundsOf()
+        +cellsOf()
+        +isWide()
+        +widePositions()
+        +cellKey()
+        +forEachCellKey()
+        +gridOf()
+        +forEachNearPair()
+        +forEachNearCrossPair()
+        +boxesOf()
+        +ascending()
         +isAncestor()
-    }
-    class features_selection_api_SelectionAPI_Functions["features.selection-api.SelectionAPI"] {
-        <<javascript module>>
-        +SelectionAPI()
-    }
-    class features_reset_simulation_ResetSimulation_Functions["features.reset-simulation.ResetSimulation"] {
-        <<javascript module>>
-        +ResetSimulation()
-    }
-    class features_simulation_state_SimulationState_Functions["features.simulation-state.SimulationState"] {
-        <<javascript module>>
-        +SimulationState()
-    }
-    class features_palette_Palette_Functions["features.palette.Palette"] {
-        <<javascript module>>
-        +Palette()
-    }
-    class features_set_animation_speed_SetAnimationSpeed_Functions["features.set-animation-speed.SetAnimationSpeed"] {
-        <<javascript module>>
-        +SetAnimationSpeed()
-    }
-    class features_exclusive_gateway_settings_ExclusiveGatewaySettings_Functions["features.exclusive-gateway-settings.ExclusiveGatewaySettings"] {
-        <<javascript module>>
-        +getNext()
-        +isSequenceFlow()
-        +ExclusiveGatewaySettings()
-    }
-    class features_element_colors_ElementColors_Functions["features.element-colors.ElementColors"] {
-        <<javascript module>>
-        +ElementColors()
-        +isLabel()
-        +getColorsWithHighestPriority()
-    }
-    class features_notifications_Notifications_Functions["features.notifications.Notifications"] {
-        <<javascript module>>
-        +Notifications()
-    }
-    class features_element_notifications_ElementNotifications_Functions["features.element-notifications.ElementNotifications"] {
-        <<javascript module>>
-        +ElementNotifications()
-    }
-    class features_disable_modeling_DisableModeling_Functions["features.disable-modeling.DisableModeling"] {
-        <<javascript module>>
-        +DisableModeling()
-    }
-    class features_editor_actions_EditorActions_Functions["features.editor-actions.EditorActions"] {
-        <<javascript module>>
-        +EditorActions()
-    }
-    class features_neutral_element_colors_NeutralElementColors_Functions["features.neutral-element-colors.NeutralElementColors"] {
-        <<javascript module>>
-        +NeutralElementColors()
-    }
-    class features_keyboard_bindings_KeyboardBindings_Functions["features.keyboard-bindings.KeyboardBindings"] {
-        <<javascript module>>
-        +KeyboardBindings()
-        +isKey()
-    }
-    class features_colored_scopes_ColoredScopes_Functions["features.colored-scopes.ColoredScopes"] {
-        <<javascript module>>
-        +ColoredScopes()
-    }
-    class features_context_pads_ContextPads_Functions["features.context-pads.ContextPads"] {
-        <<javascript module>>
-        +ContextPads()
-        +handler()
-        +triggerAction()
-        +isAncestor()
-        +isKeyboardTrigger()
-    }
-    class features_element_support_ElementSupport_Functions["features.element-support.ElementSupport"] {
-        <<javascript module>>
-        +isLabel()
-        +ElementSupport()
-    }
-    class features_simulation_styles_SimulationStyles_Functions["features.simulation-styles.SimulationStyles"] {
-        <<javascript module>>
-        +SimulationStyles()
-        +getComputedStyleMock()
-    }
-    class features_inclusive_gateway_settings_InclusiveGatewaySettings_Functions["features.inclusive-gateway-settings.InclusiveGatewaySettings"] {
-        <<javascript module>>
-        +InclusiveGatewaySettings()
-        +getDefaultFlow()
-        +getNonDefaultFlows()
-        +without()
-    }
-    class features_pause_simulation_PauseSimulation_Functions["features.pause-simulation.PauseSimulation"] {
-        <<javascript module>>
-        +PauseSimulation()
-    }
-    class toggle_mode_modeler_ToggleMode_Functions["toggle-mode.modeler.ToggleMode"] {
-        <<javascript module>>
-        +ToggleMode()
-    }
-    class toggle_mode_viewer_ToggleMode_Functions["toggle-mode.viewer.ToggleMode"] {
-        <<javascript module>>
-        +ToggleMode()
-    }
-    class context_pads_handler_PauseHandler_Functions["context-pads.handler.PauseHandler"] {
-        <<javascript module>>
-        +PauseHandler()
-        +contexts()
-        +action()
-    }
-    class context_pads_handler_ExclusiveGatewayHandler_Functions["context-pads.handler.ExclusiveGatewayHandler"] {
-        <<javascript module>>
-        +ExclusiveGatewayHandler()
-        +action()
-    }
-    class context_pads_handler_InclusiveGatewayHandler_Functions["context-pads.handler.InclusiveGatewayHandler"] {
-        <<javascript module>>
-        +InclusiveGatewayHandler()
-        +action()
-    }
-    class context_pads_handler_TriggerHandler_Functions["context-pads.handler.TriggerHandler"] {
-        <<javascript module>>
-        +TriggerHandler()
-        +contexts()
-        +action()
+        +isAttachedTo()
+        +belongTogether()
+        +is()
+        +name()
+        +reportedId()
+        +describe()
+        +area()
+        +point()
+        +stretches()
     }
