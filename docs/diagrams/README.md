@@ -11,10 +11,10 @@ one machine happened to mount them. Regenerate them rather than editing them.
 | file | what it shows | formats |
 |---|---|---|
 | `ast-class_diagram.*` | types with their members | .dot, .mmd, .puml |
-| `ast-call_graph.*` | who calls whom | .dot, .mmd, .puml |
+| `ast-call_graph.*` | who calls whom | .dot, .puml |
 | `ast-component_diagram.*` | one component per file, with its function count | .dot, .mmd, .puml |
 | `ast-package_diagram.*` | packages and their import dependencies | .dot, .mmd, .puml |
-| `state_diagram.*` | the MDP built from the BPMN model of this code | .mmd, .puml |
+| `state_diagram.*` | the MDP built from the BPMN model of this code | .puml |
 
 ## Read the header before quoting a number
 
@@ -23,9 +23,9 @@ render, says so in its first lines:
 
 - `ast-call_graph`
   - `.dot`: 398 of 1720 call records rendered, of which 0 are an identifier PASSED AS AN ARGUMENT and not a call at that site (dashed, and their tooltip says so); 398 are call sites.
-  - `.mmd`: OVER MERMAID'S DEFAULT LIMIT: 125225 characters of diagram, plus 861 for these two lines, is 126086 against a 50000-character default (over by 76086, x2.5).
+  - `.mmd` not committed: 126,008 characters, over Mermaid's 50,000-character limit, so Mermaid would draw only «Maximum text size in diagram exceeded»; open the `.dot` or the `.puml`
 - `state_diagram`
-  - `.mmd`: OVER MERMAID'S DEFAULT LIMIT: 412548 characters of diagram, plus 862 for these two lines, is 413410 against a 50000-character default (over by 363410, x8.3).
+  - `.mmd` not committed: 413,410 characters, over Mermaid's 50,000-character limit, so Mermaid would draw only «Maximum text size in diagram exceeded»; open the `.puml`
 
 The JSON maps (`uml_map.json`, `cytoscape.json`, `state_diagram_map.json`) and
 `processes.bpmn` are deliberately not committed: they are for machines, and a run
@@ -64,8 +64,8 @@ Bad practices found in the same run are in
 
 1. In a UniversalSemantics checkout: `python3 scripts/dev/build_corpus_zip.py
    <this checkout> -o <name>_<sha>.zip --audit --require-single-revision`.
-2. Upload the archive to UES and start a run with `inputs.archive` set to it and
-   the steps `unzip_archive, source_ast, compile_ast_ues, shared_state_extract,
+2. Upload the archive to UES and start a run with `inputs.archive` set to it
+   and the steps `unzip_archive, source_ast, compile_ast_ues, shared_state_extract,
    bad_habits_report, source_uml, ast_uml, ast_to_bpmn, bpmn_to_mdp,
    state_diagram, render_diagram_svg`.
 3. Copy `uml_ast/<view>.{dot,mmd,puml}` here as `ast-<view>.*` and
