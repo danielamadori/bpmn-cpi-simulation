@@ -2362,7 +2362,15 @@ async function navigateForward() {
         });
         if (lateStarts.length) debugTrace('[navFwd] lateStarts:', lateStarts);
         for (const id of lateStarts) {
-          try { simulationSupport.triggerElement(id); } catch(e) {}
+          try {
+            simulationSupport.triggerElement(id);
+          } catch (err) {
+
+            // Reported as waitForTokenDrain reports a trigger that fails,
+            // and the step moves on the same way: the diagram then leaves
+            // this snapshot, and now it says so.
+            console.error(`[navFwd] Failed to trigger the late start ${id}: ${err.message}. Moving on.`);
+          }
           await drainSimulationQueues();
         }
 
