@@ -44,6 +44,22 @@ const persistent = url.searchParams.has('p');
 const active = url.searchParams.has('e');
 const presentationMode = url.searchParams.has('pm');
 
+// ONE SWITCH FOR THIS PAGE'S DIAGNOSTIC TRACES: `debug` in its URL, like the
+// switches above -- `/?debug`, or `&debug` appended to the src of the iframe
+// a host embeds (the Simulator's combined report builds `/?e=1&diagram=...`).
+// OFF BY DEFAULT, because every host embeds this page and its console is
+// theirs. The traces ([StateLoader], [replay], [navFwd], [PlayStates],
+// [init], [openDiagram], [postMessage], [Sanitize] ...) follow a replay step
+// by step for whoever is debugging one; warnings and errors are not traces
+// and print whatever the switch says.
+const debugTraces = url.searchParams.has('debug');
+
+function debugTrace(...values) {
+  if (debugTraces) {
+    console.log(...values);
+  }
+}
+
 let fileName = 'example.bpmn';
 
 const initialDiagram = (() => {
@@ -235,7 +251,7 @@ function sanitizeDiagram(modeler, { persist = false } = {}) {
     const uniqueName = nextName(baseName);
 
     if (bo.name !== uniqueName) {
-      console.log(`[Sanitize] Renaming ${bo.id}: "${bo.name}" -> "${uniqueName}"`);
+      debugTrace(`[Sanitize] Renaming ${bo.id}: "${bo.name}" -> "${uniqueName}"`);
       bo.name = uniqueName;
     }
   });
@@ -326,7 +342,7 @@ function openDiagram(diagram) {
         const retryKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
         const retryId = retryKey ? parseStateKey(retryKey).registryId : null;
         if (retryId && registry.get(retryId)) {
-          console.log('[openDiagram] Retrying deferred API states');
+          debugTrace('[openDiagram] Retrying deferred API states');
           stateSequence = _pendingApiStates;
           _statesInjectedViaApi = true;
           _pendingApiStates = null;
@@ -355,7 +371,7 @@ function openDiagram(diagram) {
       console.error('[openDiagram] FAILED:', err.message || err);
       // Even if import failed, try to apply pending states
       if (_pendingApiStates) {
-        console.log('[openDiagram] Attempting pending state recovery after error');
+        debugTrace('[openDiagram] Attempting pending state recovery after error');
         initializeSimulationToStart();
       }
     });
@@ -439,7 +455,7 @@ document.querySelector('#open-button').addEventListener('click', () => {
 
 // move simulation UI controls (toggle + animation speed) into a dedicated left gutter stack
 function moveSimulationControls() {
-  console.log('Moving simulation controls to groups');
+  debugTrace('Moving simulation controls to groups');
 
   const controlGroup = document.getElementById('control-group');
   const monitorGroup = document.getElementById('monitor-group');
@@ -689,12 +705,12 @@ let executionOrderMap = null;
 function loadStateSequenceForCurrentDiagram() {
   const baseName = fileName.replace(/\.bpmn$/i, '');
   const allKeys = statesContext.keys();
-  console.log('[StateLoader] fileName:', fileName, 'baseName:', baseName);
+  debugTrace('[StateLoader] fileName:', fileName, 'baseName:', baseName);
   currentDiagramName = baseName; // Update global baseName for message mapping
-  console.log('[StateLoader] All context keys:', allKeys);
+  debugTrace('[StateLoader] All context keys:', allKeys);
   // Filter keys for this specific diagram's subdirectory
   const diagramKeys = allKeys.filter(k => k.startsWith(`./${baseName}/`));
-  console.log('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
+  debugTrace('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
 
   stateSequence = diagramKeys.sort((a, b) => {
     const getNumber = (str) => {
@@ -706,7 +722,7 @@ function loadStateSequenceForCurrentDiagram() {
     name: key.replace(`./${baseName}/`, '').replace('.json', ''),
     state: statesContext(key)
   }));
-  console.log('[StateLoader] Loaded', stateSequence.length, 'snapshots for', baseName);
+  debugTrace('[StateLoader] Loaded', stateSequence.length, 'snapshots for', baseName);
   buildProcessToTokenMap();
 
   executionOrderMap = null;
@@ -783,7 +799,7 @@ function renderStateSnapshot(snapshot) {
     statePanelTitle.textContent = `State: ${snapshot.name} (Step Mode)`;
   }
 
-  console.log(`[${new Date().toLocaleTimeString()}] Loading State JSON: ${snapshot.name}`, snapshot.state);
+  debugTrace(`[${new Date().toLocaleTimeString()}] Loading State JSON: ${snapshot.name}`, snapshot.state);
 
   statePanelBody.innerHTML = '';
 
@@ -944,7 +960,7 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
     simulator.setConfig(el, { wait: shouldWait });
     waitConfig[el.id] = shouldWait;
   });
-  console.log('[replay] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
+  debugTrace('[replay] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
 
   // Render t0
   currentStateIndex = 0;
@@ -1000,7 +1016,7 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
     }
   });
 
-  console.log('[replay] Triggering StartEvents:', [...startEventRegistryIds]);
+  debugTrace('[replay] Triggering StartEvents:', [...startEventRegistryIds]);
   for (const seId of startEventRegistryIds) {
     try {
       simulationSupport.triggerElement(seId);
@@ -1029,7 +1045,7 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
     modeler.get('eventBus').fire('tokenSimulation.simulator.elementChanged', { element: el });
   });
 
-  console.log('[replay] Complete at index', currentStateIndex);
+  debugTrace('[replay] Complete at index', currentStateIndex);
 
   _replayInProgress = false;
 }
@@ -1082,7 +1098,7 @@ function getSortedTriggers(ids) {
 
 async function waitForTokenDrain(simulationSupport, ids) {
   const sortedIds = getSortedTriggers(ids);
-  console.log('Triggering in order:', sortedIds);
+  debugTrace('Triggering in order:', sortedIds);
 
   for (const id of sortedIds) {
     let triggered = false;
@@ -1103,7 +1119,7 @@ async function waitForTokenDrain(simulationSupport, ids) {
         }).find(scope => scope.children.length === 0 && !scope.destroyed);
 
         if (waitingScope) {
-          console.log(`Found waiting scope for ${id}, signaling...`);
+          debugTrace(`Found waiting scope for ${id}, signaling...`);
           simulator.signal({
             scope: waitingScope,
             element: element,
@@ -1113,7 +1129,7 @@ async function waitForTokenDrain(simulationSupport, ids) {
           simulationSupport.triggerElement(id);
         }
 
-        console.log(`Triggered ${id} successfully.`);
+        debugTrace(`Triggered ${id} successfully.`);
         triggered = true;
 
         // NO DRAIN HERE, between one trigger and the next: every element of
@@ -1289,16 +1305,16 @@ function initializeSimulationToStart() {
         _pendingApiNavData = null;
         setNavigationVisible(_navigationMode);
       }
-      console.log('[init] Applied pending API states');
+      debugTrace('[init] Applied pending API states');
     } else {
-      console.log('[init] Pending states do not match current diagram, deferring');
+      console.warn('[init] Pending states do not match current diagram, deferring');
     }
   }
 
   if (!_statesInjectedViaApi) {
     const remoteDiagramParam = new URL(window.location.href).searchParams.get('diagram');
     if (remoteDiagramParam) {
-      console.log('[init] Remote diagram mode — skipping file-based states, waiting for postMessage');
+      debugTrace('[init] Remote diagram mode — skipping file-based states, waiting for postMessage');
       stateSequence = [];
     } else {
       loadStateSequenceForCurrentDiagram();
@@ -1341,7 +1357,7 @@ function initializeSimulationToStart() {
   // Render t0 only. Do NOT trigger Start Event yet.
   // This ensures we start in a "waiting" state (t0).
   // The first click on "Play" will trigger the Start Event (t0 -> t1).
-  console.log('Initializing to t0 (Pre-start)...');
+  debugTrace('Initializing to t0 (Pre-start)...');
   try {
     renderStateSnapshot(stateSequence[0]);
     configureExclusiveGateways(1);
@@ -1358,7 +1374,7 @@ function initializeSimulationToStart() {
 }
 
 async function playStates() {
-  console.log('PLAY STATE SEQUENCE CLICKED (Manual Mode)');
+  debugTrace('PLAY STATE SEQUENCE CLICKED (Manual Mode)');
 
   if (isStepping) {
     console.warn('Simulation step already in progress...');
@@ -1386,7 +1402,7 @@ async function playStates() {
 
     if (nextIndex < stateSequence.length) {
       const nextSnapshot = stateSequence[nextIndex];
-      console.log(`Advancing from ${currentStateIndex} to ${nextIndex}: ${nextSnapshot.name}`);
+      debugTrace(`Advancing from ${currentStateIndex} to ${nextIndex}: ${nextSnapshot.name}`);
 
       logInfo(`STEP ${currentStateIndex} -> ${nextIndex}: ${nextSnapshot.name} - transition in progress.`);
 
@@ -1404,14 +1420,17 @@ async function playStates() {
           return el && el.type === 'bpmn:StartEvent' && prevAgg[id] === STATE_WAITING
             && (nextAgg[id] === STATE_COMPLETED || nextAgg[id] === STATE_ACTIVE);
         });
-        console.log('[PlayStates] Detected root start events from JSON:', startEventIds);
+        debugTrace('[PlayStates] Detected root start events from JSON:', startEventIds);
         if (startEventIds.length > 0) {
           startEventIds.forEach(id => simulationSupport.triggerElement(id));
           await drainSimulationQueues();
-          // DEBUG: check scopes after trigger
-          const simDbg = modeler.get('simulator');
-          const allScopes = simDbg.findScopes({});
-          console.log('[DEBUG] Scopes after trigger:', allScopes.length, allScopes.map(s => `${s.element.id}:${s.id}:destroyed=${s.destroyed}:children=${s.children.length}`));
+
+          // DEBUG: check scopes after trigger -- computed only when traced
+          if (debugTraces) {
+            const simDbg = modeler.get('simulator');
+            const allScopes = simDbg.findScopes({});
+            debugTrace('[DEBUG] Scopes after trigger:', allScopes.length, allScopes.map(s => `${s.element.id}:${s.id}:destroyed=${s.destroyed}:children=${s.children.length}`));
+          }
         } else {
           console.warn('No matching StartEvent found in state snapshots for t0 -> t1');
         }
@@ -1442,7 +1461,7 @@ async function playStates() {
         });
 
         if (lateStartIds.length > 0) {
-          console.log('[PlayStates] Detected late-starting processes:', lateStartIds);
+          debugTrace('[PlayStates] Detected late-starting processes:', lateStartIds);
           lateStartIds.forEach(id => simulationSupport.triggerElement(id));
           await drainSimulationQueues();
         }
@@ -1487,7 +1506,7 @@ async function playStates() {
 
       configureExclusiveGateways(nextIndex + 1);
     } else {
-      console.log('State sequence completed');
+      debugTrace('State sequence completed');
       showStatePanelMessage('State sequence completed.');
     }
   } catch (err) {
@@ -1895,7 +1914,7 @@ window.addEventListener('message', async (event) => {
     }
     const states = Array.isArray(data.states) ? data.states : [];
     const targetIndex = parseInt(data.targetIndex, 10) || (states.length - 1);
-    console.log('[postMessage] Received', states.length, 'states, target index', targetIndex);
+    debugTrace('[postMessage] Received', states.length, 'states, target index', targetIndex);
 
     // Check if the current diagram matches these states
     const firstKey = Object.keys(states.length ? states[0].state : {})[0];
@@ -1913,7 +1932,7 @@ window.addEventListener('message', async (event) => {
         allPathNodeIds: data.allPathNodeIds || null,
         nodeId: data.nodeId,
       };
-      console.log('[postMessage] Diagram not ready, deferring');
+      debugTrace('[postMessage] Diagram not ready, deferring');
       return;
     }
 
@@ -2029,7 +2048,7 @@ async function navigateForward() {
         const { registryId } = parseStateKey(key);
         if (status === STATE_COMPLETED) completedInTarget.add(registryId);
       });
-      console.log('[navFwd] completedInTarget:', [...completedInTarget].join(', '));
+      debugTrace('[navFwd] completedInTarget:', [...completedInTarget].join(', '));
 
       const waitConfig = {};
       registry.getAll().forEach(el => {
@@ -2055,12 +2074,12 @@ async function navigateForward() {
         const selectedFlow = outgoing.find(f => f.target && completedInTarget.has(f.target.id));
         if (selectedFlow) {
           simulator.setConfig(gw, { locked: true, activeOutgoing: selectedFlow });
-          console.log('[navFwd] lock', gw.id, '->', selectedFlow.target.id);
+          debugTrace('[navFwd] lock', gw.id, '->', selectedFlow.target.id);
         } else {
           simulator.setConfig(gw, { locked: false });
         }
       });
-      console.log('[navFwd] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
+      debugTrace('[navFwd] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
 
       // 3. Compute diffs
       const prev = stateSequence[currentStateIndex].state;
@@ -2077,7 +2096,7 @@ async function navigateForward() {
             && prevAgg[id] === STATE_WAITING
             && (nextAgg[id] === STATE_COMPLETED || nextAgg[id] === STATE_ACTIVE);
         });
-        console.log('[navFwd] t0->t1 triggerStartEvents:', startIds);
+        debugTrace('[navFwd] t0->t1 triggerStartEvents:', startIds);
         for (const id of startIds) {
           try { simulationSupport.triggerElement(id); } catch(e) { console.warn('[navFwd] triggerElement failed:', id, e.message); }
           await drainSimulationQueues();
@@ -2090,7 +2109,7 @@ async function navigateForward() {
           if (prevAgg[id] !== STATE_WAITING) return false;
           return nextAgg[id] === STATE_COMPLETED || nextAgg[id] === STATE_ACTIVE;
         });
-        if (lateStarts.length) console.log('[navFwd] lateStarts:', lateStarts);
+        if (lateStarts.length) debugTrace('[navFwd] lateStarts:', lateStarts);
         for (const id of lateStarts) {
           try { simulationSupport.triggerElement(id); } catch(e) {}
           await drainSimulationQueues();
@@ -2105,7 +2124,7 @@ async function navigateForward() {
                     && s.element?.type !== 'bpmn:Process'
                     && s.element?.type !== 'bpmn:Participant'
                     && s.element?.type !== 'bpmn:ParallelGateway');
-        console.log('[navFwd] signaling leaf scopes:', leafScopes.map(s => `${s.element?.id}(${s.id})`).join(', '));
+        debugTrace('[navFwd] signaling leaf scopes:', leafScopes.map(s => `${s.element?.id}(${s.id})`).join(', '));
         // Signal ALL leaf scopes at once so parallel tokens move together
         // (e.g. both branches reach ParallelJoin simultaneously).
         for (const scope of leafScopes) {
@@ -2116,12 +2135,14 @@ async function navigateForward() {
         await drainSimulationQueues();
       }
 
-      // --- Debug: dump all scopes after navigation ---
-      const allScopesAfter = simulator.findScopes({});
-      console.log(`[navFwd] AFTER: ${allScopesAfter.filter(s => !s.destroyed).length} active scopes`);
-      allScopesAfter.filter(s => !s.destroyed).forEach(s => {
-        console.log(`[navFwd]   scope ${s.id} element=${s.element?.id} type=${s.element?.type} children=${s.children?.length}`);
-      });
+      // --- Debug: dump all scopes after navigation -- computed only when traced ---
+      if (debugTraces) {
+        const allScopesAfter = simulator.findScopes({});
+        debugTrace(`[navFwd] AFTER: ${allScopesAfter.filter(s => !s.destroyed).length} active scopes`);
+        allScopesAfter.filter(s => !s.destroyed).forEach(s => {
+          debugTrace(`[navFwd]   scope ${s.id} element=${s.element?.id} type=${s.element?.type} children=${s.children?.length}`);
+        });
+      }
 
       // 5. Restore animation speed and update state
       animation.setAnimationSpeed(prevSpeed);

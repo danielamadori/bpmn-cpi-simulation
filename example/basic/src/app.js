@@ -11,7 +11,7 @@ const viewer = new BpmnViewer({
 
 viewer.importXML(diagramXML).then(({ warnings }) => {
   if (warnings && warnings.length) {
-    console.log('import warnings', warnings);
+    console.warn('import warnings', warnings);
   }
 
   viewer.get('canvas').zoom('fit-viewport');
