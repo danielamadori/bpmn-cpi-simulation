@@ -2209,3 +2209,41 @@ body.sidebar-collapsed .canvas-parent {
 body.sidebar-collapsed #sidebar-toggle {
   left: 12px;
 }
+
+/*
+ * ONE ROW FOR THE SIMULATION BUTTONS AND THE SPEED. The Control section was
+ * a column of full-width rows, so the play/reset/log palette (3 buttons of
+ * 30 px) left most of its row empty and the speed control took a row of its
+ * own, stretching its three buttons to 88 px each. The section now wraps: every
+ * child keeps a full row except those two, which share one, the speed
+ * pushed to the right and its buttons sized to their content. 4 rows -> 3.
+ */
+#simulation-control-stack #control-group {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#simulation-control-stack #control-group > * {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+}
+
+#simulation-control-stack #control-group > .bts-palette,
+#simulation-control-stack #control-group > .bts-set-animation-speed {
+  flex: 0 0 auto;
+}
+
+#simulation-control-stack #control-group > .bts-set-animation-speed {
+  margin-left: auto;
+}
+
+#simulation-control-stack .bts-set-animation-speed .bts-animation-speed-buttons {
+  flex: 0 0 auto;
+}
+
+#simulation-control-stack .bts-set-animation-speed .bts-animation-speed-button {
+  flex: 0 0 auto;
+  min-width: 30px;
+  justify-content: center;
+}
