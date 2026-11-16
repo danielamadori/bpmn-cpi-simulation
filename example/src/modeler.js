@@ -1967,7 +1967,12 @@ function _readMetric(elementId) {
   if (heatmapMetric.startsWith('impact:')) {
     return m.cumImpact[heatmapMetric.slice(7)] || 0;
   }
-  return 0;
+
+  // The «Heatmap» select offers `count`, `duration` and one `impact:<name>`
+  // per impact the diagram declares (_refreshHeatmapMetricOptions), and the
+  // change handler makes any value but `hide` the metric. Another one used
+  // to read 0 on every element, which draws an empty heatmap without a word.
+  throw new Error(`[heatmap] unknown metric "${heatmapMetric}"`);
 }
 
 function _refreshHeatmapMetricOptions() {
