@@ -703,13 +703,21 @@ function loadStateSequenceForCurrentDiagram() {
   const diagramKeys = allKeys.filter(k => k.startsWith(`./${baseName}/`));
   debugTrace('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
 
-  stateSequence = diagramKeys.sort((a, b) => {
-    const getNumber = (str) => {
-      const match = str.match(/t(\d+)\.json$/);
-      return match ? parseInt(match[1], 10) : 0;
-    };
-    return getNumber(a) - getNumber(b);
-  }).map(key => ({
+  // EVERY FILE OF THE FOLDER IS A SNAPSHOT t<N>.json, N its place in the
+  // sequence -- the 39 files of the 6 folders under states/ all are. A file
+  // that is not one has no place to read from its name: it raises, where it
+  // used to sort as t0 and be loaded as a snapshot.
+  const snapshotFiles = diagramKeys.map(key => {
+    const match = key.slice(`./${baseName}/`.length).match(/^t(\d+)\.json$/);
+
+    if (!match) {
+      throw new Error(`[StateLoader] ${key} is not a snapshot file t<N>.json`);
+    }
+
+    return { key, index: parseInt(match[1], 10) };
+  });
+
+  stateSequence = snapshotFiles.sort((a, b) => a.index - b.index).map(({ key }) => ({
     name: key.replace(`./${baseName}/`, '').replace('.json', ''),
     state: statesContext(key)
   }));
