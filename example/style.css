@@ -85,6 +85,40 @@ body.dark-mode {
   outline-color: var(--token-simulation-warning);
 }
 
+/*
+ * THE SIMULATION FRAME IS DRAWN ABOVE THE DIAGRAM. The library draws it as
+ * an inset box-shadow of .djs-container, and a box-shadow is painted UNDER
+ * the element's content: a pool reaching the canvas edge covered it, and
+ * the frame showed only where the canvas was empty (reported 2026-11-16 on
+ * the dark theme). It is now an ::after layer covering the container, last
+ * in paint order so above the <svg> and the overlays, below the search box
+ * (z-index 10), and transparent to the mouse. Same colours, same states.
+ */
+.bjs-container.simulation .djs-container,
+.bjs-container.simulation.paused .djs-container {
+  box-shadow: none;
+}
+
+.bjs-container.simulation.warning .djs-container {
+  box-shadow: none !important;
+}
+
+.bjs-container.simulation .djs-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 4px var(--token-simulation-primary);
+}
+
+.bjs-container.simulation.paused .djs-container::after {
+  box-shadow: inset 0 0 0 4px var(--token-simulation-paused);
+}
+
+.bjs-container.simulation.warning .djs-container::after {
+  box-shadow: inset 0 0 0 4px var(--token-simulation-warning);
+}
+
 .dark-mode .djs-container {
   background-color: var(--diagram-js-background-color);
 }
