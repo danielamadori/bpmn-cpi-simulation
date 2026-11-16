@@ -1129,8 +1129,16 @@ async function waitForTokenDrain(simulationSupport, ids) {
           console.error(`Failed to trigger ${id} after ${maxAttempts} attempts. Moving on.`);
         } else {
 
-          // Fallback minimal safe wait before retry if API is genuinely not ready
-          await drainSimulationQueues();
+          // ONE FRAME before the retry, NOT a drain. A step may name an
+          // element its token has not reached yet: on states/example
+          // t6 -> t7 the catch event IntermediateThrowEvent_02yoqsl becomes
+          // active, and the snapshot has the token STOP there until t8. With
+          // one frame the three attempts fail before the token arrives, and
+          // it waits on the event. A drain here (2026-04-16, "step simulation
+          // (to check)") let the token arrive during the wait, so the second
+          // attempt released it and it reached Task_1xu25p5 one step early.
+          // Measured 2026-11-16 in the browser on pasarop's example.bpmn.
+          await new Promise(r => requestAnimationFrame(r));
         }
       }
     }
