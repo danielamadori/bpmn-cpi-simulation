@@ -338,27 +338,15 @@ function openDiagram(diagram) {
 
       // Retry pending API states — they may have arrived before importXML
       // completed and been deferred because the diagram wasn't ready yet.
-      if (_pendingApiStates) {
-        const retryKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
-        const retryId = retryKey ? parseStateKey(retryKey).registryId : null;
-        if (retryId && registry.get(retryId)) {
+      if (_pendingApiStates !== null) {
+        if (_statesMatchDiagram(_pendingApiStates)) {
           debugTrace('[openDiagram] Retrying deferred API states');
           stateSequence = _pendingApiStates;
           _statesInjectedViaApi = true;
           _pendingApiStates = null;
           buildProcessToTokenMap();
-          if (_pendingApiNavData) {
-            _treeTopology = _pendingApiNavData.topology;
-            _allPaths = _pendingApiNavData.allPaths;
-            _allPathNodeIds = _pendingApiNavData.allPathNodeIds;
-            _pathNodeIds = (_allPathNodeIds && _pendingApiNavData.nodeId != null)
-              ? _allPathNodeIds[String(_pendingApiNavData.nodeId)] || null : null;
-            _currentNodeId = _pendingApiNavData.nodeId != null
-              ? String(_pendingApiNavData.nodeId) : null;
-            _navigationMode = !!_treeTopology;
-            _pendingApiNavData = null;
-            setNavigationVisible(_navigationMode);
-          }
+          _applyNavigationData(_pendingApiNavData);
+          _pendingApiNavData = null;
           if (_pendingApiTargetIndex !== null) {
             const target = _pendingApiTargetIndex;
             _pendingApiTargetIndex = null;
@@ -905,6 +893,17 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
     console.log('[replay] Already in progress, skipping');
     return;
   }
+
+  // AN INDEX OUTSIDE THE SEQUENCE IS REFUSED, NOT CLAMPED. The
+  // Math.min(targetIndex, length - 1) this replaces made an index past the
+  // end the last snapshot, and hid a caller out of step with stateSequence.
+  if (!Number.isInteger(targetIndex) || targetIndex < 0 || targetIndex >= stateSequence.length) {
+    throw new RangeError(
+      `replayToIndex: snapshot index ${JSON.stringify(targetIndex)} is not one of ` +
+      `the ${stateSequence.length} snapshots of the sequence`
+    );
+  }
+
   _replayInProgress = true;
   const simulationSupport = modeler.get('simulationSupport');
   const simulator = modeler.get('simulator');
@@ -926,13 +925,9 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   // Full reset — destroys old scopes and reinitializes root scopes.
   simulator.reset();
 
-  const clampedTarget = Math.min(targetIndex, stateSequence.length - 1);
-
-  if (!stateSequence.length || targetIndex < 1) {
-    if (stateSequence.length) {
-      currentStateIndex = 0;
-      renderStateSnapshot(stateSequence[0]);
-    }
+  if (targetIndex === 0) {
+    currentStateIndex = 0;
+    renderStateSnapshot(stateSequence[0]);
     _replayInProgress = false;
     return;
   }
@@ -941,7 +936,7 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   // - completed elements → wait:false (token flows through)
   // - active elements → wait:true (token stops here)
   // - waiting elements → wait:true (token stops if it arrives)
-  const targetState = stateSequence[clampedTarget] ? stateSequence[clampedTarget].state : {};
+  const targetState = stateSequence[targetIndex].state;
   const completedInTarget = new Set();
   Object.entries(targetState).forEach(([key, status]) => {
     const { registryId } = parseStateKey(key);
@@ -1004,7 +999,9 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
 
   // Trigger all StartEvents ONCE. Tokens flow through wait:false (completed)
   // elements and stop on wait:true (active/waiting) elements automatically.
-  const t1 = stateSequence[1] ? stateSequence[1].state : {};
+  // (targetIndex >= 1 here, so t1 exists.)
+  const t1 = stateSequence[1].state;
+
   // Deduplicate start events by registryId (multiple #token_id keys
   // for the same element should trigger it only once).
   const startEventRegistryIds = new Set();
@@ -1035,8 +1032,8 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   }
 
   // Update state panel to show target
-  currentStateIndex = clampedTarget;
-  renderStateSnapshot(stateSequence[clampedTarget]);
+  currentStateIndex = targetIndex;
+  renderStateSnapshot(stateSequence[targetIndex]);
 
   // Force token count refresh — the simulator may not emit elementChanged
   // for all elements during async replay. Fire tick to update overlays.
@@ -1279,32 +1276,174 @@ let _pendingApiStates = null;
 let _pendingApiTargetIndex = null;
 let _pendingApiNavData = null;  // {topology, allPaths, allPathNodeIds, nodeId}
 
+// THE loadStates MESSAGE, read once on arrival. Its one sender is the
+// Simulator's combined report (src/sese_tooling/_combined_report_template.py,
+// in `_loadModellerFrame` and `doDispatch`: :1849 and :5806 at Simulator
+// 43e16d57). It sends `states`,
+// `nodeId`, `topology`, `allPaths` and `allPathNodeIds` -- the last three
+// `null` when the page has none (its `_entry` and `_sent`) -- and it does
+// NOT send `targetIndex`.
+const LOAD_STATES_FIELDS = [ 'states', 'nodeId', 'topology', 'allPaths', 'allPathNodeIds' ];
+
+/**
+ * Read a loadStates message, refusing a malformed one with an error that
+ * names the field.
+ *
+ * @return {{ states: Array, targetIndex: number, nav: Object }}
+ */
+function _readLoadStatesMessage(data) {
+  LOAD_STATES_FIELDS.forEach(field => {
+    if (!(field in data)) {
+      throw new Error(`loadStates: the message has no "${field}"`);
+    }
+  });
+
+  const states = data.states;
+
+  if (!Array.isArray(states) || states.length === 0) {
+    throw new Error(`loadStates: "states" is not a non-empty array of snapshots (${typeof states})`);
+  }
+
+  const nodeId = data.nodeId;
+
+  if (typeof nodeId !== 'number' && typeof nodeId !== 'string') {
+    throw new Error(`loadStates: "nodeId" is ${JSON.stringify(nodeId)}, not a node id`);
+  }
+
+  const nodeKey = String(nodeId);
+
+  return {
+    states,
+    targetIndex: _targetIndexOf(data, states),
+    nav: {
+      topology: data.topology,
+      allPaths: data.allPaths,
+      allPathNodeIds: data.allPathNodeIds,
+      nodeKey,
+      pathNodeIds: _pathNodeIdsFor(data.allPathNodeIds, nodeKey, states)
+    }
+  };
+}
+
+/**
+ * The snapshot of `states` a loadStates message asks to replay to.
+ */
+function _targetIndexOf(data, states) {
+
+  // ABSENT IS A STATE OF THE PROTOCOL, not a missing value: the combined
+  // report never sends `targetIndex` (see LOAD_STATES_FIELDS), and it means
+  // the last snapshot of `states`.
+  if (!('targetIndex' in data)) {
+    return states.length - 1;
+  }
+
+  // Present, it must name a snapshot. The `parseInt(data.targetIndex, 10) ||
+  // (states.length - 1)` this replaces made an index of 0 the LAST snapshot,
+  // and anything unreadable the last one too.
+  const targetIndex = data.targetIndex;
+
+  if (!Number.isInteger(targetIndex) || targetIndex < 0 || targetIndex >= states.length) {
+    throw new RangeError(
+      `loadStates: targetIndex ${JSON.stringify(targetIndex)} is not an integer ` +
+      `in [0, ${states.length - 1}]`
+    );
+  }
+
+  return targetIndex;
+}
+
+/**
+ * Whether `states` describe the diagram on the canvas: the element named by
+ * the first key of their first snapshot is in its registry.
+ */
+function _statesMatchDiagram(states) {
+  const firstKeys = Object.keys(states[0].state);
+
+  // A first snapshot with no key names no element, so nothing says which
+  // diagram it belongs to: the states wait, as they do for a diagram that
+  // has not loaded yet.
+  if (firstKeys.length === 0) {
+    return false;
+  }
+
+  return elementRegistry().get(parseStateKey(firstKeys[0]).registryId) !== undefined;
+}
+
+/**
+ * The execution-tree node ids of the path whose snapshots are `states`:
+ * step N of `states` is node `ids[N-1]` (see _syncCurrentNodeId).
+ *
+ * @param {Object|null} allPathNodeIds node id → the node ids of its path
+ * @param {string} nodeKey
+ * @param {Array} states
+ *
+ * @return {Array|null}
+ */
+function _pathNodeIdsFor(allPathNodeIds, nodeKey, states) {
+
+  // `null` is the host saying it has no path node ids for this diagram (its
+  // `_entry` answers null for a fixture absent from
+  // window._modellerPathNodeIds): the arrows step through `states` without
+  // naming a tree node.
+  if (allPathNodeIds === null) {
+    return null;
+  }
+
+  if (!(nodeKey in allPathNodeIds)) {
+    throw new Error(
+      `Node ${nodeKey} has no entry in allPathNodeIds ` +
+      `(${Object.keys(allPathNodeIds).length} nodes have one)`
+    );
+  }
+
+  const ids = allPathNodeIds[nodeKey];
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    throw new Error(`Node ${nodeKey}: its path node ids are not a non-empty array`);
+  }
+
+  // ONE SNAPSHOT MORE THAN NODES: the Simulator builds every path as an
+  // all-waiting t0 followed by one snapshot per node of the path
+  // (`modeller_paths` in src/sese_tooling/_api/_snapshot_views.py).
+  if (states.length !== ids.length + 1) {
+    throw new Error(
+      `Node ${nodeKey}: ${states.length} snapshots for a path of ${ids.length} nodes; ` +
+      'step N is node N-1 of the path, so there must be one snapshot more than nodes'
+    );
+  }
+
+  return ids;
+}
+
+/**
+ * Make `nav` -- the navigation fields of a loadStates message, as
+ * _readLoadStatesMessage read and checked them on arrival -- the page's
+ * navigation state.
+ */
+function _applyNavigationData(nav) {
+  _treeTopology = nav.topology;
+  _allPaths = nav.allPaths;
+  _allPathNodeIds = nav.allPathNodeIds;
+  _pathNodeIds = nav.pathNodeIds;
+  _currentNodeId = nav.nodeKey;
+  _navigationMode = _treeTopology !== null;
+  setNavigationVisible(_navigationMode);
+}
+
 function initializeSimulationToStart() {
   logInfo('DEBUG: NEW VERSION LOADED (Manual Mode). If you see this message, the code is up to date.');
 
   // Check for deferred API states (arrived before diagram was ready)
-  if (_pendingApiStates) {
-    const registry = modeler.get('elementRegistry');
-    const firstKey = Object.keys(_pendingApiStates.length ? _pendingApiStates[0].state : {})[0];
-    const testId = firstKey ? parseStateKey(firstKey).registryId : null;
-    if (testId && registry.get(testId)) {
+  if (_pendingApiStates !== null) {
+    if (_statesMatchDiagram(_pendingApiStates)) {
       stateSequence = _pendingApiStates;
       _statesInjectedViaApi = true;
       _pendingApiStates = null;
       buildProcessToTokenMap();
+
       // Restore navigation data saved during deferred loadStates
-      if (_pendingApiNavData) {
-        _treeTopology = _pendingApiNavData.topology;
-        _allPaths = _pendingApiNavData.allPaths;
-        _allPathNodeIds = _pendingApiNavData.allPathNodeIds;
-        _pathNodeIds = (_allPathNodeIds && _pendingApiNavData.nodeId != null)
-          ? _allPathNodeIds[String(_pendingApiNavData.nodeId)] || null : null;
-        _currentNodeId = _pendingApiNavData.nodeId != null
-          ? String(_pendingApiNavData.nodeId) : null;
-        _navigationMode = !!_treeTopology;
-        _pendingApiNavData = null;
-        setNavigationVisible(_navigationMode);
-      }
+      _applyNavigationData(_pendingApiNavData);
+      _pendingApiNavData = null;
       debugTrace('[init] Applied pending API states');
     } else {
       console.warn('[init] Pending states do not match current diagram, deferring');
@@ -1912,26 +2051,16 @@ window.addEventListener('message', async (event) => {
       console.log('[postMessage] Replay in progress, ignoring');
       return;
     }
-    const states = Array.isArray(data.states) ? data.states : [];
-    const targetIndex = parseInt(data.targetIndex, 10) || (states.length - 1);
+    const { states, targetIndex, nav } = _readLoadStatesMessage(data);
     debugTrace('[postMessage] Received', states.length, 'states, target index', targetIndex);
 
     // Check if the current diagram matches these states
-    const firstKey = Object.keys(states.length ? states[0].state : {})[0];
-    const testId = firstKey ? parseStateKey(firstKey).registryId : null;
-    const registry = modeler.get('elementRegistry');
-    const diagramMatches = testId && registry.get(testId);
+    if (!_statesMatchDiagram(states)) {
 
-    if (!diagramMatches) {
       // BPMN not loaded yet — save for deferred application
       _pendingApiStates = states;
       _pendingApiTargetIndex = targetIndex;
-      _pendingApiNavData = {
-        topology: data.topology || null,
-        allPaths: data.allPaths || null,
-        allPathNodeIds: data.allPathNodeIds || null,
-        nodeId: data.nodeId,
-      };
+      _pendingApiNavData = nav;
       debugTrace('[postMessage] Diagram not ready, deferring');
       return;
     }
@@ -1943,14 +2072,7 @@ window.addEventListener('message', async (event) => {
     _statesInjectedViaApi = true;
 
     // Navigation mode: store tree topology and all paths
-    _treeTopology = data.topology || null;
-    _allPaths = data.allPaths || null;
-    _allPathNodeIds = data.allPathNodeIds || null;
-    _pathNodeIds = (_allPathNodeIds && data.nodeId != null)
-      ? _allPathNodeIds[String(data.nodeId)] || null : null;
-    _currentNodeId = data.nodeId != null ? String(data.nodeId) : null;
-    _navigationMode = !!_treeTopology;
-    setNavigationVisible(_navigationMode);
+    _applyNavigationData(nav);
 
     await replayToIndex(targetIndex);
     updateNavigationUI();
@@ -1998,13 +2120,32 @@ window.addEventListener('message', async (event) => {
 // Update _currentNodeId based on currentStateIndex and _pathNodeIds.
 // step 0 = t0 (initial, no node), step N = pathNodeIds[N-1].
 function _syncCurrentNodeId() {
-  if (!_pathNodeIds || !_pathNodeIds.length) return;
+
+  // null: no tree path to follow -- a page with no host, or a host with no
+  // path node ids for this diagram (see _pathNodeIdsFor).
+  if (_pathNodeIds === null) return;
   if (currentStateIndex <= 0) {
+
     // At t0 — use the root node so forward can start
     _currentNodeId = String(_pathNodeIds[0]);
+  } else if (currentStateIndex <= _pathNodeIds.length) {
+    _currentNodeId = String(_pathNodeIds[currentStateIndex - 1]);
   } else {
-    const idx = Math.min(currentStateIndex - 1, _pathNodeIds.length - 1);
-    _currentNodeId = String(_pathNodeIds[idx]);
+
+    // PAST THE PATH'S NODES. Only a snapshot the host's advance computed
+    // belongs here: the advanceResponse handler appends it and marks it
+    // with `_snapshot`, and it is no node of the tree, so the current node
+    // stays the last of the path. Any other step past the path is a host
+    // that sent its snapshots and its node ids out of step -- which the
+    // Math.min this replaces turned into the last node without a word.
+    if (!('_snapshot' in stateSequence[currentStateIndex])) {
+      throw new Error(
+        `Step ${currentStateIndex} has no node: the path has ${_pathNodeIds.length} ` +
+        'node ids, and the step is not a snapshot an advance appended'
+      );
+    }
+
+    _currentNodeId = String(_pathNodeIds[_pathNodeIds.length - 1]);
   }
 }
 
