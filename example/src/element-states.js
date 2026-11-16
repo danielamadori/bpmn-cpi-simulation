@@ -108,6 +108,66 @@ export function aggregateTokenStatuses(elementId, statuses) {
 }
 
 /**
+ * The root of a split token: `tok_0` for `tok_0_0` and `tok_0_1`. A token id
+ * with fewer than two `_`-separated parts is its own root.
+ *
+ * @param {string} tokenId
+ *
+ * @return {string}
+ */
+export function rootTokenOf(tokenId) {
+  const parts = tokenId.split('_');
+
+  if (parts.length < 2) {
+    return tokenId;
+  }
+
+  return parts.slice(0, 2).join('_');
+}
+
+/**
+ * Group the tokens of ONE element by their root token, and give each root the
+ * status `aggregateTokenStatuses` gives its tokens -- the rule the replay
+ * uses for an element, so the state panel and the replay cannot disagree.
+ *
+ * The merge this replaces (renderStateSnapshot in modeler.js) kept the first
+ * status of a root for every pair it did not decide, and read a first
+ * WAITING, whose code is 0, as no status at all.
+ *
+ * @param {string} elementKey the element, named in an error
+ * @param {Array<[ string, number ]>} tokenStatuses `[ tokenId, status ]`, one
+ *   pair per token, in the order the snapshot lists its keys
+ *
+ * @return {Map<string, { status: (number|string), statuses: Array<number> }>}
+ *   root token → its aggregate status and the statuses of its tokens, the
+ *   roots in the order of their first token
+ */
+export function aggregateByRootToken(elementKey, tokenStatuses) {
+  const statusesByRoot = new Map();
+
+  tokenStatuses.forEach(([ tokenId, status ]) => {
+    const root = rootTokenOf(tokenId);
+
+    if (!statusesByRoot.has(root)) {
+      statusesByRoot.set(root, []);
+    }
+
+    statusesByRoot.get(root).push(status);
+  });
+
+  const result = new Map();
+
+  statusesByRoot.forEach((statuses, root) => {
+    result.set(root, {
+      status: aggregateTokenStatuses(`${elementKey}#${root}`, statuses),
+      statuses
+    });
+  });
+
+  return result;
+}
+
+/**
  * Group token statuses by element and aggregate each group with
  * `aggregateTokenStatuses`.
  *

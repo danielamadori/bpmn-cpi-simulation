@@ -10,8 +10,10 @@ import {
   STATE_TERMINATED,
   STATE_UNKNOWN,
   STATE_WAITING,
+  aggregateByRootToken,
   aggregateStatusesByElement,
-  aggregateTokenStatuses
+  aggregateTokenStatuses,
+  rootTokenOf
 } from '../../../example/src/element-states';
 
 
@@ -149,6 +151,81 @@ describe('example/element-states', function() {
         [ 'Task_1', STATE_ACTIVE ],
         [ 'Gateway_3', 12 ]
       ])).to.throw(/Element "Gateway_3" has a token whose status 12/);
+    });
+
+  });
+
+
+  describe('rootTokenOf', function() {
+
+    it('should be the first two parts of a split token', function() {
+      expect(rootTokenOf('tok_0_0')).to.equal('tok_0');
+      expect(rootTokenOf('tok_0_1_2')).to.equal('tok_0');
+    });
+
+
+    it('should be the token itself when it is not split', function() {
+      expect(rootTokenOf('tok_3')).to.equal('tok_3');
+      expect(rootTokenOf('token')).to.equal('token');
+    });
+
+  });
+
+
+  describe('aggregateByRootToken', function() {
+
+    it('should give a root the same status whatever the order of its tokens', function() {
+
+      // FAILED then TERMINATED gave FAILED in the state panel, and
+      // TERMINATED then FAILED gave TERMINATED
+      const tokens = [
+        [ 'tok_0_0', STATE_FAILED ],
+        [ 'tok_0_1', STATE_TERMINATED ],
+        [ 'tok_1', STATE_WAITING ]
+      ];
+
+      permutations(tokens).forEach(order => {
+        const roots = aggregateByRootToken('Task_1@Process_1', order);
+
+        expect(roots.get('tok_0').status, JSON.stringify(order)).to.equal(NONE_OF_THE_THREE);
+        expect(roots.get('tok_1').status, JSON.stringify(order)).to.equal(STATE_WAITING);
+      });
+    });
+
+
+    it('should read a first WAITING token as a status', function() {
+
+      // the panel's merge read the code 0 as no status, so the FAILED token
+      // after it replaced it
+      const roots = aggregateByRootToken('Task_1', [
+        [ 'tok_0_0', STATE_WAITING ],
+        [ 'tok_0_1', STATE_FAILED ]
+      ]);
+
+      expect(roots.get('tok_0')).to.eql({
+        status: NONE_OF_THE_THREE,
+        statuses: [ STATE_WAITING, STATE_FAILED ]
+      });
+    });
+
+
+    it('should apply the element rule to each root', function() {
+      const roots = aggregateByRootToken('Task_1', [
+        [ 'tok_0_0', STATE_WAITING ],
+        [ 'tok_0_1', STATE_ACTIVE ],
+        [ 'tok_1_0', STATE_COMPLETED ],
+        [ 'tok_1_1', STATE_SKIPPED ]
+      ]);
+
+      expect([ ...roots.keys() ]).to.eql([ 'tok_0', 'tok_1' ]);
+      expect(roots.get('tok_0').status).to.equal(STATE_ACTIVE);
+      expect(roots.get('tok_1').status).to.equal(STATE_COMPLETED);
+    });
+
+
+    it('should raise on an unknown code, naming the element and the root token', function() {
+      expect(() => aggregateByRootToken('Task_1@Process_1', [ [ 'tok_0_0', 8 ] ]))
+        .to.throw(/Element "Task_1@Process_1#tok_0" has a token whose status 8/);
     });
 
   });

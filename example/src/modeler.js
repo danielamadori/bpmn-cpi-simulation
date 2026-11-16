@@ -26,6 +26,8 @@ import {
   STATE_ACTIVE,
   STATE_COMPLETED,
   STATE_WAITING,
+  NONE_OF_THE_THREE,
+  aggregateByRootToken,
   aggregateStatusesByElement
 } from './element-states';
 import gridModule from 'diagram-js-grid';
@@ -833,37 +835,25 @@ function renderStateSnapshot(snapshot) {
   }
 
   // Group entries by element (without #token_id) — one row per element.
-  // Aggregate split tokens (tok_0_0, tok_0_1) under their root (tok_0).
-  const elementEntries = new Map(); // "registryId@contextId" → Map(rootToken → status)
-  const elementOrder = [];
-  entries.forEach(([taskId, status]) => {
+  // Aggregate split tokens (tok_0_0, tok_0_1) under their root (tok_0), by
+  // the rule the replay uses for an element (aggregateByRootToken in
+  // ./element-states.js), so the panel does not depend on the order of the
+  // keys either.
+  const elementTokens = new Map(); // "registryId@contextId" → [ [ tokenId, status ], ... ]
+  entries.forEach(([ taskId, status ]) => {
     const { registryId, contextId, tokenId } = parseStateKey(taskId);
     const elementKey = contextId ? `${registryId}@${contextId}` : registryId;
-    if (!elementEntries.has(elementKey)) {
-      elementEntries.set(elementKey, new Map());
-      elementOrder.push(elementKey);
+    if (!elementTokens.has(elementKey)) {
+      elementTokens.set(elementKey, []);
     }
     if (!tokenId) {
       throw new Error(`State key "${taskId}" is missing #token_id fragment`);
     }
-    // Root token: tok_0 from tok_0_0 or tok_0_1
-    const parts = tokenId.split('_');
-    const rootToken = parts.length >= 2 ? parts.slice(0, 2).join('_') : tokenId;
-    const prev = elementEntries.get(elementKey).get(rootToken);
-    if (!prev) {
-      elementEntries.get(elementKey).set(rootToken, status);
-    } else {
-      // Aggregate: active > completed > waiting
-      if (status === STATE_ACTIVE || prev === STATE_ACTIVE) {
-        elementEntries.get(elementKey).set(rootToken, STATE_ACTIVE);
-      } else if (status === STATE_COMPLETED) {
-        elementEntries.get(elementKey).set(rootToken, STATE_COMPLETED);
-      }
-    }
+    elementTokens.get(elementKey).push([ tokenId, status ]);
   });
 
-  elementOrder.forEach(elementKey => {
-    const tokenMap = elementEntries.get(elementKey);
+  elementTokens.forEach((tokenStatuses, elementKey) => {
+    const tokenMap = aggregateByRootToken(elementKey, tokenStatuses);
     const row = document.createElement('tr');
     const taskCell = document.createElement('td');
     const statusCell = document.createElement('td');
@@ -884,25 +874,38 @@ function renderStateSnapshot(snapshot) {
       // Multiple tokens on this element — show each token_id with status
       statusCell.style.whiteSpace = "pre-wrap";
       statusCell.innerHTML = '';
-      for (const [tokenId, tokenStatus] of tokenMap.entries()) {
+      for (const [ tokenId, aggregate ] of tokenMap.entries()) {
         const div = document.createElement('div');
-        const name = ACTIVITY_STATE_NAME.get(tokenStatus) || 'unknown';
-        div.textContent = `${tokenId}: "${name}"`;
-        div.classList.add(normalizeStatusClass(tokenStatus));
+        _showRootTokenStatus(div, tokenId, aggregate);
         statusCell.appendChild(div);
       }
     } else {
       // Single token — show token_id: "status"
-      const [tokenId, tokenStatus] = [...tokenMap.entries()][0];
-      const name = ACTIVITY_STATE_NAME.get(tokenStatus) || 'unknown';
-      statusCell.textContent = `${tokenId}: "${name}"`;
-      statusCell.classList.add(normalizeStatusClass(tokenStatus));
+      const [ tokenId, aggregate ] = [ ...tokenMap.entries() ][0];
+      _showRootTokenStatus(statusCell, tokenId, aggregate);
     }
 
     row.appendChild(taskCell);
     row.appendChild(statusCell);
     statePanelBody.appendChild(row);
   });
+}
+
+// One root token's status in a cell of the state panel. An aggregate that is
+// an ActivityState code shows its name and its status class; one that is
+// NONE_OF_THE_THREE shows the distinct names of the statuses of its tokens,
+// in code order, and takes no status class -- it is no state.
+function _showRootTokenStatus(node, rootToken, aggregate) {
+  if (aggregate.status === NONE_OF_THE_THREE) {
+    const names = [ ...new Set(aggregate.statuses) ]
+      .sort((a, b) => a - b)
+      .map(status => ACTIVITY_STATE_NAME.get(status));
+    node.textContent = `${rootToken}: "${names.join(' / ')}"`;
+    return;
+  }
+
+  node.textContent = `${rootToken}: "${ACTIVITY_STATE_NAME.get(aggregate.status)}"`;
+  node.classList.add(normalizeStatusClass(aggregate.status));
 }
 
 // --- Replay to target index ---
