@@ -10,6 +10,7 @@ digraph components {
   "docker_entrypoint_sh" [label="docker-entrypoint.sh"];
   "eslint_config_mjs" [label="eslint.config.mjs"];
   "example_basic_src_app_js" [label="example/basic/src/app.js"];
+  "example_sidebar_controls_js" [label="example/sidebar-controls.js"];
   "example_src_api_client_js" [label="example/src/api-client.js"];
   "example_src_bpmn_to_json_js" [label="example/src/bpmn-to-json.js"];
   "example_src_fit_viewport_js" [label="example/src/fit-viewport.js"];
@@ -136,6 +137,8 @@ digraph components {
   "test_spec_features_gateway_settings_GatewaySettingsSpec_js" [label="test/spec/features/gateway-settings/GatewaySettingsSpec.js"];
   "test_spec_features_log_LogSpec_js" [label="test/spec/features/log/LogSpec.js"];
   "test_spec_features_show_scopes_ShowScopesSpec_js" [label="test/spec/features/show-scopes/ShowScopesSpec.js"];
+  "test_spec_i18n_I18nSpec_js" [label="test/spec/i18n/I18nSpec.js"];
+  "test_spec_i18n_custom_translate_js" [label="test/spec/i18n/custom-translate.js"];
   "test_spec_simulator_ScopeStatesSpec_js" [label="test/spec/simulator/ScopeStatesSpec.js"];
   "test_spec_simulator_SimulatorSpec_js" [label="test/spec/simulator/SimulatorSpec.js"];
   "test_suite_js" [label="test/suite.js"];

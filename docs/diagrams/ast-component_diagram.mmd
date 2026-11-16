@@ -1,6 +1,6 @@
 flowchart TB
-%% Component diagram, 138 of 138 file(s) drawn.
-%% Not truncated: all 138 file(s) are drawn.
+%% Component diagram, 141 of 141 file(s) drawn.
+%% Not truncated: all 141 file(s) are drawn.
 %% EDGES: 0 drawn of 0 resolved import edge(s); 0 dropped because an endpoint is outside the cap (0 importer outside, 0 imported file outside, 0 both). Until 2026-10-13 those 0 were DRAWN, to ids no subgraph declares, which mermaid renders as bare boxes labelled with the raw path.
 %% 5 module stem(s) resolve to more than one file and carry NO edge: a wrong edge is worse than a missing one.
     subgraph _bpmnlint_js[".bpmnlint.js (javascript)"]
@@ -21,6 +21,9 @@ flowchart TB
     subgraph eslint_config_mjs["eslint.config.mjs (javascript)"]
     end
     subgraph example_basic_src_app_js["example/basic/src/app.js (javascript)"]
+    end
+    subgraph example_sidebar_controls_js["example/sidebar-controls.js (javascript)"]
+        example_sidebar_controls_js_funcs["5 functions"]
     end
     subgraph example_src_api_client_js["example/src/api-client.js (javascript)"]
         example_src_api_client_js_funcs["1 functions"]
@@ -359,10 +362,15 @@ flowchart TB
     subgraph test_spec_features_show_scopes_ShowScopesSpec_js["test/spec/features/show-scopes/ShowScopesSpec.js (javascript)"]
         test_spec_features_show_scopes_ShowScopesSpec_js_funcs["5 functions"]
     end
+    subgraph test_spec_i18n_I18nSpec_js["test/spec/i18n/I18nSpec.js (javascript)"]
+        test_spec_i18n_I18nSpec_js_funcs["10 functions"]
+    end
+    subgraph test_spec_i18n_custom_translate_js["test/spec/i18n/custom-translate.js (javascript)"]
+    end
     subgraph test_spec_simulator_ScopeStatesSpec_js["test/spec/simulator/ScopeStatesSpec.js (javascript)"]
     end
     subgraph test_spec_simulator_SimulatorSpec_js["test/spec/simulator/SimulatorSpec.js (javascript)"]
-        test_spec_simulator_SimulatorSpec_js_funcs["13 functions"]
+        test_spec_simulator_SimulatorSpec_js_funcs["14 functions"]
     end
     subgraph test_suite_js["test/suite.js (javascript)"]
     end

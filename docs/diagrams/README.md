@@ -2,7 +2,7 @@
 
 Generated from this repository's source by
 [UniversalSemantics](https://github.com/danielamadori/UniversalSemantics) on
-2026-11-13, at revision `75a4dc2e2`, and committed because they are reproducible:
+2026-11-16, at revision `086f02868`, and committed because they are reproducible:
 the provenance comments name files the way this repository does, not the way
 one machine happened to mount them. Regenerate them rather than editing them.
 
@@ -22,10 +22,10 @@ A file that shows less than all of its subject, or that a viewer will not
 render, says so in its first lines:
 
 - `ast-call_graph`
-  - `.dot`: 398 of 1720 call records rendered, of which 0 are an identifier PASSED AS AN ARGUMENT and not a call at that site (dashed, and their tooltip says so); 398 are call sites.
-  - `.mmd` not committed: 126,008 characters, over Mermaid's 50,000-character limit, so Mermaid would draw only «Maximum text size in diagram exceeded»; open the `.dot` or the `.puml`
+  - `.dot`: 407 of 1775 call records rendered, of which 0 are an identifier PASSED AS AN ARGUMENT and not a call at that site (dashed, and their tooltip says so); 407 are call sites.
+  - `.mmd` not committed: 128,631 characters, over Mermaid's 50,000-character limit, so Mermaid would draw only «Maximum text size in diagram exceeded»; open the `.dot` or the `.puml`
 - `state_diagram`
-  - `.mmd` not committed: 413,410 characters, over Mermaid's 50,000-character limit, so Mermaid would draw only «Maximum text size in diagram exceeded»; open the `.puml`
+  - `.mmd` not committed: 422,120 characters, over Mermaid's 50,000-character limit, so Mermaid would draw only «Maximum text size in diagram exceeded»; open the `.puml`
 
 The JSON maps (`uml_map.json`, `cytoscape.json`, `state_diagram_map.json`) and
 `processes.bpmn` are deliberately not committed: they are for machines, and a run
@@ -33,9 +33,9 @@ produces them afresh.
 
 ## What UES read and ran
 
-- A code-only archive of `75a4dc2e2`: 138 files, 0.5 MB of source (uncompressed), 139 ZIP entries including .ues_corpus_provenance.json, built with UES's
+- A code-only archive of `086f02868`: 141 files, 0.5 MB of source (uncompressed), 142 ZIP entries including .ues_corpus_provenance.json, built with UES's
   `scripts/dev/build_corpus_zip.py --audit --require-single-revision`.
-- Run `20261113T154256Z_56562016` on the Aruba Virtual Private Server, deleted once its
+- Run `20261116T150407Z_65d4a153` on the Aruba Virtual Private Server, deleted once its
   outputs were copied. Steps, and how each ended:
 
   - `unzip_archive`: succeeded
@@ -52,10 +52,10 @@ produces them afresh.
 
 - The IR the steps read:
 
-  - Entities: 888 (source 555, synthetic modules 0, external stubs 333)
-  - Relations: 1606
-  - CFGs: 412 (3490 nodes, 3534 edges)
-  - ICFG call edges: 397
+  - Entities: 909 (source 574, synthetic modules 0, external stubs 335)
+  - Relations: 1652
+  - CFGs: 428 (3584 nodes, 3615 edges)
+  - ICFG call edges: 406
 
 Bad practices found in the same run are in
 [bad_practices.md](../bad_practices.md).

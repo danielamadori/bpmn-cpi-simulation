@@ -71,6 +71,14 @@ class "example.theme-toggle" as example_theme_toggle_Functions {
   +applyTheme()
   +init()
 }
+class "example.sidebar-controls" as example_sidebar_controls_Functions {
+  <<javascript module>>
+  +getMaxWidth()
+  +clampWidth()
+  +setSidebarWidth()
+  +notifyCanvasResize()
+  +updateToggleUI()
+}
 class "icons.index" as icons_index_Functions {
   <<javascript module>>
   +createIcon()
@@ -124,7 +132,7 @@ class "example.modeler" as example_modeler_Functions {
   +createHeatmapOverlay()
   +getHeatmapFrequencyData()
   +updateHeatmapData()
-  +toggleHeatmap()
+  +setHeatmapVisible()
   +_origPlayStatesEnd()
   +_syncCurrentNodeId()
   +navigateForward()
@@ -218,6 +226,7 @@ class "spec.simulator.SimulatorSpec" as spec_simulator_SimulatorSpec_Functions {
   +waitAtElement()
   +findScope()
   +expectDestroyed()
+  +traceActions()
   +expectTrace()
   +verifyTrace()
 }
@@ -226,6 +235,19 @@ class "spec.animation.AnimationSpec" as spec_animation_AnimationSpec_Functions {
   +getSimulationSupport()
   +triggerElement()
   +elementEnter()
+}
+class "spec.i18n.I18nSpec" as spec_i18n_I18nSpec_Functions {
+  <<javascript module>>
+  +bootstrapModeler()
+  +getContainer()
+  +getLabel()
+  +getPaletteTitles()
+  +getAnimationSpeedTitles()
+  +getLogEntries()
+  +getSimulationSupport()
+  +triggerElement()
+  +elementEnter()
+  +scopeDestroyed()
 }
 class "features.context-pads.ContextPadsSpec" as features_context_pads_ContextPadsSpec_Functions {
   <<javascript module>>

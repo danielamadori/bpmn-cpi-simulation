@@ -1,10 +1,10 @@
 digraph package_diagram {
-  // 138 internal module(s), 53 external root(s), 298 edge(s) drawn
-  // 386 import reference(s) considered = 301 drawn + 0 with no module name + 85 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
-  // nodes: 138 of 138 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 138 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 53 external node(s) are not files of this tree
-  // edges: 298 of 298 state an import site = 0 fully checked + 298 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
+  // 141 internal module(s), 52 external root(s), 306 edge(s) drawn
+  // 396 import reference(s) considered = 309 drawn + 0 with no module name + 87 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
+  // nodes: 141 of 141 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 141 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 52 external node(s) are not files of this tree
+  // edges: 306 of 306 state an import site = 0 fully checked + 306 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
   // languages this checker does not read are checked separately by: scripts/dev/js_package_edge_oracle.py
-  // path-relative JS/TS: 255 reference(s) = 170 resolved against the 138 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 85 declined: 68 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
+  // path-relative JS/TS: 260 reference(s) = 173 resolved against the 141 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 87 declined: 70 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
   // of those resolved, 0 matched more than one candidate and took the documented order's first; NOT IMPLEMENTED here: tsconfig/jsconfig path aliases; node_modules resolution; package.json main/exports/imports
   // the whole graph: no render budget applies here, unlike the .mmd
   rankdir=LR;
@@ -19,6 +19,7 @@ digraph package_diagram {
     "docker-entrypoint.sh" [tooltip="docker-entrypoint.sh",URL="docker-entrypoint.sh",comment="docker-entrypoint.sh -- bash, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "eslint.config.mjs" [tooltip="eslint.config.mjs",URL="eslint.config.mjs",comment="eslint.config.mjs -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/basic/src/app.js" [tooltip="example/basic/src/app.js",URL="example/basic/src/app.js",comment="example/basic/src/app.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "example/sidebar-controls.js" [tooltip="example/sidebar-controls.js",URL="example/sidebar-controls.js",comment="example/sidebar-controls.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/src/api-client.js" [tooltip="example/src/api-client.js",URL="example/src/api-client.js",comment="example/src/api-client.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/src/bpmn-to-json.js" [tooltip="example/src/bpmn-to-json.js",URL="example/src/bpmn-to-json.js",comment="example/src/bpmn-to-json.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/src/fit-viewport.js" [tooltip="example/src/fit-viewport.js",URL="example/src/fit-viewport.js",comment="example/src/fit-viewport.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
@@ -145,6 +146,8 @@ digraph package_diagram {
     "test/spec/features/gateway-settings/GatewaySettingsSpec.js" [tooltip="test/spec/features/gateway-settings/GatewaySettingsSpec.js",URL="test/spec/features/gateway-settings/GatewaySettingsSpec.js",comment="test/spec/features/gateway-settings/GatewaySettingsSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/features/log/LogSpec.js" [tooltip="test/spec/features/log/LogSpec.js",URL="test/spec/features/log/LogSpec.js",comment="test/spec/features/log/LogSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/features/show-scopes/ShowScopesSpec.js" [tooltip="test/spec/features/show-scopes/ShowScopesSpec.js",URL="test/spec/features/show-scopes/ShowScopesSpec.js",comment="test/spec/features/show-scopes/ShowScopesSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "test/spec/i18n/I18nSpec.js" [tooltip="test/spec/i18n/I18nSpec.js",URL="test/spec/i18n/I18nSpec.js",comment="test/spec/i18n/I18nSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "test/spec/i18n/custom-translate.js" [tooltip="test/spec/i18n/custom-translate.js",URL="test/spec/i18n/custom-translate.js",comment="test/spec/i18n/custom-translate.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/simulator/ScopeStatesSpec.js" [tooltip="test/spec/simulator/ScopeStatesSpec.js",URL="test/spec/simulator/ScopeStatesSpec.js",comment="test/spec/simulator/ScopeStatesSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/simulator/SimulatorSpec.js" [tooltip="test/spec/simulator/SimulatorSpec.js",URL="test/spec/simulator/SimulatorSpec.js",comment="test/spec/simulator/SimulatorSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/suite.js" [tooltip="test/suite.js",URL="test/suite.js",comment="test/suite.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
@@ -177,7 +180,6 @@ digraph package_diagram {
     "copy-webpack-plugin" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "diagram-js-grid" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "diagram-js-minimap" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
-    "diagram-js/lib/util/EscapeUtil" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "downloadjs" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "eslint-plugin-bpmn-io" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "file-drops" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
@@ -237,10 +239,11 @@ digraph package_diagram {
   "lib/animation/behaviors/AnimatedSequenceFlowBehavior.js" -> "lib/simulator/behaviors/SequenceFlowBehavior.js" [tooltip="import at lib/animation/behaviors/AnimatedSequenceFlowBehavior.js:1"];
   "lib/animation/behaviors/index.js" -> "lib/animation/behaviors/AnimatedMessageFlowBehavior.js" [tooltip="import at lib/animation/behaviors/index.js:1"];
   "lib/animation/behaviors/index.js" -> "lib/animation/behaviors/AnimatedSequenceFlowBehavior.js" [tooltip="import at lib/animation/behaviors/index.js:2"];
-  "lib/animation/index.js" -> "lib/animation/Animation.js" [tooltip="import at lib/animation/index.js:5"];
+  "lib/animation/index.js" -> "lib/animation/Animation.js" [tooltip="import at lib/animation/index.js:6"];
   "lib/animation/index.js" -> "lib/animation/behaviors/index.js" [tooltip="import at lib/animation/index.js:1"];
   "lib/animation/index.js" -> "lib/features/scope-filter/index.js" [tooltip="import at lib/animation/index.js:2"];
-  "lib/animation/index.js" -> "lib/simulator/index.js" [tooltip="import at lib/animation/index.js:3"];
+  "lib/animation/index.js" -> "lib/features/simulation-styles/index.js" [tooltip="import at lib/animation/index.js:3"];
+  "lib/animation/index.js" -> "lib/simulator/index.js" [tooltip="import at lib/animation/index.js:4"];
   "lib/base.js" -> "lib/animation/index.js" [tooltip="import at lib/base.js:2"];
   "lib/base.js" -> "lib/features/colored-scopes/index.js" [tooltip="import at lib/base.js:3"];
   "lib/base.js" -> "lib/features/context-pads/index.js" [tooltip="import at lib/base.js:4"];
@@ -282,7 +285,7 @@ digraph package_diagram {
   "lib/features/element-colors/ElementColors.js" -> "bpmn-js/lib/util/ModelUtil" [tooltip="import at lib/features/element-colors/ElementColors.js:1"];
   "lib/features/element-colors/ElementColors.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/element-colors/ElementColors.js:6"];
   "lib/features/element-colors/index.js" -> "lib/features/element-colors/ElementColors.js" [tooltip="import at lib/features/element-colors/index.js:1"];
-  "lib/features/element-notifications/ElementNotifications.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/element-notifications/ElementNotifications.js:5"];
+  "lib/features/element-notifications/ElementNotifications.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/element-notifications/ElementNotifications.js:6"];
   "lib/features/element-notifications/ElementNotifications.js" -> "min-dom" [tooltip="import at lib/features/element-notifications/ElementNotifications.js:1"];
   "lib/features/element-notifications/index.js" -> "lib/features/element-notifications/ElementNotifications.js" [tooltip="import at lib/features/element-notifications/index.js:1"];
   "lib/features/element-support/ElementSupport.js" -> "bpmn-js/lib/util/ModelUtil" [tooltip="import at lib/features/element-support/ElementSupport.js:5"];
@@ -304,8 +307,7 @@ digraph package_diagram {
   "lib/features/keyboard-bindings/KeyboardBindings.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/keyboard-bindings/KeyboardBindings.js:1"];
   "lib/features/keyboard-bindings/index.js" -> "lib/features/keyboard-bindings/KeyboardBindings.js" [tooltip="import at lib/features/keyboard-bindings/index.js:1"];
   "lib/features/log/Log.js" -> "bpmn-js/lib/util/ModelUtil" [tooltip="import at lib/features/log/Log.js:10"];
-  "lib/features/log/Log.js" -> "diagram-js/lib/util/EscapeUtil" [tooltip="import at lib/features/log/Log.js:16"];
-  "lib/features/log/Log.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/log/Log.js:20"];
+  "lib/features/log/Log.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/log/Log.js:16"];
   "lib/features/log/Log.js" -> "min-dom" [tooltip="import at lib/features/log/Log.js:1"];
   "lib/features/log/index.js" -> "lib/features/log/Log.js" [tooltip="import at lib/features/log/index.js:1"];
   "lib/features/log/index.js" -> "lib/features/notifications/index.js" [tooltip="import at lib/features/log/index.js:4"];
@@ -313,7 +315,8 @@ digraph package_diagram {
   "lib/features/neutral-element-colors/NeutralElementColors.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/neutral-element-colors/NeutralElementColors.js:1"];
   "lib/features/neutral-element-colors/index.js" -> "lib/features/element-colors/index.js" [tooltip="import at lib/features/neutral-element-colors/index.js:2"];
   "lib/features/neutral-element-colors/index.js" -> "lib/features/neutral-element-colors/NeutralElementColors.js" [tooltip="import at lib/features/neutral-element-colors/index.js:1"];
-  "lib/features/notifications/Notifications.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/notifications/Notifications.js:5"];
+  "lib/features/neutral-element-colors/index.js" -> "lib/features/simulation-styles/index.js" [tooltip="import at lib/features/neutral-element-colors/index.js:3"];
+  "lib/features/notifications/Notifications.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/notifications/Notifications.js:6"];
   "lib/features/notifications/Notifications.js" -> "min-dom" [tooltip="import at lib/features/notifications/Notifications.js:1"];
   "lib/features/notifications/index.js" -> "lib/features/notifications/Notifications.js" [tooltip="import at lib/features/notifications/index.js:3"];
   "lib/features/notifications/index.js" -> "lib/features/scope-filter/index.js" [tooltip="import at lib/features/notifications/index.js:1"];
@@ -345,11 +348,12 @@ digraph package_diagram {
   "lib/features/simulation-state/index.js" -> "lib/features/element-notifications/index.js" [tooltip="import at lib/features/simulation-state/index.js:3"];
   "lib/features/simulation-state/index.js" -> "lib/features/notifications/index.js" [tooltip="import at lib/features/simulation-state/index.js:4"];
   "lib/features/simulation-state/index.js" -> "lib/features/simulation-state/SimulationState.js" [tooltip="import at lib/features/simulation-state/index.js:1"];
+  "lib/features/simulation-styles/SimulationStyles.js" -> "min-dom" [tooltip="import at lib/features/simulation-styles/SimulationStyles.js:1"];
   "lib/features/simulation-styles/index.js" -> "lib/features/simulation-styles/SimulationStyles.js" [tooltip="import at lib/features/simulation-styles/index.js:1"];
   "lib/features/toggle-mode/modeler/ToggleMode.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/toggle-mode/modeler/ToggleMode.js:8"];
   "lib/features/toggle-mode/modeler/ToggleMode.js" -> "min-dom" [tooltip="import at lib/features/toggle-mode/modeler/ToggleMode.js:1"];
   "lib/features/toggle-mode/modeler/index.js" -> "lib/features/toggle-mode/modeler/ToggleMode.js" [tooltip="import at lib/features/toggle-mode/modeler/index.js:1"];
-  "lib/features/toggle-mode/viewer/ToggleMode.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/toggle-mode/viewer/ToggleMode.js:7"];
+  "lib/features/toggle-mode/viewer/ToggleMode.js" -> "lib/util/EventHelper.js" [tooltip="import at lib/features/toggle-mode/viewer/ToggleMode.js:8"];
   "lib/features/toggle-mode/viewer/ToggleMode.js" -> "min-dom" [tooltip="import at lib/features/toggle-mode/viewer/ToggleMode.js:1"];
   "lib/features/toggle-mode/viewer/index.js" -> "lib/features/toggle-mode/viewer/ToggleMode.js" [tooltip="import at lib/features/toggle-mode/viewer/index.js:1"];
   "lib/features/token-count/TokenCount.js" -> "bpmn-js/lib/util/ModelUtil" [tooltip="import at lib/features/token-count/TokenCount.js:7"];
@@ -493,6 +497,12 @@ digraph package_diagram {
   "test/spec/features/show-scopes/ShowScopesSpec.js" -> "lib/simulation-support" [tooltip="import at test/spec/features/show-scopes/ShowScopesSpec.js:3"];
   "test/spec/features/show-scopes/ShowScopesSpec.js" -> "min-dom" [tooltip="import at test/spec/features/show-scopes/ShowScopesSpec.js:11"];
   "test/spec/features/show-scopes/ShowScopesSpec.js" -> "test/TestHelper" [tooltip="import at test/spec/features/show-scopes/ShowScopesSpec.js:5"];
+  "test/spec/i18n/I18nSpec.js" -> "chai" [tooltip="import at test/spec/i18n/I18nSpec.js:13"];
+  "test/spec/i18n/I18nSpec.js" -> "lib/modeler" [tooltip="import at test/spec/i18n/I18nSpec.js:1"];
+  "test/spec/i18n/I18nSpec.js" -> "lib/simulation-support" [tooltip="import at test/spec/i18n/I18nSpec.js:3"];
+  "test/spec/i18n/I18nSpec.js" -> "min-dom" [tooltip="import at test/spec/i18n/I18nSpec.js:15"];
+  "test/spec/i18n/I18nSpec.js" -> "test/TestHelper" [tooltip="import at test/spec/i18n/I18nSpec.js:5"];
+  "test/spec/i18n/I18nSpec.js" -> "test/spec/i18n/custom-translate.js" [tooltip="import at test/spec/i18n/I18nSpec.js:11"];
   "test/spec/simulator/ScopeStatesSpec.js" -> "chai" [tooltip="import at test/spec/simulator/ScopeStatesSpec.js:4"];
   "test/spec/simulator/ScopeStatesSpec.js" -> "lib/simulator/ScopeStates" [tooltip="import at test/spec/simulator/ScopeStatesSpec.js:1"];
   "test/spec/simulator/ScopeStatesSpec.js" -> "lib/simulator/ScopeTraits" [tooltip="import at test/spec/simulator/ScopeStatesSpec.js:2"];

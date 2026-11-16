@@ -71,6 +71,14 @@ classDiagram
         +applyTheme()
         +init()
     }
+    class example_sidebar_controls_Functions["example.sidebar-controls"] {
+        <<javascript module>>
+        +getMaxWidth()
+        +clampWidth()
+        +setSidebarWidth()
+        +notifyCanvasResize()
+        +updateToggleUI()
+    }
     class icons_index_Functions["icons.index"] {
         <<javascript module>>
         +createIcon()
@@ -124,7 +132,7 @@ classDiagram
         +createHeatmapOverlay()
         +getHeatmapFrequencyData()
         +updateHeatmapData()
-        +toggleHeatmap()
+        +setHeatmapVisible()
         +_origPlayStatesEnd()
         +_syncCurrentNodeId()
         +navigateForward()
@@ -218,6 +226,7 @@ classDiagram
         +waitAtElement()
         +findScope()
         +expectDestroyed()
+        +traceActions()
         +expectTrace()
         +verifyTrace()
     }
@@ -226,6 +235,19 @@ classDiagram
         +getSimulationSupport()
         +triggerElement()
         +elementEnter()
+    }
+    class spec_i18n_I18nSpec_Functions["spec.i18n.I18nSpec"] {
+        <<javascript module>>
+        +bootstrapModeler()
+        +getContainer()
+        +getLabel()
+        +getPaletteTitles()
+        +getAnimationSpeedTitles()
+        +getLogEntries()
+        +getSimulationSupport()
+        +triggerElement()
+        +elementEnter()
+        +scopeDestroyed()
     }
     class features_context_pads_ContextPadsSpec_Functions["features.context-pads.ContextPadsSpec"] {
         <<javascript module>>

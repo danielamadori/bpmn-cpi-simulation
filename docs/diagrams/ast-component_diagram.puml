@@ -1,6 +1,6 @@
 @startuml
-' Component diagram, 138 of 138 file(s) drawn.
-' Not truncated: all 138 file(s) are drawn.
+' Component diagram, 141 of 141 file(s) drawn.
+' Not truncated: all 141 file(s) are drawn.
 ' EDGES: 0 drawn of 0 resolved import edge(s); 0 dropped because an endpoint is outside the cap (0 importer outside, 0 imported file outside, 0 both). Until 2026-10-13 those 0 were DRAWN, to ids no subgraph declares, which mermaid renders as bare boxes labelled with the raw path.
 ' 5 module stem(s) resolve to more than one file and carry NO edge: a wrong edge is worse than a missing one.
 package ".bpmnlint.js (javascript)" {
@@ -21,6 +21,9 @@ package "docker-entrypoint.sh (bash)" {
 package "eslint.config.mjs (javascript)" {
 }
 package "example/basic/src/app.js (javascript)" {
+}
+package "example/sidebar-controls.js (javascript)" {
+object "5 functions" as example_sidebar_controls_js_funcs
 }
 package "example/src/api-client.js (javascript)" {
 object "1 functions" as example_src_api_client_js_funcs
@@ -359,10 +362,15 @@ object "6 functions" as test_spec_features_log_LogSpec_js_funcs
 package "test/spec/features/show-scopes/ShowScopesSpec.js (javascript)" {
 object "5 functions" as test_spec_features_show_scopes_ShowScopesSpec_js_funcs
 }
+package "test/spec/i18n/I18nSpec.js (javascript)" {
+object "10 functions" as test_spec_i18n_I18nSpec_js_funcs
+}
+package "test/spec/i18n/custom-translate.js (javascript)" {
+}
 package "test/spec/simulator/ScopeStatesSpec.js (javascript)" {
 }
 package "test/spec/simulator/SimulatorSpec.js (javascript)" {
-object "13 functions" as test_spec_simulator_SimulatorSpec_js_funcs
+object "14 functions" as test_spec_simulator_SimulatorSpec_js_funcs
 }
 package "test/suite.js (javascript)" {
 }

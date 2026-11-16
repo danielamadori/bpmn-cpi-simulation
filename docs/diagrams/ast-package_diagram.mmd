@@ -1,10 +1,10 @@
 flowchart LR
-    %% 138 internal module(s), 53 external root(s), 298 edge(s) drawn
-    %% 386 import reference(s) considered = 301 drawn + 0 with no module name + 85 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
-    %% nodes: 138 of 138 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 138 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 53 external node(s) are not files of this tree
-    %% edges: 298 of 298 state an import site = 0 fully checked + 298 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
+    %% 141 internal module(s), 52 external root(s), 306 edge(s) drawn
+    %% 396 import reference(s) considered = 309 drawn + 0 with no module name + 87 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
+    %% nodes: 141 of 141 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 141 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 52 external node(s) are not files of this tree
+    %% edges: 306 of 306 state an import site = 0 fully checked + 306 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
     %% languages this checker does not read are checked separately by: scripts/dev/js_package_edge_oracle.py
-    %% path-relative JS/TS: 255 reference(s) = 170 resolved against the 138 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 85 declined: 68 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
+    %% path-relative JS/TS: 260 reference(s) = 173 resolved against the 141 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 87 declined: 70 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
     %% of those resolved, 0 matched more than one candidate and took the documented order's first; NOT IMPLEMENTED here: tsconfig/jsconfig path aliases; node_modules resolution; package.json main/exports/imports
     subgraph Internal
         _bpmnlint_js[".bpmnlint.js"]
@@ -15,6 +15,7 @@ flowchart LR
         docker_entrypoint_sh["docker-entrypoint.sh"]
         eslint_config_mjs["eslint.config.mjs"]
         example_basic_src_app_js["example/basic/src/app.js"]
+        example_sidebar_controls_js["example/sidebar-controls.js"]
         example_src_api_client_js["example/src/api-client.js"]
         example_src_bpmn_to_json_js["example/src/bpmn-to-json.js"]
         example_src_fit_viewport_js["example/src/fit-viewport.js"]
@@ -141,6 +142,8 @@ flowchart LR
         test_spec_features_gateway_settings_GatewaySettingsSpec_js["test/spec/features/gateway-settings/GatewaySettingsSpec.js"]
         test_spec_features_log_LogSpec_js["test/spec/features/log/LogSpec.js"]
         test_spec_features_show_scopes_ShowScopesSpec_js["test/spec/features/show-scopes/ShowScopesSpec.js"]
+        test_spec_i18n_I18nSpec_js["test/spec/i18n/I18nSpec.js"]
+        test_spec_i18n_custom_translate_js["test/spec/i18n/custom-translate.js"]
         test_spec_simulator_ScopeStatesSpec_js["test/spec/simulator/ScopeStatesSpec.js"]
         test_spec_simulator_SimulatorSpec_js["test/spec/simulator/SimulatorSpec.js"]
         test_suite_js["test/suite.js"]
@@ -172,7 +175,6 @@ flowchart LR
         copy_webpack_plugin_ext["copy-webpack-plugin"]
         diagram_js_grid_ext["diagram-js-grid"]
         diagram_js_minimap_ext["diagram-js-minimap"]
-        diagram_js_lib_util_EscapeUtil_ext["diagram-js/lib/util/EscapeUtil"]
         downloadjs_ext["downloadjs"]
         eslint_plugin_bpmn_io_ext["eslint-plugin-bpmn-io"]
         file_drops_ext["file-drops"]
@@ -235,6 +237,7 @@ flowchart LR
     lib_animation_index_js --> lib_animation_Animation_js
     lib_animation_index_js --> lib_animation_behaviors_index_js
     lib_animation_index_js --> lib_features_scope_filter_index_js
+    lib_animation_index_js --> lib_features_simulation_styles_index_js
     lib_animation_index_js --> lib_simulator_index_js
     lib_base_js --> lib_animation_index_js
     lib_base_js --> lib_features_colored_scopes_index_js
@@ -299,7 +302,6 @@ flowchart LR
     lib_features_keyboard_bindings_KeyboardBindings_js --> lib_util_EventHelper_js
     lib_features_keyboard_bindings_index_js --> lib_features_keyboard_bindings_KeyboardBindings_js
     lib_features_log_Log_js --> bpmn_js_lib_util_ModelUtil_ext
-    lib_features_log_Log_js --> diagram_js_lib_util_EscapeUtil_ext
     lib_features_log_Log_js --> lib_util_EventHelper_js
     lib_features_log_Log_js --> min_dom_ext
     lib_features_log_index_js --> lib_features_log_Log_js
@@ -308,6 +310,7 @@ flowchart LR
     lib_features_neutral_element_colors_NeutralElementColors_js --> lib_util_EventHelper_js
     lib_features_neutral_element_colors_index_js --> lib_features_element_colors_index_js
     lib_features_neutral_element_colors_index_js --> lib_features_neutral_element_colors_NeutralElementColors_js
+    lib_features_neutral_element_colors_index_js --> lib_features_simulation_styles_index_js
     lib_features_notifications_Notifications_js --> lib_util_EventHelper_js
     lib_features_notifications_Notifications_js --> min_dom_ext
     lib_features_notifications_index_js --> lib_features_notifications_Notifications_js
@@ -340,6 +343,7 @@ flowchart LR
     lib_features_simulation_state_index_js --> lib_features_element_notifications_index_js
     lib_features_simulation_state_index_js --> lib_features_notifications_index_js
     lib_features_simulation_state_index_js --> lib_features_simulation_state_SimulationState_js
+    lib_features_simulation_styles_SimulationStyles_js --> min_dom_ext
     lib_features_simulation_styles_index_js --> lib_features_simulation_styles_SimulationStyles_js
     lib_features_toggle_mode_modeler_ToggleMode_js --> lib_util_EventHelper_js
     lib_features_toggle_mode_modeler_ToggleMode_js --> min_dom_ext
@@ -488,6 +492,12 @@ flowchart LR
     test_spec_features_show_scopes_ShowScopesSpec_js --> lib_simulation_support_ext
     test_spec_features_show_scopes_ShowScopesSpec_js --> min_dom_ext
     test_spec_features_show_scopes_ShowScopesSpec_js --> test_TestHelper_ext
+    test_spec_i18n_I18nSpec_js --> chai_ext
+    test_spec_i18n_I18nSpec_js --> lib_modeler_ext
+    test_spec_i18n_I18nSpec_js --> lib_simulation_support_ext
+    test_spec_i18n_I18nSpec_js --> min_dom_ext
+    test_spec_i18n_I18nSpec_js --> test_TestHelper_ext
+    test_spec_i18n_I18nSpec_js --> test_spec_i18n_custom_translate_js
     test_spec_simulator_ScopeStatesSpec_js --> chai_ext
     test_spec_simulator_ScopeStatesSpec_js --> lib_simulator_ScopeStates_ext
     test_spec_simulator_ScopeStatesSpec_js --> lib_simulator_ScopeTraits_ext
