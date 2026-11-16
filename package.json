@@ -1,11 +1,11 @@
 {
   "name": "bpmn-js-token-simulation",
-  "version": "0.40.0",
+  "version": "1.1.0",
   "description": "bpmn-js token simulation extension",
   "module": "lib/index.js",
   "main": "lib/index.js",
   "scripts": {
-    "all": "run-s bundle:src test bundle",
+    "all": "run-s bundle:src lint:theme test bundle",
     "bundle:src": "rollup -c --bundleConfigAsCjs",
     "postinstall": "node ./tasks/ensure-rollup-binary.js",
     "prebundle": "npm run bundle:src",
@@ -23,7 +23,8 @@
     "pretest": "npm run bundle:src",
     "test": "run-s lint:js lint:bpmn test:unit",
     "test:unit": "karma start",
-    "dev": "npm test -- --auto-watch --no-single-run"
+    "dev": "npm test -- --auto-watch --no-single-run",
+    "lint:theme": "bpmn-io-theme-validate assets/css/bpmn-js-token-simulation.css"
   },
   "repository": {
     "type": "git",
@@ -54,20 +55,21 @@
     "lib",
     "index.js"
   ],
-  "engines": {
-    "node": ">= 22"
-  },
   "sideEffects": [
     "*.css"
   ],
+  "peerDependencies": {
+    "diagram-js": ">= 15.27.0"
+  },
   "devDependencies": {
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/properties-panel": "^3.47.0",
+    "@bpmn-io/theme": "^0.3.0",
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "babel-loader": "^10.1.1",
     "babel-plugin-istanbul": "^8.0.0",
-    "bpmn-js": "^18.19.0",
+    "bpmn-js": "^18.30.0",
     "bpmn-js-bpmnlint": "^0.23.0",
     "bpmn-js-properties-panel": "^5.60.0",
     "bpmn-to-image": "^0.9.0",
@@ -76,6 +78,7 @@
     "chai": "^6.2.2",
     "copy-webpack-plugin": "^14.0.0",
     "cross-env": "^10.1.0",
+    "diagram-js": "^15.27.0",
     "downloadjs": "^1.4.7",
     "eslint": "^9.39.4",
     "eslint-plugin-bpmn-io": "^2.3.1",
@@ -90,7 +93,7 @@
     "karma-mocha": "^2.0.1",
     "karma-tldr-reporter": "^1.0.0",
     "karma-webpack": "^5.0.1",
-    "mocha": "^11.7.6",
+    "mocha": "^12.0.0",
     "mocha-test-container-support": "^0.2.0",
     "npm-run-all2": "^9.0.2",
     "puppeteer": "^24.31.0",
@@ -98,7 +101,7 @@
     "rollup-plugin-string": "^3.0.0",
     "sinon": "^22.0.0",
     "sinon-chai": "^4.0.1",
-    "webpack": "^5.107.2",
+    "webpack": "^5.108.4",
     "webpack-cli": "^7.0.3",
     "webpack-dev-server": "^5.2.5"
   },

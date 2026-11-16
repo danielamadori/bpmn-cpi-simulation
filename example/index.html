@@ -36,7 +36,14 @@
 
 <body>
 
-    <div id="simulation-control-stack">
+    <!--
+      bpmn-js-token-simulation 1.x declares its colour variables on
+      .bio-theme-parent / .bts-container, i.e. on the canvas. The modeller
+      moves the palette, the mode toggle, the speed control and the log
+      into this stack, outside the canvas, so the stack carries the same
+      two classes or those controls lose their colours.
+    -->
+    <div id="simulation-control-stack" class="bio-theme-parent bts-container">
         <div class="group" id="io-group">
             <div class="group-header">
                 <h3>I/O Operations</h3>

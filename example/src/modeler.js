@@ -961,11 +961,14 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
     if (selectedFlow) {
       simulator.setConfig(gateway, { locked: true, activeOutgoing: selectedFlow, wait: false });
 
-      // Color: selected branch dark, non-selected light grey
+      // Color: selected branch dark, non-selected light grey.
+      // grey-lighten-56 left with bpmn-js-token-simulation 1.0.0; the
+      // inactive name is the one upstream gave the same #909090.
+      // grey-darken-30 is still declared, and dark-themed, in style.css.
       outgoing.forEach(flow => {
         const style = flow === selectedFlow
           ? '--token-simulation-grey-darken-30'
-          : '--token-simulation-grey-lighten-56';
+          : '--token-simulation-inactive-outgoing-flow-stroke-color';
         elementColors.add(flow, 'exclusive-gateway-settings', {
           stroke: simulationStyles.get(style)
         }, 2000);

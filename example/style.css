@@ -38,6 +38,29 @@ body.dark-mode {
   --diagram-js-background-color: var(--token-simulation-white);
 }
 
+/*
+ * bpmn-js-token-simulation 1.0.0 (upstream 55ae16e) no longer reads the
+ * palette names above: its controls -- palette, log, notifications,
+ * context pads -- take their colours from --token-simulation-control-*,
+ * declared on .bts-container. The three dark overrides above therefore
+ * stopped reaching them, and in dark mode they would turn light again
+ * with no merge conflict to show it. Each new name is the one upstream
+ * put in place of the old one in assets/css/bpmn-js-token-simulation.css.
+ */
+.dark-mode .bts-container {
+  --token-simulation-control-color: var(--token-simulation-grey-darken-30);
+  --token-simulation-control-background: var(--token-simulation-silver-darken-94);
+  --token-simulation-control-surface: var(--token-simulation-white);
+
+  /*
+   * grey-base-40 (#666666) was never dark-themed, and upstream replaced it
+   * with --bio-text-subtle, rgb(80, 85, 98): on the #555555 control
+   * background that drew the disabled play and reset icons invisible.
+   */
+  --token-simulation-disabled-color: #666666;
+  --token-simulation-paused: #666666;
+}
+
 .dark-mode .djs-container {
   background-color: var(--diagram-js-background-color);
 }
