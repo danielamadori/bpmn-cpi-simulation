@@ -39,3 +39,11 @@ not an agent's.
 Before adding ANY visual state to a diagram element, ask: is it a token? If it
 is not, it is not added. A state the tokens cannot show is a question for
 Daniel, not a colour.
+
+THE HEATMAP STAYS, BY DANIEL'S DECISION OF 2026-11-16. `example/src/modeler.js`
+draws a `heatmap.js` layer, `#heatmap-overlay`, over the diagram when a metric
+is chosen in the «Heatmap» menu; it is off by default («Hide»). It shows
+cumulative metrics -- token entries, the declared `sese:duration`, the declared
+`sese:impact` values -- and never where a run is. It is an exception the owner
+decided, not a precedent: no agent may extend it, copy it into another page or
+module, or use it to show run state.
