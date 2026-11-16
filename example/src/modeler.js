@@ -267,9 +267,15 @@ function sanitizeDiagram(modeler, { persist }) {
     // keep sanitized XML in local storage so the next load stays valid
     modeler.saveXML({ format: true }).then(({ xml }) => {
       localStorage['diagram-xml'] = xml;
-    }).catch(() => {
+    }).catch(err => {
 
-      // non-fatal if persistence fails
+      // Not fatal -- the diagram on the canvas is sanitized either way -- but
+      // the next load reads localStorage['diagram-xml'] and would get the
+      // diagram as it was, so it is said.
+      console.error(
+        '[sanitizeDiagram] the sanitized diagram was not saved to localStorage["diagram-xml"]:',
+        err
+      );
     });
   }
 }
