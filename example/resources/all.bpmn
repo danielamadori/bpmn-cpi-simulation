@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0-rc.1-form-semver-maj-mi-pa">
+<?xml version="1.0" encoding="utf-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0-rc.1-form-semver-maj-mi-pa" xmlns:sese="http://example.com/sese">
   <bpmn:message id="Message_1dyo6g5" name="Message_message" />
   <bpmn:error id="Error_0k93fd1" name="Error_1405ero" />
   <bpmn:signal id="Signal_075vocx" name="Signal_2" />
@@ -119,12 +119,21 @@
     <bpmn:transaction id="Activity_06ozdl0" name="COMPENSATE_ACTIVITY">
       <bpmn:incoming>Flow_1ow1vmw</bpmn:incoming>
       <bpmn:outgoing>Flow_0lmi2i7</bpmn:outgoing>
-      <bpmn:task id="Activity_1eyhfqq" isForCompensation="true" />
+      <bpmn:task id="Activity_1eyhfqq" isForCompensation="true">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
+      </bpmn:task>
       <bpmn:endEvent id="Event_1ticr2m">
         <bpmn:incoming>Flow_13dftyt</bpmn:incoming>
         <bpmn:cancelEventDefinition id="CancelEventDefinition_1p3kdl1" />
       </bpmn:endEvent>
       <bpmn:task id="Activity_0a9spto">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_1wguwxw</bpmn:incoming>
         <bpmn:outgoing>Flow_13dftyt</bpmn:outgoing>
       </bpmn:task>
@@ -150,6 +159,10 @@
         <bpmn:outgoing>Flow_1du2pr9</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:task id="Activity_01jhww2">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_1du2pr9</bpmn:incoming>
         <bpmn:outgoing>Flow_13yddco</bpmn:outgoing>
       </bpmn:task>
@@ -157,13 +170,22 @@
       <bpmn:boundaryEvent id="Event_14nz1vu" attachedToRef="Activity_01jhww2">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_06qhtaf" />
       </bpmn:boundaryEvent>
-      <bpmn:task id="Activity_075ibwv" isForCompensation="true" />
+      <bpmn:task id="Activity_075ibwv" isForCompensation="true">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
+      </bpmn:task>
       <bpmn:sequenceFlow id="Flow_13yddco" sourceRef="Activity_01jhww2" targetRef="Activity_0s0i5vi" />
       <bpmn:endEvent id="Event_0zhudmm">
         <bpmn:incoming>Flow_1cb3lya</bpmn:incoming>
         <bpmn:cancelEventDefinition id="CancelEventDefinition_03l9881" />
       </bpmn:endEvent>
       <bpmn:task id="Activity_0s0i5vi">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_13yddco</bpmn:incoming>
         <bpmn:outgoing>Flow_1cb3lya</bpmn:outgoing>
       </bpmn:task>
@@ -171,7 +193,12 @@
       <bpmn:boundaryEvent id="Event_092gvdm" attachedToRef="Activity_0s0i5vi">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_1mxspvh" />
       </bpmn:boundaryEvent>
-      <bpmn:task id="Activity_1i69gkh" isForCompensation="true" />
+      <bpmn:task id="Activity_1i69gkh" isForCompensation="true">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
+      </bpmn:task>
       <bpmn:association id="Association_1wm0fqa" associationDirection="One" sourceRef="Event_14nz1vu" targetRef="Activity_075ibwv" />
       <bpmn:association id="Association_0ls1c13" associationDirection="One" sourceRef="Event_092gvdm" targetRef="Activity_1i69gkh" />
     </bpmn:transaction>
@@ -239,6 +266,10 @@
       <bpmn:outgoing>Flow_1pw6p5n</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Activity_0ic5y7z">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1pw6p5n</bpmn:incoming>
       <bpmn:outgoing>Flow_0ixb61u</bpmn:outgoing>
     </bpmn:task>
@@ -280,10 +311,18 @@
   </bpmn:process>
   <bpmn:process id="ALL_PROCESS" isExecutable="false">
     <bpmn:task id="Activity_0b3eb5x" name="Test Terminiation">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1wr5der</bpmn:incoming>
       <bpmn:outgoing>Flow_1iumeue</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Activity_0824v5m" name="Test Signals">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1iumeue</bpmn:incoming>
       <bpmn:outgoing>Flow_01u9q06</bpmn:outgoing>
     </bpmn:task>
@@ -291,6 +330,10 @@
       <bpmn:outgoing>Flow_1wr5der</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Activity_0wqd9mj" name="Test Transactions">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_01u9q06</bpmn:incoming>
       <bpmn:outgoing>Flow_1cm7h44</bpmn:outgoing>
     </bpmn:task>
@@ -309,6 +352,10 @@
     <bpmn:sequenceFlow id="Flow_1wr5der" sourceRef="ALL_START" targetRef="Activity_0b3eb5x" />
     <bpmn:sequenceFlow id="Flow_1iumeue" sourceRef="Activity_0b3eb5x" targetRef="Activity_0824v5m" />
     <bpmn:task id="Activity_12cmviq" name="Test Links">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0a7odrl</bpmn:incoming>
       <bpmn:outgoing>Flow_0592seu</bpmn:outgoing>
     </bpmn:task>
@@ -320,19 +367,35 @@
     <bpmn:sequenceFlow id="Flow_0h1h5ts" sourceRef="Activity_03e20eu" targetRef="Activity_11qkm2d" />
     <bpmn:sequenceFlow id="Flow_19no37g" sourceRef="Activity_11qkm2d" targetRef="ALL_END" />
     <bpmn:task id="Activity_13j5mxh" name="Test Event Sub-Processes">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1cm7h44</bpmn:incoming>
       <bpmn:outgoing>Flow_0gzn7a8</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Activity_07g7932" name="Test Compensation">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0gzn7a8</bpmn:incoming>
       <bpmn:outgoing>Flow_0a7odrl</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0a7odrl" sourceRef="Activity_07g7932" targetRef="Activity_12cmviq" />
     <bpmn:task id="Activity_11qkm2d" name="Test Escalation">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0h1h5ts</bpmn:incoming>
       <bpmn:outgoing>Flow_19no37g</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Activity_03e20eu" name="Test Event-based Gateway">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0592seu</bpmn:incoming>
       <bpmn:outgoing>Flow_0h1h5ts</bpmn:outgoing>
     </bpmn:task>
@@ -380,6 +443,10 @@
       <bpmn:signalEventDefinition id="SignalEventDefinition_1x3u3jk" signalRef="Signal_0c2g5ro" />
     </bpmn:intermediateThrowEvent>
     <bpmn:task id="B" name="B">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0qpwtj4</bpmn:incoming>
       <bpmn:outgoing>Flow_178z1zz</bpmn:outgoing>
     </bpmn:task>
@@ -399,6 +466,10 @@
       <bpmn:signalEventDefinition id="SignalEventDefinition_01df7l3" signalRef="Signal_075vocx" />
     </bpmn:intermediateCatchEvent>
     <bpmn:receiveTask id="A" name="A">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0skcc47</bpmn:incoming>
       <bpmn:outgoing>Flow_1n0964t</bpmn:outgoing>
     </bpmn:receiveTask>
@@ -677,6 +748,10 @@
       <bpmn:outgoing>Flow_1eo6dti</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Activity_0ssqeep" name="X">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1eo6dti</bpmn:incoming>
       <bpmn:outgoing>Flow_1bp6gjx</bpmn:outgoing>
     </bpmn:task>
@@ -687,15 +762,33 @@
         <bpmn:outgoing>Flow_0j9lu9p</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:task id="CAC_A" name="CAC_A">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_0j9lu9p</bpmn:incoming>
         <bpmn:outgoing>Flow_01i6c5z</bpmn:outgoing>
       </bpmn:task>
-      <bpmn:task id="COMPENSATE_CAC_A" name="COMPENSATE_CAC_A" isForCompensation="true" />
+      <bpmn:task id="COMPENSATE_CAC_A" name="COMPENSATE_CAC_A" isForCompensation="true">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
+      </bpmn:task>
       <bpmn:task id="CAC_B" name="CAC_B">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_01i6c5z</bpmn:incoming>
         <bpmn:outgoing>Flow_0dbz8rq</bpmn:outgoing>
       </bpmn:task>
-      <bpmn:task id="COMPENSATE_CAC_B" name="COMPENSATE_CAC_B" isForCompensation="true" />
+      <bpmn:task id="COMPENSATE_CAC_B" name="COMPENSATE_CAC_B" isForCompensation="true">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
+      </bpmn:task>
       <bpmn:subProcess id="Activity_0hy6quq" triggeredByEvent="true">
         <bpmn:startEvent id="Event_0v7t6oq">
           <bpmn:outgoing>Flow_1pnswgo</bpmn:outgoing>
@@ -736,10 +829,19 @@
         <bpmn:incoming>Flow_18vkq6b</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:task id="CAC_C" name="CAC_C">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_0dbz8rq</bpmn:incoming>
         <bpmn:outgoing>Flow_1xjssub</bpmn:outgoing>
       </bpmn:task>
-      <bpmn:task id="Activity_0agmnul" name="COMPENSATE_CAC_C" isForCompensation="true" />
+      <bpmn:task id="Activity_0agmnul" name="COMPENSATE_CAC_C" isForCompensation="true">
+        <bpmn:extensionElements>
+          <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
+        </bpmn:extensionElements>
+      </bpmn:task>
       <bpmn:boundaryEvent id="Event_10709jf" attachedToRef="CAC_C">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_1ba14tm" />
       </bpmn:boundaryEvent>
@@ -773,7 +875,12 @@
       <bpmn:outgoing>Flow_0vr5mav</bpmn:outgoing>
       <bpmn:compensateEventDefinition id="CompensateEventDefinition_1me6loo" activityRef="Activity_0ssqeep" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:task id="Activity_07i3oey" name="COMP_X" isForCompensation="true" />
+    <bpmn:task id="Activity_07i3oey" name="COMP_X" isForCompensation="true">
+      <bpmn:extensionElements>
+        <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.5" />
+      </bpmn:extensionElements>
+    </bpmn:task>
     <bpmn:intermediateThrowEvent id="COMP_COMP_S" name="COMP_COMP_S">
       <bpmn:incoming>Flow_0zqtd5o</bpmn:incoming>
       <bpmn:outgoing>Flow_058qhvv</bpmn:outgoing>

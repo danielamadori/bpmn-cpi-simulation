@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sese="http://example.com/sese/extensions" id="Definitions_1" targetNamespace="http://example.com/sese" exporter="bpmn-js-token-simulation" exporterVersion="0.38.2">
   <bpmn:collaboration id="Collaboration_1">
     <bpmn:participant id="Participant_1" name="Manufacturing" processRef="Process_1" />
