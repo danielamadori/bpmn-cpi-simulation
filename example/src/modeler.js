@@ -759,7 +759,9 @@ function normalizeStatusClass(status) {
   // ``status`` is an ActivityState integer code (PACO wire format).
   // Translate to the display name only here, at the CSS boundary.
   const name = ACTIVITY_STATE_NAME.get(status) || 'unknown';
-  return `state-status-${name}`;
+
+  // A name may hold spaces ('will not be executed'), and a class may not.
+  return `state-status-${name.replace(/[^a-z0-9]+/g, '-')}`;
 }
 
 function renderStateSnapshot(snapshot) {
@@ -1873,6 +1875,7 @@ window.bpmnjs = modeler;
 //
 // Keep the constants in sync with ``src/parser/activity_state.py``.
 const STATE_UNKNOWN = -2;
+const STATE_SKIPPED = -1; // branch not taken; the states/ files' "will not be executed"
 const STATE_WAITING = 0;
 const STATE_ACTIVE = 1;
 const STATE_COMPLETED = 2;
@@ -1888,6 +1891,7 @@ const STATE_TERMINATED = 7;
 // codes).
 const ACTIVITY_STATE_NAME = new Map([
   [STATE_UNKNOWN, 'unknown'],
+  [ STATE_SKIPPED, 'will not be executed' ],
   [STATE_WAITING, 'waiting'],
   [STATE_ACTIVE, 'active'],
   [STATE_COMPLETED, 'completed'],

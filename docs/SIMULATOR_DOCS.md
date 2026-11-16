@@ -20,22 +20,26 @@ The format is a flat key-value JSON object:
 
 ```json
 {
-  "StartEvent_0offpno": "completed",
-  "Task_026c0id": "active",
-  "ExclusiveGateway_13kuced": "waiting",
-  "Task_1ept7kl": "will not be executed"
+  "StartEvent_0offpno@Process_1.example#tok_0": 2,
+  "Task_026c0id@Process_1.example#tok_0": 1,
+  "ExclusiveGateway_13kuced@Process_1.example#tok_0": 0,
+  "Task_1ept7kl@Process_1.example#tok_0": -1
 }
 ```
 
-*   **Key**: The BPMN element ID (e.g., `Task_026c0id`). This must match the ID in the `.bpmn` file exactly.
-*   **Value**: The state of the element.
+(an excerpt of `states/example/t1.json`)
+
+*   **Key**: `<elementId>@<context>#<tokenId>`, read by `parseStateKey` in `modeler.js`. The element ID (e.g., `Task_026c0id`) must match the ID in the `.bpmn` file exactly.
+*   **Value**: The state of the element, as an integer `ActivityState` code -- the same codes the Simulator sends (`src/parser/activity_state.py` in the Simulator repository), so a file snapshot and an injected one are read by the same code.
 
 ### Possible States
 
-*   `"waiting"`: The element is waiting (e.g., a token has arrived at the input but has not yet been processed/consumed).
-*   `"active"`: The element is executing. For a task, this means the token is "inside" the task.
-*   `"completed"`: The element has finished its execution.
-*   `"will not be executed"`: (Optional/Informational) Explicitly indicates that a branch was not taken.
+*   `0` (waiting): The element is waiting (e.g., a token has arrived at the input but has not yet been processed/consumed).
+*   `1` (active): The element is executing. For a task, this means the token is "inside" the task.
+*   `2` (completed): The element has finished its execution.
+*   `-1` (will not be executed): Explicitly indicates that a branch was not taken.
+
+These files held the strings `"waiting"`, `"active"`, `"completed"` and `"will not be executed"` until 2026-11-16. `modeler.js` had compared integer codes since 2026-05-27, so a string snapshot matched nothing: no token moved and every row of the state panel read `unknown`.
 
 ## 3. Simulation Logic (`modeler.js`)
 
