@@ -40,8 +40,13 @@ import h337 from 'heatmap.js';
 // THE DIAGRAM THE PAGE OPENS WITH: `new_example/resourced_manufacturing.bpmn`,
 // whose snapshots are `states/resourced_manufacturing`. The six diagrams of
 // `new_example/` are copies of Simulator fixtures, and their snapshots are
-// written by the Simulator's `tools/export_modeller_states.py` (Daniel's
-// choice, 2026-11-16). Before that day the page opened
+// the states of ONE path of each diagram's execution tree, as the
+// Simulator's `tools/export_modeller_states.py` writes them: one tN per
+// tree node, t0 all waiting (Daniel's choice, 2026-11-16). The path is
+// the tree's only one, except where Daniel picked a leaf:
+// resourced_manufacturing leaf 13 (Rough_Deposition, Light_Polishing,
+// LPLS), nature_two_outcomes leaf 3 (Rework), two_tasks_one_pool_in_a_loop
+// leaf 4 (two laps). Before that day the page opened
 // `example/resources/example.bpmn`, which the Simulator does not parse whole,
 // and then, for a few hours, `new_example/bpmn.bpmn`.
 import exampleXML from '../../new_example/resourced_manufacturing.bpmn';
@@ -725,7 +730,7 @@ function loadStateSequenceForCurrentDiagram() {
   debugTrace('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
 
   // EVERY FILE OF THE FOLDER IS A SNAPSHOT t<N>.json, N its place in the
-  // sequence -- the 25 files of the 6 folders under states/ all are. A file
+  // sequence -- the 26 files of the 6 folders under states/ all are. A file
   // that is not one has no place to read from its name: it raises, where it
   // used to sort as t0 and be loaded as a snapshot.
   const snapshotFiles = diagramKeys.map(key => {
