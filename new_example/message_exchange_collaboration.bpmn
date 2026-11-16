@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_MessageExchange"
+  targetNamespace="http://example.com/sese/message-exchange" xmlns:sese="http://example.com/sese/extensions">
+  <bpmn:collaboration id="Collaboration_MessageExchange">
+    <bpmn:participant
+      id="Participant_Customer"
+      name="Customer"
+      processRef="Process_Customer" />
+    <bpmn:participant
+      id="Participant_Supplier"
+      name="Supplier"
+      processRef="Process_Supplier" />
+    <bpmn:messageFlow
+      id="MessageFlow_Order"
+      name="Order"
+      sourceRef="Task_SendOrder"
+      targetRef="StartEvent_OrderReceived" />
+    <bpmn:messageFlow
+      id="MessageFlow_Ack"
+      name="Ack"
+      sourceRef="Task_SendAck"
+      targetRef="Event_AckReceived" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Customer" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_Customer" name="CustomerStart">
+      <bpmn:outgoing>Flow_C_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sendTask id="Task_SendOrder" name="SendOrder">
+      <bpmn:extensionElements>
+        <sese:duration min="0" max="0" />
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_C_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_C_2</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:intermediateCatchEvent id="Event_AckReceived" name="AckReceived">
+      <bpmn:incoming>Flow_C_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_C_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EndEvent_Customer" name="CustomerDone">
+      <bpmn:incoming>Flow_C_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow
+      id="Flow_C_1"
+      sourceRef="StartEvent_Customer"
+      targetRef="Task_SendOrder" />
+    <bpmn:sequenceFlow
+      id="Flow_C_2"
+      sourceRef="Task_SendOrder"
+      targetRef="Event_AckReceived" />
+    <bpmn:sequenceFlow
+      id="Flow_C_3"
+      sourceRef="Event_AckReceived"
+      targetRef="EndEvent_Customer" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_Supplier" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_OrderReceived" name="OrderReceived" isInterrupting="true">
+      <bpmn:outgoing>Flow_S_1</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:task id="Task_HandleOrder" name="HandleOrder">
+      <bpmn:extensionElements>
+        <sese:duration min="0" max="0" />
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_S_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_S_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sendTask id="Task_SendAck" name="SendAck">
+      <bpmn:extensionElements>
+        <sese:duration min="0" max="0" />
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_S_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_S_3</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="EndEvent_Supplier" name="SupplierDone">
+      <bpmn:incoming>Flow_S_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow
+      id="Flow_S_1"
+      sourceRef="StartEvent_OrderReceived"
+      targetRef="Task_HandleOrder" />
+    <bpmn:sequenceFlow
+      id="Flow_S_2"
+      sourceRef="Task_HandleOrder"
+      targetRef="Task_SendAck" />
+    <bpmn:sequenceFlow
+      id="Flow_S_3"
+      sourceRef="Task_SendAck"
+      targetRef="EndEvent_Supplier" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_MessageExchange">
+    <bpmndi:BPMNPlane id="BPMNPlane_MessageExchange" bpmnElement="Collaboration_MessageExchange">
+      <bpmndi:BPMNShape id="Participant_Customer_di" bpmnElement="Participant_Customer" isHorizontal="true">
+        <dc:Bounds x="120.000" y="80" width="506.364" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_Supplier_di" bpmnElement="Participant_Supplier" isHorizontal="true">
+        <dc:Bounds x="120.000" y="320" width="511.273" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="StartEvent_Customer_di" bpmnElement="StartEvent_Customer">
+        <dc:Bounds x="158.636" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendOrder_di" bpmnElement="Task_SendOrder">
+        <dc:Bounds x="220.455" y="128" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_AckReceived_di" bpmnElement="Event_AckReceived">
+        <dc:Bounds x="364.455" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Customer_di" bpmnElement="EndEvent_Customer">
+        <dc:Bounds x="444.545" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="StartEvent_OrderReceived_di" bpmnElement="StartEvent_OrderReceived">
+        <dc:Bounds x="158.636" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_HandleOrder_di" bpmnElement="Task_HandleOrder">
+        <dc:Bounds x="220.455" y="368" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendAck_di" bpmnElement="Task_SendAck">
+        <dc:Bounds x="364.455" y="368" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Supplier_di" bpmnElement="EndEvent_Supplier">
+        <dc:Bounds x="508.455" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_C_1_di" bpmnElement="Flow_C_1">
+        <di:waypoint x="194.636" y="168.000" />
+        <di:waypoint x="220.455" y="168.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C_2_di" bpmnElement="Flow_C_2">
+        <di:waypoint x="340.455" y="168.000" />
+        <di:waypoint x="364.455" y="168.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C_3_di" bpmnElement="Flow_C_3">
+        <di:waypoint x="400.455" y="168.000" />
+        <di:waypoint x="444.545" y="168.000" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_S_1_di" bpmnElement="Flow_S_1">
+        <di:waypoint x="194.636" y="408.000" />
+        <di:waypoint x="220.455" y="408.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S_2_di" bpmnElement="Flow_S_2">
+        <di:waypoint x="340.455" y="408.000" />
+        <di:waypoint x="364.455" y="408.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S_3_di" bpmnElement="Flow_S_3">
+        <di:waypoint x="484.455" y="408.000" />
+        <di:waypoint x="508.455" y="408.000" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="MessageFlow_Order_di" bpmnElement="MessageFlow_Order">
+        <di:waypoint x="280.455" y="208.000" />
+        <di:waypoint x="280.455" y="360.000" />
+        <di:waypoint x="176.636" y="360.000" />
+        <di:waypoint x="176.636" y="390.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_Ack_di" bpmnElement="MessageFlow_Ack">
+        <di:waypoint x="424.455" y="368.000" />
+        <di:waypoint x="382.455" y="186.000" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

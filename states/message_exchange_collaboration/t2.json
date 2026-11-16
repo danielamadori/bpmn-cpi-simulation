@@ -1,0 +1,6 @@
+{
+  "EndEvent_Customer@Process_Customer.message_exchange_collaboration#tok_0": 0,
+  "Event_AckReceived@Process_Customer.message_exchange_collaboration#tok_0": 1,
+  "StartEvent_Customer@Process_Customer.message_exchange_collaboration#tok_0": 2,
+  "Task_SendOrder@Process_Customer.message_exchange_collaboration#tok_0": 2
+}

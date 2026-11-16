@@ -1,8 +1,0 @@
-{
-  "Start_Client@Process_Client.message_start_event#tok_0": 2,
-  "Task_SendRequest@Process_Client.message_start_event#tok_0": 2,
-  "End_Client@Process_Client.message_start_event#tok_0": 2,
-  "Start_Message@Process_Service.message_start_event#tok_1": 2,
-  "Task_Handle@Process_Service.message_start_event#tok_1": 2,
-  "End_Service@Process_Service.message_start_event#tok_1": 2
-}

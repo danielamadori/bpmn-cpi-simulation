@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:sese="http://example.com/sese/extensions"
+  id="Definitions_SignalEndBroadcast"
+  targetNamespace="http://example.com/bpmn/communication">
+  <bpmn:signal id="Signal_Completed" name="Completed" />
+
+  <bpmn:collaboration id="Collab_SignalEndBroadcast">
+    <bpmn:participant id="Participant_Finisher" name="Finisher" processRef="Process_Finisher" />
+    <bpmn:participant id="Participant_ObserverA" name="Observer A" processRef="Process_ObserverA" />
+    <bpmn:participant id="Participant_ObserverB" name="Observer B" processRef="Process_ObserverB" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Finisher" isExecutable="false">
+    <bpmn:startEvent id="Start_Finisher" name="Start">
+      <bpmn:outgoing>Flow_F1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_Finalize" name="Finalize">
+      <bpmn:extensionElements>
+        <sese:duration min="2" max="2" />
+        <sese:impact name="cost" value="0" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_F1</bpmn:incoming>
+      <bpmn:outgoing>Flow_F2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_SignalCompleted" name="Signal Completed">
+      <bpmn:incoming>Flow_F2</bpmn:incoming>
+      <bpmn:signalEventDefinition signalRef="Signal_Completed" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_F1" sourceRef="Start_Finisher" targetRef="Task_Finalize" />
+    <bpmn:sequenceFlow id="Flow_F2" sourceRef="Task_Finalize" targetRef="End_SignalCompleted" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_ObserverA" isExecutable="false">
+    <bpmn:startEvent id="Start_ObserverA" name="Start">
+      <bpmn:outgoing>Flow_OA1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="Catch_CompletedA" name="Catch Completed A">
+      <bpmn:incoming>Flow_OA1</bpmn:incoming>
+      <bpmn:outgoing>Flow_OA2</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_Completed" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End_ObserverA" name="Done">
+      <bpmn:incoming>Flow_OA2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_OA1" sourceRef="Start_ObserverA" targetRef="Catch_CompletedA" />
+    <bpmn:sequenceFlow id="Flow_OA2" sourceRef="Catch_CompletedA" targetRef="End_ObserverA" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_ObserverB" isExecutable="false">
+    <bpmn:startEvent id="Start_ObserverB" name="Start">
+      <bpmn:outgoing>Flow_OB1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="Catch_CompletedB" name="Catch Completed B">
+      <bpmn:incoming>Flow_OB1</bpmn:incoming>
+      <bpmn:outgoing>Flow_OB2</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_Completed" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End_ObserverB" name="Done">
+      <bpmn:incoming>Flow_OB2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_OB1" sourceRef="Start_ObserverB" targetRef="Catch_CompletedB" />
+    <bpmn:sequenceFlow id="Flow_OB2" sourceRef="Catch_CompletedB" targetRef="End_ObserverB" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_SignalEndBroadcast">
+    <bpmndi:BPMNPlane id="BPMNPlane_SignalEndBroadcast" bpmnElement="Collab_SignalEndBroadcast">
+      <bpmndi:BPMNShape id="Participant_Finisher_di" bpmnElement="Participant_Finisher" isHorizontal="true">
+        <dc:Bounds x="120.000" y="80" width="506.364" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_ObserverA_di" bpmnElement="Participant_ObserverA" isHorizontal="true">
+        <dc:Bounds x="120.000" y="320" width="487.273" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_ObserverB_di" bpmnElement="Participant_ObserverB" isHorizontal="true">
+        <dc:Bounds x="120.000" y="560" width="487.273" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_Finisher_di" bpmnElement="Start_Finisher">
+        <dc:Bounds x="158.636" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Finalize_di" bpmnElement="Task_Finalize">
+        <dc:Bounds x="220.455" y="128" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_SignalCompleted_di" bpmnElement="End_SignalCompleted">
+        <dc:Bounds x="375.000" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_ObserverA_di" bpmnElement="Start_ObserverA">
+        <dc:Bounds x="158.636" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Catch_CompletedA_di" bpmnElement="Catch_CompletedA">
+        <dc:Bounds x="243.636" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_ObserverA_di" bpmnElement="End_ObserverA">
+        <dc:Bounds x="328.636" y="390" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_ObserverB_di" bpmnElement="Start_ObserverB">
+        <dc:Bounds x="158.636" y="630" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Catch_CompletedB_di" bpmnElement="Catch_CompletedB">
+        <dc:Bounds x="243.636" y="630" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_ObserverB_di" bpmnElement="End_ObserverB">
+        <dc:Bounds x="328.636" y="630" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_F1_di" bpmnElement="Flow_F1">
+        <di:waypoint x="194.636" y="168.000" />
+        <di:waypoint x="220.455" y="168.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_F2_di" bpmnElement="Flow_F2">
+        <di:waypoint x="340.455" y="168.000" />
+        <di:waypoint x="375.000" y="168.000" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_OA1_di" bpmnElement="Flow_OA1">
+        <di:waypoint x="194.636" y="408.000" />
+        <di:waypoint x="243.636" y="408.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OA2_di" bpmnElement="Flow_OA2">
+        <di:waypoint x="279.636" y="408.000" />
+        <di:waypoint x="328.636" y="408.000" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_OB1_di" bpmnElement="Flow_OB1">
+        <di:waypoint x="194.636" y="648.000" />
+        <di:waypoint x="243.636" y="648.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OB2_di" bpmnElement="Flow_OB2">
+        <di:waypoint x="279.636" y="648.000" />
+        <di:waypoint x="328.636" y="648.000" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

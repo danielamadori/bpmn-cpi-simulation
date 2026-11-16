@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sese="http://example.com/sese" id="Defs_nature_two_outcomes" targetNamespace="http://example.com/sese">
+  <bpmn:resource id="Res_Conv" name="/Org/Fac1/Conveyor/C1" />
+  <bpmn:resource id="Res_Rework" name="/Org/Fac1/Worker/W_Rework" />
+  <bpmn:process id="P_QC" isExecutable="true">
+    <bpmn:startEvent id="Start_QC"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:task id="T_Inspect" name="Quality Inspect">
+      <bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing><bpmn:extensionElements>
+        <sese:duration min="0.5" max="1" />
+        <sese:impact name="cost" value="1" />
+        <sese:impact name="time" value="0.7" />
+      </bpmn:extensionElements>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_Nature" name="QC outcome">
+      <bpmn:incoming>F2</bpmn:incoming><bpmn:outgoing>F3a</bpmn:outgoing><bpmn:outgoing>F3b</bpmn:outgoing><bpmn:extensionElements>
+        <sese:nature distribution="0.8,0.2" />
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Dispatch" name="Dispatch (pass)">
+      <bpmn:incoming>F3a</bpmn:incoming><bpmn:outgoing>F4a</bpmn:outgoing><bpmn:extensionElements>
+        <sese:duration min="1" max="2" />
+        <sese:impact name="cost" value="2" />
+        <sese:impact name="time" value="1.5" />
+      </bpmn:extensionElements>
+      <bpmn:resourceRole id="RR_disp">
+        <bpmn:resourceRef>Res_Conv</bpmn:resourceRef>
+      </bpmn:resourceRole>
+    </bpmn:task>
+    <bpmn:task id="T_Rework" name="Rework (fail)">
+      <bpmn:incoming>F3b</bpmn:incoming><bpmn:outgoing>F4b</bpmn:outgoing><bpmn:extensionElements>
+        <sese:duration min="3" max="5" />
+        <sese:impact name="cost" value="8" />
+        <sese:impact name="time" value="4" />
+      </bpmn:extensionElements>
+      <bpmn:resourceRole id="RR_rew">
+        <bpmn:resourceRef>Res_Rework</bpmn:resourceRef>
+      </bpmn:resourceRole>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_Merge"><bpmn:incoming>F4a</bpmn:incoming><bpmn:incoming>F4b</bpmn:incoming><bpmn:outgoing>F5</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_QC"><bpmn:incoming>F5</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="Start_QC" targetRef="T_Inspect" />
+    <bpmn:sequenceFlow id="F2" sourceRef="T_Inspect" targetRef="GW_Nature" />
+    <bpmn:sequenceFlow id="F3a" sourceRef="GW_Nature" targetRef="T_Dispatch" />
+    <bpmn:sequenceFlow id="F3b" sourceRef="GW_Nature" targetRef="T_Rework" />
+    <bpmn:sequenceFlow id="F4a" sourceRef="T_Dispatch" targetRef="GW_Merge" />
+    <bpmn:sequenceFlow id="F4b" sourceRef="T_Rework" targetRef="GW_Merge" />
+    <bpmn:sequenceFlow id="F5" sourceRef="GW_Merge" targetRef="End_QC" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P_QC">
+    <bpmndi:BPMNPlane id="BPMNPlane_P_QC" bpmnElement="P_QC">
+      <bpmndi:BPMNShape id="Start_QC_di" bpmnElement="Start_QC">
+        <dc:Bounds x="71.318" y="52" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Inspect_di" bpmnElement="T_Inspect">
+        <dc:Bounds x="46.591" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Nature_di" bpmnElement="GW_Nature" isMarkerVisible="true">
+        <dc:Bounds x="65.909" y="325" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="119.909" y="356" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Dispatch_di" bpmnElement="T_Dispatch">
+        <dc:Bounds x="46.591" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Rework_di" bpmnElement="T_Rework">
+        <dc:Bounds x="206.591" y="450.000" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Merge_di" bpmnElement="GW_Merge" isMarkerVisible="true">
+        <dc:Bounds x="65.909" y="745" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_QC_di" bpmnElement="End_QC">
+        <dc:Bounds x="71.318" y="892" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1">
+        <di:waypoint x="92.955" y="88.000" />
+        <di:waypoint x="92.955" y="170.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F2_di" bpmnElement="F2">
+        <di:waypoint x="93.750" y="250.000" />
+        <di:waypoint x="93.750" y="325.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F3a_di" bpmnElement="F3a">
+        <di:waypoint x="93.750" y="375.000" />
+        <di:waypoint x="93.750" y="450.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F3b_di" bpmnElement="F3b">
+        <di:waypoint x="115.909" y="350.000" />
+        <di:waypoint x="256.591" y="350.000" />
+        <di:waypoint x="256.591" y="450.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F4a_di" bpmnElement="F4a">
+        <di:waypoint x="93.750" y="530.000" />
+        <di:waypoint x="93.750" y="745.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F4b_di" bpmnElement="F4b">
+        <di:waypoint x="256.591" y="530.000" />
+        <di:waypoint x="256.591" y="770.000" />
+        <di:waypoint x="115.909" y="770.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F5_di" bpmnElement="F5">
+        <di:waypoint x="90.114" y="795.000" />
+        <di:waypoint x="90.114" y="892.000" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

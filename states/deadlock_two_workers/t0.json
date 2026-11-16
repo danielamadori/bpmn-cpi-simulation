@@ -1,0 +1,8 @@
+{
+  "End_A@P_OrderA.deadlock_two_workers#tok_0": 0,
+  "Start_A@P_OrderA.deadlock_two_workers#tok_0": 0,
+  "T_A_Acquire@P_OrderA.deadlock_two_workers#tok_0": 0,
+  "End_B@P_OrderB.deadlock_two_workers#tok_1": 0,
+  "Start_B@P_OrderB.deadlock_two_workers#tok_1": 0,
+  "T_B_Acquire@P_OrderB.deadlock_two_workers#tok_1": 0
+}

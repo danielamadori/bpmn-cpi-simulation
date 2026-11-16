@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sese="http://example.com/sese" id="Defs_deadlock_two_workers" targetNamespace="http://example.com/sese">
+  <bpmn:resource id="Res_Worker_Pool" name="/Org/Fac1/WorkerPool" />
+  <bpmn:collaboration id="Coll_Deadlock">
+    <bpmn:participant id="Part_A" name="Order A" processRef="P_OrderA" />
+    <bpmn:participant id="Part_B" name="Order B" processRef="P_OrderB" />
+  </bpmn:collaboration>
+  <bpmn:process id="P_OrderA" isExecutable="true">
+    <bpmn:startEvent id="Start_A"><bpmn:outgoing>F_A1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:task id="T_A_Acquire" name="A: acquire worker">
+      <bpmn:incoming>F_A1</bpmn:incoming><bpmn:outgoing>F_A2</bpmn:outgoing><bpmn:extensionElements>
+        <sese:duration min="2" max="3" />
+        <sese:impact name="cost" value="2" />
+        <sese:impact name="time" value="2.5" />
+      </bpmn:extensionElements>
+      <bpmn:resourceRole id="RR_A_acq">
+        <bpmn:resourceRef>Res_Worker_Pool</bpmn:resourceRef>
+      </bpmn:resourceRole>
+    </bpmn:task>
+    <bpmn:endEvent id="End_A"><bpmn:incoming>F_A2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F_A1" sourceRef="Start_A" targetRef="T_A_Acquire" />
+    <bpmn:sequenceFlow id="F_A2" sourceRef="T_A_Acquire" targetRef="End_A" />
+  </bpmn:process>
+  <bpmn:process id="P_OrderB" isExecutable="true">
+    <bpmn:startEvent id="Start_B"><bpmn:outgoing>F_B1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:task id="T_B_Acquire" name="B: acquire worker">
+      <bpmn:incoming>F_B1</bpmn:incoming><bpmn:outgoing>F_B2</bpmn:outgoing><bpmn:extensionElements>
+        <sese:duration min="2" max="3" />
+        <sese:impact name="cost" value="2" />
+        <sese:impact name="time" value="2.5" />
+      </bpmn:extensionElements>
+      <bpmn:resourceRole id="RR_B_acq">
+        <bpmn:resourceRef>Res_Worker_Pool</bpmn:resourceRef>
+      </bpmn:resourceRole>
+    </bpmn:task>
+    <bpmn:endEvent id="End_B"><bpmn:incoming>F_B2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F_B1" sourceRef="Start_B" targetRef="T_B_Acquire" />
+    <bpmn:sequenceFlow id="F_B2" sourceRef="T_B_Acquire" targetRef="End_B" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_deadlock_two_workers"><bpmndi:BPMNPlane id="BPMNPlane_deadlock_two_workers" bpmnElement="Coll_Deadlock"><bpmndi:BPMNShape id="Part_B_di" bpmnElement="Part_B" isHorizontal="true"><dc:Bounds x="120.0" y="300.0" width="508.0" height="180.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="Part_A_di" bpmnElement="Part_A" isHorizontal="true"><dc:Bounds x="120.0" y="80.0" width="508.0" height="180.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="Start_A_di" bpmnElement="Start_A"><dc:Bounds x="166.0" y="152.0" width="36.0" height="36.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="T_A_Acquire_di" bpmnElement="T_A_Acquire"><dc:Bounds x="356.0" y="130.0" width="140.0" height="80.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="End_A_di" bpmnElement="End_A"><dc:Bounds x="546.0" y="152.0" width="36.0" height="36.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="Start_B_di" bpmnElement="Start_B"><dc:Bounds x="166.0" y="372.0" width="36.0" height="36.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="T_B_Acquire_di" bpmnElement="T_B_Acquire"><dc:Bounds x="356.0" y="350.0" width="140.0" height="80.0" /></bpmndi:BPMNShape><bpmndi:BPMNShape id="End_B_di" bpmnElement="End_B"><dc:Bounds x="546.0" y="372.0" width="36.0" height="36.0" /></bpmndi:BPMNShape><bpmndi:BPMNEdge id="F_A1_di" bpmnElement="F_A1"><di:waypoint x="202.0" y="170.0" /><di:waypoint x="356.0" y="170.0" /></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="F_A2_di" bpmnElement="F_A2"><di:waypoint x="496.0" y="170.0" /><di:waypoint x="546.0" y="170.0" /></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="F_B1_di" bpmnElement="F_B1"><di:waypoint x="202.0" y="390.0" /><di:waypoint x="356.0" y="390.0" /></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="F_B2_di" bpmnElement="F_B2"><di:waypoint x="496.0" y="390.0" /><di:waypoint x="546.0" y="390.0" /></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>

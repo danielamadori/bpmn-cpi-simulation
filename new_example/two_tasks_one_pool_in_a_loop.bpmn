@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sese="http://example.com/sese" id="Defs_two_tasks_one_pool_in_a_loop" targetNamespace="http://example.com/sese">
+  <bpmn:resource id="Res_W1" name="/Org/Fac1/Worker/W1" />
+  <bpmn:resource id="Res_S1" name="/Org/Fac1/Ware1/Cab1/Shelf1" />
+  <bpmn:process id="P_Rework" isExecutable="true">
+    <bpmn:startEvent id="Start_R"><bpmn:outgoing>f_in</bpmn:outgoing></bpmn:startEvent>
+
+    <bpmn:exclusiveGateway id="Gw_entry" name="Rework loop entry">
+      <bpmn:extensionElements>
+        <sese:region regionId="Lrework" role="entry" regionType="loop" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>f_in</bpmn:incoming>
+      <bpmn:incoming>f_back</bpmn:incoming>
+      <bpmn:outgoing>f_body</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:parallelGateway id="Gw_split" name="both halves at once">
+      <bpmn:incoming>f_body</bpmn:incoming>
+      <bpmn:outgoing>f_a</bpmn:outgoing>
+      <bpmn:outgoing>f_b</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:task id="T_A" name="Rework A">
+      <bpmn:incoming>f_a</bpmn:incoming><bpmn:outgoing>f_a2</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:duration min="2" max="2" />
+        <sese:impact name="cost" value="3" />
+      </bpmn:extensionElements>
+      <bpmn:resourceRole id="RR_a_worker"><bpmn:resourceRef>Res_W1</bpmn:resourceRef></bpmn:resourceRole>
+      <bpmn:resourceRole id="RR_a_shelf"><bpmn:resourceRef>Res_S1</bpmn:resourceRef></bpmn:resourceRole>
+    </bpmn:task>
+
+    <bpmn:task id="T_B" name="Rework B">
+      <bpmn:incoming>f_b</bpmn:incoming><bpmn:outgoing>f_b2</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <sese:duration min="2" max="2" />
+        <sese:impact name="cost" value="5" />
+      </bpmn:extensionElements>
+      <bpmn:resourceRole id="RR_b_worker"><bpmn:resourceRef>Res_W1</bpmn:resourceRef></bpmn:resourceRole>
+      <bpmn:resourceRole id="RR_b_shelf"><bpmn:resourceRef>Res_S1</bpmn:resourceRef></bpmn:resourceRole>
+    </bpmn:task>
+
+    <bpmn:parallelGateway id="Gw_join" name="both halves done">
+      <bpmn:incoming>f_a2</bpmn:incoming>
+      <bpmn:incoming>f_b2</bpmn:incoming>
+      <bpmn:outgoing>f_check</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:exclusiveGateway id="Gw_check" name="Rework loop" default="f_back">
+      <bpmn:extensionElements>
+        <sese:region regionId="Lrework" role="check" regionType="loop" />
+        <sese:loop kind="conditional" condition="accepted == False" test_before="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>f_check</bpmn:incoming>
+      <bpmn:outgoing>f_back</bpmn:outgoing>
+      <bpmn:outgoing>f_exit</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:exclusiveGateway id="Gw_after" name="after the loop">
+      <bpmn:incoming>f_exit</bpmn:incoming>
+      <bpmn:outgoing>f_end</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_R"><bpmn:incoming>f_end</bpmn:incoming></bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="f_in"    sourceRef="Start_R"  targetRef="Gw_entry" />
+    <bpmn:sequenceFlow id="f_body"  sourceRef="Gw_entry" targetRef="Gw_split" />
+    <bpmn:sequenceFlow id="f_a"     sourceRef="Gw_split" targetRef="T_A" />
+    <bpmn:sequenceFlow id="f_b"     sourceRef="Gw_split" targetRef="T_B" />
+    <bpmn:sequenceFlow id="f_a2"    sourceRef="T_A"      targetRef="Gw_join" />
+    <bpmn:sequenceFlow id="f_b2"    sourceRef="T_B"      targetRef="Gw_join" />
+    <bpmn:sequenceFlow id="f_check" sourceRef="Gw_join"  targetRef="Gw_check" />
+    <bpmn:sequenceFlow id="f_back"  sourceRef="Gw_check" targetRef="Gw_entry" />
+    <bpmn:sequenceFlow id="f_exit"  sourceRef="Gw_check" targetRef="Gw_after" />
+    <bpmn:sequenceFlow id="f_end"   sourceRef="Gw_after" targetRef="End_R" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P_Rework">
+    <bpmndi:BPMNPlane id="BPMNPlane_P_Rework" bpmnElement="P_Rework">
+      <bpmndi:BPMNShape id="Start_R_di"  bpmnElement="Start_R"><dc:Bounds x="150.909" y="200" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gw_entry_di" bpmnElement="Gw_entry"><dc:Bounds x="220.455" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gw_split_di" bpmnElement="Gw_split"><dc:Bounds x="297.727" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_A_di"      bpmnElement="T_A"><dc:Bounds x="375.000" y="100" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_B_di"      bpmnElement="T_B"><dc:Bounds x="375.000" y="260" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gw_join_di"  bpmnElement="Gw_join"><dc:Bounds x="490.909" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gw_check_di" bpmnElement="Gw_check"><dc:Bounds x="568.182" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gw_after_di" bpmnElement="Gw_after"><dc:Bounds x="642.182" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_R_di"    bpmnElement="End_R"><dc:Bounds x="716.182" y="200" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f_in_di"    bpmnElement="f_in">
+        <di:waypoint x="186.909" y="218.000" />
+        <di:waypoint x="220.455" y="218.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_body_di"  bpmnElement="f_body">
+        <di:waypoint x="270.455" y="218.000" />
+        <di:waypoint x="297.727" y="218.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_a_di"     bpmnElement="f_a">
+        <di:waypoint x="322.727" y="193.000" />
+        <di:waypoint x="322.727" y="140.000" />
+        <di:waypoint x="375.000" y="140.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_b_di"     bpmnElement="f_b">
+        <di:waypoint x="322.727" y="243.000" />
+        <di:waypoint x="322.727" y="300.000" />
+        <di:waypoint x="375.000" y="300.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_a2_di"    bpmnElement="f_a2">
+        <di:waypoint x="475.000" y="140.000" />
+        <di:waypoint x="515.909" y="140.000" />
+        <di:waypoint x="515.909" y="193.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_b2_di"    bpmnElement="f_b2">
+        <di:waypoint x="475.000" y="300.000" />
+        <di:waypoint x="515.909" y="300.000" />
+        <di:waypoint x="515.909" y="243.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_check_di" bpmnElement="f_check">
+        <di:waypoint x="540.909" y="218.000" />
+        <di:waypoint x="568.182" y="218.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_back_di"  bpmnElement="f_back">
+        <di:waypoint x="593.182" y="193.000" />
+        <di:waypoint x="593.182" y="60.000" />
+        <di:waypoint x="245.455" y="60.000" />
+        <di:waypoint x="245.455" y="193.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_exit_di"  bpmnElement="f_exit">
+        <di:waypoint x="618.182" y="218.000" />
+        <di:waypoint x="642.182" y="218.000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_end_di"   bpmnElement="f_end">
+        <di:waypoint x="692.182" y="218.000" />
+        <di:waypoint x="716.182" y="218.000" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

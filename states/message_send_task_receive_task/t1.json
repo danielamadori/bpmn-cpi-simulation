@@ -1,8 +1,0 @@
-{
-  "Start_Sender@Process_Sender.message_send_task_receive_task#tok_0": 0,
-  "Task_SendOrder@Process_Sender.message_send_task_receive_task#tok_0": 0,
-  "End_Sender@Process_Sender.message_send_task_receive_task#tok_0": 0,
-  "Start_Receiver@Process_Receiver.message_send_task_receive_task#tok_1": 2,
-  "Task_ReceiveOrder@Process_Receiver.message_send_task_receive_task#tok_1": 1,
-  "End_Receiver@Process_Receiver.message_send_task_receive_task#tok_1": 0
-}
