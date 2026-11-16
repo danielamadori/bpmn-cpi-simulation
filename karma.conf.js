@@ -75,7 +75,12 @@ module.exports = function(karma) {
       module: {
         rules: [
           {
-            test: /test\/globals\.js$/,
+
+            // Either separator: webpack matches the absolute path, which on
+            // Windows has backslashes, and a slash-only pattern left
+            // globals.js -- and the sinon-chai it registers -- out of the
+            // bundle there.
+            test: /test[\\/]globals\.js$/,
             sideEffects: true
           },
           {
