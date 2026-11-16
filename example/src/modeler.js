@@ -1833,7 +1833,7 @@ let heatmapVisible = false;
 
 // Per-element accumulators tracked across simulation steps:
 //   count:       number of times a token entered this element (legacy mode)
-//   cumDuration: sum of ``sese:duration`` (max bound) over all entries
+//   cumDuration: sum of ``sese:duration`` (max bound, else min) over all entries
 //   cumImpact:   {impactName: sum of sese:impact value over all entries}
 //
 // Tasks that are *currently active* are implicitly included: the
@@ -1883,8 +1883,7 @@ function _recordMetricsForElement(element) {
   for (const e of ext) {
     if (!e || typeof e.$type !== 'string') continue;
     if (e.$type === 'sese:duration') {
-      const dur = parseFloat(e.max != null ? e.max : (e.min != null ? e.min : 0));
-      if (Number.isFinite(dur)) m.cumDuration += dur;
+      _addEntryDuration(m, elementId, e);
     } else if (e.$type === 'sese:impact') {
       const name = String(e.name || '').trim();
       const val = parseFloat(e.value);
@@ -1898,6 +1897,39 @@ function _recordMetricsForElement(element) {
     }
   }
   elementMetrics.set(elementId, m);
+}
+
+// THE DURATION THE HEATMAP SHOWS for one entry of an element is a bound of
+// its <sese:duration>: `max` when it declares one, else `min`.
+//
+// A <sese:duration> with neither bound, or with a bound that is not a
+// number, is reported with console.error naming the element and adds
+// nothing to its duration, and the replay goes on -- Daniel's choice of
+// 2026-11-16, «Errore in console, replay prosegue». It used to add 0
+// without a word. (No moddle descriptor for `sese` is registered in this
+// modeller, so the element is a generic one, and an attribute its XML does
+// not carry is undefined.)
+function _addEntryDuration(m, elementId, duration) {
+  if (duration.max === undefined && duration.min === undefined) {
+    console.error(
+      `[heatmap] ${elementId}: its <sese:duration> declares neither max nor min, ` +
+      'so nothing is added to its duration'
+    );
+    return;
+  }
+
+  const bound = duration.max !== undefined ? 'max' : 'min';
+  const value = parseFloat(duration[bound]);
+
+  if (!Number.isFinite(value)) {
+    console.error(
+      `[heatmap] ${elementId}: its <sese:duration ${bound}="${duration[bound]}"> is not a number, ` +
+      'so nothing is added to its duration'
+    );
+    return;
+  }
+
+  m.cumDuration += value;
 }
 
 // (heatmap accumulator merged into the ``tokenSimulation.simulator.trace``
