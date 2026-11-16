@@ -1110,9 +1110,16 @@ async function waitForTokenDrain(simulationSupport, ids) {
         console.log(`Triggered ${id} successfully.`);
         triggered = true;
 
-        // Drain after each trigger so cascading tokens (e.g. SendTask→ReceiveTask)
-        // settle before the next element is triggered.
-        await drainSimulationQueues();
+        // NO DRAIN HERE, between one trigger and the next: every element of
+        // this step is triggered first and the queues are drained once,
+        // below. A drain after each trigger (added 2026-04-16, commit
+        // "step simulation (to check)") broke the playback: on
+        // states/example t6 -> t7 (SubProcess_0gc6evc, then Task_16oagb5)
+        // the tokens went back to the SubProcess's parallel tasks
+        // Task_128fg2b and Task_1upmjgh and stayed there to the end of the
+        // sequence. Without it the token leaves the SubProcess, as it did
+        // before. Measured 2026-11-16 in the browser, on that commit with
+        // and without these lines and nothing else changed.
       } catch (err) {
         console.warn(`Attempt ${attempts + 1} to trigger ${id} failed: ${err.message}.`);
         attempts++;
