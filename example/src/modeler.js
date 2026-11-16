@@ -1136,7 +1136,7 @@ async function _replayFromStart(targetIndex, instant) {
     }
   });
 
-  debugTrace('[replay] Triggering StartEvents:', [...startEventRegistryIds]);
+  debugTrace('[replay] Triggering StartEvents:', [ ...startEventRegistryIds ]);
   for (const seId of startEventRegistryIds) {
     try {
       simulationSupport.triggerElement(seId);
@@ -2382,7 +2382,7 @@ async function navigateForward() {
         const { registryId } = parseStateKey(key);
         if (status === STATE_COMPLETED) completedInTarget.add(registryId);
       });
-      debugTrace('[navFwd] completedInTarget:', [...completedInTarget].join(', '));
+      debugTrace('[navFwd] completedInTarget:', [ ...completedInTarget ].join(', '));
 
       const waitConfig = {};
       registry.getAll().forEach(el => {
@@ -2771,6 +2771,7 @@ function showAdvanceDecisionDialog(childrenDecisions) {
       });
       hideBranchDialog();
       if (match) {
+
         // Re-call advance with decisions. An advance is now outstanding,
         // as in navigateForward's time step; this set _replayInProgress,
         // which no replay ever cleared, so every replay after it -- the
