@@ -350,7 +350,10 @@ function openDiagram(diagram) {
           if (_pendingApiTargetIndex !== null) {
             const target = _pendingApiTargetIndex;
             _pendingApiTargetIndex = null;
-            replayToIndex(target).then(() => updateNavigationUI());
+            requestReplay(`the deferred states, to snapshot ${target}`, async () => {
+              await replayToIndex(target);
+              updateNavigationUI();
+            });
           }
         }
       }
@@ -888,11 +891,100 @@ function renderStateSnapshot(snapshot) {
 // diffCompletions/diffActivations/waitForTokenDrain mechanism.
 let _replayInProgress = false;
 
-async function replayToIndex(targetIndex, { instant = false } = {}) {
-  if (_replayInProgress) {
-    console.log('[replay] Already in progress, skipping');
+// ONE REPLAY AT A TIME, AND THE NEWEST REQUEST WAITS FOR IT.
+//
+// A request that arrived while a replay ran -- a node clicked in the host's
+// execution tree (loadStates), the host's answer to an advance, the
+// deferred states of a diagram that has just loaded -- used to be dropped
+// with a console line: the host's tree moved to the new node and the
+// diagram stayed on the old one. Now it waits in ONE slot. A newer request
+// replaces one still waiting (that one never runs, and a warning names
+// it), and the request in the slot runs when the replay in progress ends.
+//
+// A request is its whole unit of work, its own continuation included
+// (updateNavigationUI). It reads and writes `stateSequence`, which the
+// replay in progress is still reading, so none of it may run before its
+// turn -- and the navigation UI is updated for the request that actually
+// ran.
+//
+// `null`: no request is waiting.
+let _pendingReplayRequest = null;
+
+/**
+ * Run a replay request now or, while a replay is in progress (or a request
+ * already waits for one), keep it as the one request that runs next.
+ *
+ * @param {string} description what the request is, for the warning that
+ *   names it if a newer one replaces it before it runs
+ * @param {Function} run an async function that begins its replay
+ *   (replayToIndex) before its first `await`
+ */
+function requestReplay(description, run) {
+  if (_replayInProgress || _pendingReplayRequest !== null) {
+    if (_pendingReplayRequest !== null) {
+      console.warn(
+        `[replay] "${_pendingReplayRequest.description}" was waiting for the replay ` +
+        `in progress and is replaced by the newer "${description}": it will not run`
+      );
+    }
+
+    _pendingReplayRequest = { description, run };
+    debugTrace(`[replay] "${description}" waits for the replay in progress`);
     return;
   }
+
+  _runReplayRequest({ description, run });
+}
+
+function _runReplayRequest(request) {
+  debugTrace(`[replay] running "${request.description}"`);
+  request.run().catch(err => {
+    console.error(`[replay] "${request.description}" failed:`, err);
+  });
+}
+
+function _beginReplay() {
+  if (_replayInProgress) {
+    throw new Error('A replay is already in progress: a second one goes through requestReplay');
+  }
+
+  _replayInProgress = true;
+}
+
+function _endReplay() {
+  _replayInProgress = false;
+
+  if (_pendingReplayRequest === null) {
+    return;
+  }
+
+  // In a new task, not now: the replay that has just ended has its own
+  // continuation still to run (its updateNavigationUI), a chain of
+  // microtasks that finishes before this timer fires. The request stays in
+  // the slot until then, so a request arriving meanwhile still replaces it.
+  setTimeout(_runPendingReplayRequest, 0);
+}
+
+function _runPendingReplayRequest() {
+
+  // A replay that began after the timer was set ends with its own
+  // _endReplay, which sets this timer again: the request runs after it.
+  if (_replayInProgress) {
+    return;
+  }
+
+  // Two replays ended before the first timer fired, and the first timer
+  // already ran the request.
+  if (_pendingReplayRequest === null) {
+    return;
+  }
+
+  const request = _pendingReplayRequest;
+  _pendingReplayRequest = null;
+  _runReplayRequest(request);
+}
+
+async function replayToIndex(targetIndex, { instant = false } = {}) {
 
   // AN INDEX OUTSIDE THE SEQUENCE IS REFUSED, NOT CLAMPED. The
   // Math.min(targetIndex, length - 1) this replaces made an index past the
@@ -904,7 +996,17 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
     );
   }
 
-  _replayInProgress = true;
+  // The flag is cleared however the replay ends: an exception that left it
+  // set used to refuse every replay after it.
+  _beginReplay();
+  try {
+    await _replayFromStart(targetIndex, instant);
+  } finally {
+    _endReplay();
+  }
+}
+
+async function _replayFromStart(targetIndex, instant) {
   const simulationSupport = modeler.get('simulationSupport');
   const simulator = modeler.get('simulator');
   const registry = modeler.get('elementRegistry');
@@ -928,7 +1030,6 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   if (targetIndex === 0) {
     currentStateIndex = 0;
     renderStateSnapshot(stateSequence[0]);
-    _replayInProgress = false;
     return;
   }
 
@@ -1043,8 +1144,6 @@ async function replayToIndex(targetIndex, { instant = false } = {}) {
   });
 
   debugTrace('[replay] Complete at index', currentStateIndex);
-
-  _replayInProgress = false;
 }
 
 function getOverallStatus(status) {
@@ -1508,7 +1607,10 @@ function initializeSimulationToStart() {
   if (_statesInjectedViaApi && _pendingApiTargetIndex !== null) {
     const target = _pendingApiTargetIndex;
     _pendingApiTargetIndex = null;
-    replayToIndex(target).then(() => updateNavigationUI());
+    requestReplay(`the deferred states, to snapshot ${target}`, async () => {
+      await replayToIndex(target);
+      updateNavigationUI();
+    });
   }
 }
 
@@ -2047,35 +2149,38 @@ window.addEventListener('message', async (event) => {
   if (!data || typeof data !== 'object') return;
 
   if (data.type === 'loadStates') {
-    if (_replayInProgress) {
-      console.log('[postMessage] Replay in progress, ignoring');
-      return;
-    }
+
+    // Read on arrival, so that a malformed message is refused at once; the
+    // rest is a replay request, which waits while another replay runs
+    // (see requestReplay).
     const { states, targetIndex, nav } = _readLoadStatesMessage(data);
     debugTrace('[postMessage] Received', states.length, 'states, target index', targetIndex);
 
-    // Check if the current diagram matches these states
-    if (!_statesMatchDiagram(states)) {
+    requestReplay(`loadStates for node ${nav.nodeKey}, to snapshot ${targetIndex}`, async () => {
 
-      // BPMN not loaded yet — save for deferred application
-      _pendingApiStates = states;
-      _pendingApiTargetIndex = targetIndex;
-      _pendingApiNavData = nav;
-      debugTrace('[postMessage] Diagram not ready, deferring');
-      return;
-    }
+      // Check if the current diagram matches these states
+      if (!_statesMatchDiagram(states)) {
 
-    // Inject states and replay to target
-    stateSequence = states;
-    executionOrderMap = null;
-    buildProcessToTokenMap();
-    _statesInjectedViaApi = true;
+        // BPMN not loaded yet — save for deferred application
+        _pendingApiStates = states;
+        _pendingApiTargetIndex = targetIndex;
+        _pendingApiNavData = nav;
+        debugTrace('[postMessage] Diagram not ready, deferring');
+        return;
+      }
 
-    // Navigation mode: store tree topology and all paths
-    _applyNavigationData(nav);
+      // Inject states and replay to target
+      stateSequence = states;
+      executionOrderMap = null;
+      buildProcessToTokenMap();
+      _statesInjectedViaApi = true;
 
-    await replayToIndex(targetIndex);
-    updateNavigationUI();
+      // Navigation mode: store tree topology and all paths
+      _applyNavigationData(nav);
+
+      await replayToIndex(targetIndex);
+      updateNavigationUI();
+    });
   }
 
   // branchStatesResponse: combined.html responds with a child node's path
@@ -2093,25 +2198,27 @@ window.addEventListener('message', async (event) => {
 
   // advanceResponse: server computed the next snapshot (time-step or saturation)
   if (data.type === 'advanceResponse') {
+
+    // The host has answered the advance navigateForward or the decision
+    // dialog asked for, so none is outstanding -- whether or not the replay
+    // of its snapshot has to wait for another replay to end.
+    _advanceInProgress = false;
     if (data.children_decisions && data.children_decisions.length > 0) {
-      _advanceInProgress = false;
       showAdvanceDecisionDialog(data.children_decisions);
       return;
     }
     const newState = data.state;
     if (newState) {
       newState._snapshot = data.snapshot || null;
-      stateSequence = stateSequence.slice(0, currentStateIndex + 1);
-      stateSequence.push(newState);
-      executionOrderMap = null;
-      buildProcessToTokenMap();
-      const targetIdx = stateSequence.length - 1;
-      replayToIndex(targetIdx).then(() => {
-        _advanceInProgress = false;
+      requestReplay('the snapshot computed by the advance', async () => {
+        stateSequence = stateSequence.slice(0, currentStateIndex + 1);
+        stateSequence.push(newState);
+        executionOrderMap = null;
+        buildProcessToTokenMap();
+        const targetIdx = stateSequence.length - 1;
+        await replayToIndex(targetIdx);
         updateNavigationUI();
       });
-    } else {
-      _advanceInProgress = false;
     }
   }
 });
@@ -2152,7 +2259,10 @@ function _syncCurrentNodeId() {
 // --- Step-by-step navigation (← →) ---
 
 async function navigateForward() {
-  if (isStepping || _replayInProgress) return;
+
+  // An arrow pressed while a replay runs, or while a replay request waits
+  // for one (see requestReplay), does nothing, as before.
+  if (isStepping || _replayInProgress || _pendingReplayRequest !== null) return;
 
   // Check if user wants time-stepping (dt field has a value > 0)
   const dtInput = document.getElementById('nav-delta-t');
@@ -2171,7 +2281,7 @@ async function navigateForward() {
 
   const nextIndex = currentStateIndex + 1;
   if (nextIndex < stateSequence.length) {
-    _replayInProgress = true;
+    _beginReplay();
     try {
       const simulator = modeler.get('simulator');
       const registry = modeler.get('elementRegistry');
@@ -2294,7 +2404,7 @@ async function navigateForward() {
         modeler.get('eventBus').fire('tokenSimulation.simulator.elementChanged', { element: el });
       });
     } finally {
-      _replayInProgress = false;
+      _endReplay();
     }
     updateNavigationUI();
     return;
@@ -2320,7 +2430,10 @@ async function navigateForward() {
 }
 
 async function navigateBackward() {
-  if (isStepping || _replayInProgress) return;
+
+  // An arrow pressed while a replay runs, or while a replay request waits
+  // for one (see requestReplay), does nothing, as before.
+  if (isStepping || _replayInProgress || _pendingReplayRequest !== null) return;
   if (currentStateIndex <= 0) return;
 
   const targetIndex = currentStateIndex - 1;
@@ -2567,8 +2680,11 @@ function showAdvanceDecisionDialog(childrenDecisions) {
       });
       hideBranchDialog();
       if (match) {
-        // Re-call advance with decisions
-        _replayInProgress = true;
+        // Re-call advance with decisions. An advance is now outstanding,
+        // as in navigateForward's time step; this set _replayInProgress,
+        // which no replay ever cleared, so every replay after it -- the
+        // advance's own included -- was refused.
+        _advanceInProgress = true;
         const currentSnap = stateSequence[currentStateIndex];
         window.parent.postMessage({
           type: 'requestAdvance',
