@@ -30,6 +30,13 @@ import {
   aggregateByRootToken,
   aggregateStatusesByElement
 } from './element-states';
+import {
+  LoopSteering,
+  isUnkeyedPassThrough,
+  loopMovesOf,
+  queueLoopMoves,
+  requireLoopMoves
+} from './loop-moves';
 import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
@@ -914,6 +921,20 @@ function _showRootTokenStatus(node, rootToken, aggregate) {
 // diffCompletions/diffActivations/waitForTokenDrain mechanism.
 let _replayInProgress = false;
 
+// THE LOOP DECISIONS A REPLAY STEERS (./loop-moves.js): a loop's decision
+// gateway has no key in a snapshot, so each visit of it takes the next flow
+// the path's `loop_moves` name, and holds the token when none is left. One
+// instance for the page; `simulator.reset()` ends its steering, and each
+// replay (or step of navigateForward) queues the moves it replays.
+const loopSteering = new LoopSteering(modeler.get('simulator'));
+
+/**
+ * The element ids a snapshot's keys name.
+ */
+function keyedIdsOf(state) {
+  return new Set(Object.keys(state).map(key => parseStateKey(key).registryId));
+}
+
 // ONE REPLAY AT A TIME, AND THE NEWEST REQUEST WAITS FOR IT.
 //
 // A request that arrived while a replay ran -- a node clicked in the host's
@@ -1073,6 +1094,7 @@ async function _replayFromStart(targetIndex, instant) {
     const { registryId } = parseStateKey(key);
     if (status === STATE_COMPLETED) completedInTarget.add(registryId);
   });
+  const keyedInTarget = keyedIdsOf(targetState);
 
   const waitConfig = {};
   registry.getAll().forEach(el => {
@@ -1083,10 +1105,23 @@ async function _replayFromStart(targetIndex, instant) {
     const isJoin = (el.type === 'bpmn:ExclusiveGateway' || el.type === 'bpmn:ParallelGateway')
       && el.incoming && el.incoming.filter(f => f.type === 'bpmn:SequenceFlow').length > 1;
     if (isJoin) shouldWait = false;
+
+    // An exclusive gateway with no key and one way on (a loop's exit
+    // gateway, a do-while's merge) has nothing to decide: through.
+    if (isUnkeyedPassThrough(el, keyedInTarget)) shouldWait = false;
     simulator.setConfig(el, { wait: shouldWait });
     waitConfig[el.id] = shouldWait;
   });
   debugTrace('[replay] wait:false on:', Object.keys(waitConfig).filter(k => !waitConfig[k]).join(', '));
+
+  // THE LOOP DECISIONS, after the loop above has set them: steering makes
+  // each hold until a visit finds a move queued. The moves are
+  // those of steps 1..targetIndex, the steps this replay replays at once.
+  // `simulator.reset()` above ended the previous replay's steering.
+  const loopQueues = queueLoopMoves(stateSequence, 1, targetIndex, registry, keyedInTarget);
+  loopSteering.steer(loopQueues);
+  debugTrace('[replay] loop decisions steered:', [ ...loopQueues.values() ]
+    .map(({ gateway, flows }) => `${gateway.id} <- [${flows.map(flow => flow.id).join(', ')}]`).join('; '));
 
   // Render t0
   currentStateIndex = 0;
@@ -1158,6 +1193,21 @@ async function _replayFromStart(targetIndex, instant) {
     // In instant mode, wait for all token animations to drain first
     await drainSimulationQueues();
     await new Promise(r => setTimeout(r, 50));
+
+    // Drained, so every lap the moves name should have been run. A move left
+    // in a queue is a token that stopped short of the snapshot -- said, so a
+    // diagram that disagrees with its path does not look like one that agrees.
+    // (A reset during the replay ended the steering: nothing to say then.)
+    if (loopSteering.isSteering()) {
+      const untaken = loopSteering.untaken();
+
+      if (Object.keys(untaken).length > 0) {
+        console.warn(
+          `[replay] snapshot ${targetIndex}: loop moves no token took, by gateway: ` +
+          JSON.stringify(untaken)
+        );
+      }
+    }
   } else {
     await new Promise(r => setTimeout(r, 500));
   }
@@ -1409,7 +1459,8 @@ let _pendingApiNavData = null;  // {topology, allPaths, allPathNodeIds, nodeId}
 // 43e16d57). It sends `states`,
 // `nodeId`, `topology`, `allPaths` and `allPathNodeIds` -- the last three
 // `null` when the page has none (its `_entry` and `_sent`) -- and it does
-// NOT send `targetIndex`.
+// NOT send `targetIndex`. Every step of `states` and of each path of
+// `allPaths` is `{ name, state, loop_moves }` (./loop-moves.js).
 const LOAD_STATES_FIELDS = [ 'states', 'nodeId', 'topology', 'allPaths', 'allPathNodeIds' ];
 
 /**
@@ -1429,6 +1480,22 @@ function _readLoadStatesMessage(data) {
 
   if (!Array.isArray(states) || states.length === 0) {
     throw new Error(`loadStates: "states" is not a non-empty array of snapshots (${typeof states})`);
+  }
+
+  // EVERY STEP NAMES ITS LOOP MOVES, here and in every path of `allPaths`
+  // (a branch switch replays one of those): a step without them would be
+  // replayed as "no loop moved" and its token sent round forever
+  // (./loop-moves.js).
+  requireLoopMoves(states, 'loadStates "states"');
+
+  if (data.allPaths !== null) {
+    if (typeof data.allPaths !== 'object' || Array.isArray(data.allPaths)) {
+      throw new Error(`loadStates: "allPaths" is ${JSON.stringify(data.allPaths)}, not null or a node id -> path map`);
+    }
+
+    Object.entries(data.allPaths).forEach(([ pathNodeId, path ]) => {
+      requireLoopMoves(path, `loadStates "allPaths"["${pathNodeId}"]`);
+    });
   }
 
   const nodeId = data.nodeId;
@@ -2309,6 +2376,10 @@ window.addEventListener('message', async (event) => {
   if (data.type === 'branchStatesResponse') {
     const newStates = Array.isArray(data.states) ? data.states : [];
     if (!newStates.length) return;
+
+    // The path a branch switch goes on with: its steps name their loop
+    // moves, as a loadStates path's do.
+    requireLoopMoves(newStates, `branchStatesResponse for node ${data.childNodeId}`);
     stateSequence = newStates;
     const childKey = String(data.childNodeId);
     _pathNodeIds = (_allPathNodeIds && _allPathNodeIds[childKey]) || null;
@@ -2331,6 +2402,10 @@ window.addEventListener('message', async (event) => {
     }
     const newState = data.state;
     if (newState) {
+
+      // The step the advance computed is replayed with the path it extends,
+      // so it names its loop moves as the path's steps do.
+      loopMovesOf(newState, 'advanceResponse "state"');
       newState._snapshot = data.snapshot || null;
       requestReplay('the snapshot computed by the advance', async () => {
         stateSequence = stateSequence.slice(0, currentStateIndex + 1);
@@ -2422,6 +2497,7 @@ async function navigateForward() {
         if (status === STATE_COMPLETED) completedInTarget.add(registryId);
       });
       debugTrace('[navFwd] completedInTarget:', [ ...completedInTarget ].join(', '));
+      const keyedInTarget = keyedIdsOf(targetState);
 
       const waitConfig = {};
       registry.getAll().forEach(el => {
@@ -2435,15 +2511,28 @@ async function navigateForward() {
         const isJoin = (el.type === 'bpmn:ExclusiveGateway' || el.type === 'bpmn:ParallelGateway')
           && el.incoming && el.incoming.filter(f => f.type === 'bpmn:SequenceFlow').length > 1;
         if (isJoin) shouldWait = false;
+
+        // As in _replayFromStart: a gateway with no key and one way on lets
+        // the token through.
+        if (isUnkeyedPassThrough(el, keyedInTarget)) shouldWait = false;
         simulator.setConfig(el, { wait: shouldWait });
         waitConfig[el.id] = shouldWait;
       });
+
+      // 1b. THE LOOP DECISIONS OF THIS STEP: the moves of step nextIndex
+      // alone, since the tokens already stand where step currentStateIndex
+      // left them. Steered here, and NOT locked to "the first outgoing flow
+      // whose target is completed" below: on a loop that is the body, every
+      // lap, and the token went round forever.
+      const loopQueues = queueLoopMoves(stateSequence, nextIndex, nextIndex, registry, keyedInTarget);
+      loopSteering.steer(loopQueues);
 
       // 2. Lock exclusive gateway SPLITS based on completedInTarget.
       // For each split gateway, find which outgoing flow leads to a completed target.
       registry.getAll().filter(el => el.type === 'bpmn:ExclusiveGateway').forEach(gw => {
         const outgoing = (gw.outgoing || []).filter(f => f.type === 'bpmn:SequenceFlow');
         if (outgoing.length < 2) return;
+        if (loopSteering.steers(gw.id)) return;
         const selectedFlow = outgoing.find(f => f.target && completedInTarget.has(f.target.id));
         if (selectedFlow) {
           simulator.setConfig(gw, { locked: true, activeOutgoing: selectedFlow });
@@ -2504,7 +2593,14 @@ async function navigateForward() {
           .filter(s => !s.destroyed && s.children.length === 0
                     && s.element?.type !== 'bpmn:Process'
                     && s.element?.type !== 'bpmn:Participant'
-                    && s.element?.type !== 'bpmn:ParallelGateway');
+                    && s.element?.type !== 'bpmn:ParallelGateway')
+
+          // A TOKEN HOLDING AT A LOOP DECISION moves only if this step took
+          // that decision: its first move for the gateway points the gateway
+          // at the flow before the signal, and without one the token stays.
+          // Signalled without it, the gateway would leave by the flow of its
+          // PREVIOUS visit.
+          .filter(s => !loopSteering.steers(s.element.id) || loopSteering.release(s.element));
         debugTrace('[navFwd] signaling leaf scopes:', leafScopes.map(s => `${s.element?.id}(${s.id})`).join(', '));
         // Signal ALL leaf scopes at once so parallel tokens move together
         // (e.g. both branches reach ParallelJoin simultaneously).
