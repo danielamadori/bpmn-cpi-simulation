@@ -61,6 +61,30 @@ body.dark-mode {
   --token-simulation-paused: #666666;
 }
 
+/*
+ * THE CANVAS'S FOCUS OUTLINE IS DRAWN AS THE SIMULATION FRAME. A click in the
+ * canvas focuses its <svg> (diagram-js gives it tabindex 0), and the
+ * browser drew its own focus ring there: 2 px, in a colour each browser
+ * picks (yellow in the light theme on the Dell, white in the dark one),
+ * ON TOP of the diagram. The frame is an inset box-shadow of .djs-container
+ * and sits UNDER the diagram, so wherever a pool reaches the canvas edge it
+ * hid the frame and left the browser's ring as the only line -- reported
+ * 2026-11-16 on new_example/bpmn.bpmn's pool. The outline now covers the
+ * frame's 4 px in the frame's colour, for each of the frame's states.
+ */
+.djs-container svg:focus {
+  outline: 4px solid var(--token-simulation-primary);
+  outline-offset: -4px;
+}
+
+.bjs-container.simulation.paused .djs-container svg:focus {
+  outline-color: var(--token-simulation-paused);
+}
+
+.bjs-container.simulation.warning .djs-container svg:focus {
+  outline-color: var(--token-simulation-warning);
+}
+
 .dark-mode .djs-container {
   background-color: var(--diagram-js-background-color);
 }
