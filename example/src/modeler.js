@@ -25,7 +25,6 @@ import {
   ACTIVITY_STATE_NAME,
   STATE_ACTIVE,
   STATE_COMPLETED,
-  STATE_UNKNOWN,
   STATE_WAITING,
   aggregateStatusesByElement
 } from './element-states';
@@ -1166,18 +1165,6 @@ async function _replayFromStart(targetIndex, instant) {
   });
 
   debugTrace('[replay] Complete at index', currentStateIndex);
-}
-
-function getOverallStatus(status) {
-  if (typeof status === 'number') return status;
-  if (typeof status === 'object' && status !== null) {
-    const values = Object.values(status);
-    if (values.includes(STATE_ACTIVE)) return STATE_ACTIVE;
-    if (values.length && values.every(v => v === STATE_COMPLETED)) return STATE_COMPLETED;
-    if (values.includes(STATE_WAITING)) return STATE_WAITING;
-    return STATE_UNKNOWN;
-  }
-  return status;
 }
 
 /**
