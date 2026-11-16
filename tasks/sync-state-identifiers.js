@@ -1,7 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
-const dir = path.join(__dirname, '..', 'states', 'example');
+// The folder under states/ to sync, named on the command line:
+// `node tasks/sync-state-identifiers.js bpmn`. It was always `states/example`,
+// which was removed on 2026-11-16 with its diagram.
+const folder = process.argv[2];
+
+if (!folder) {
+  throw new Error('name the folder under states/ to sync, e.g. `node tasks/sync-state-identifiers.js bpmn`');
+}
+
+const dir = path.join(__dirname, '..', 'states', folder);
 const t0Path = path.join(dir, 't0.json');
 
 const t0Data = JSON.parse(fs.readFileSync(t0Path, 'utf8'));

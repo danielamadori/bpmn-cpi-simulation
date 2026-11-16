@@ -27,7 +27,9 @@ The format is a flat key-value JSON object:
 }
 ```
 
-(an excerpt of `states/example/t1.json`)
+(an excerpt of `states/example/t1.json`, which was removed on 2026-11-16 together
+with its diagram `example/resources/example.bpmn`; every folder under `states/`
+has the same format)
 
 *   **Key**: `<elementId>@<context>#<tokenId>`, read by `parseStateKey` in `modeler.js`. The element ID (e.g., `Task_026c0id`) must match the ID in the `.bpmn` file exactly.
 *   **Value**: The state of the element, as an integer `ActivityState` code -- the same codes the Simulator sends (`src/parser/activity_state.py` in the Simulator repository), so a file snapshot and an injected one are read by the same code.

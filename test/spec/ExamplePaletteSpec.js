@@ -17,7 +17,7 @@ import {
 
 const exampleStyles = require('../../example/style.css');
 
-const allDiagram = require('../../example/resources/all.bpmn');
+const allDiagram = require('./all.bpmn');
 
 
 injectStyles();

@@ -15,8 +15,6 @@
     "start": "cross-env SINGLE_START=modeler npm run dev",
     "prestart:example": "npm run bundle:src",
     "start:example": "webpack serve --static ./example --open",
-    "prestart:basic": "npm run bundle:src",
-    "start:basic": "webpack serve --static ./example --open /basic/",
     "lint": "run-s lint:js lint:bpmn",
     "lint:js": "eslint .",
     "lint:bpmn": "bpmnlint \"example/**/*.bpmn\"",

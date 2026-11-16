@@ -11,8 +11,7 @@ module.exports = (env, argv) => {
   return {
     mode,
     entry: {
-      modeler: './example/src/modeler.js',
-      basic: './example/basic/src/app.js'
+      modeler: './example/src/modeler.js'
     },
     output: {
       filename: 'dist/[name].js',

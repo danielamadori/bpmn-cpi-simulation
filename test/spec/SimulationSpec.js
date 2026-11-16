@@ -1343,7 +1343,7 @@ describe('simulation', function() {
 
   describe.skip('all', function() {
 
-    const diagram = require('../../example/resources/all.bpmn');
+    const diagram = require('./all.bpmn');
 
     beforeEach(bootstrapModeler(diagram, {
       additionalModules: [

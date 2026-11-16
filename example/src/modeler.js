@@ -37,7 +37,11 @@ import BpmnLintModule from 'bpmn-js-bpmnlint';
 import bpmnlintConfig from '../../.bpmnlintrc';
 import h337 from 'heatmap.js';
 
-import exampleXML from '../resources/example.bpmn';
+// THE DIAGRAM THE PAGE OPENS WITH, since 2026-11-16: `new_example/bpmn.bpmn`,
+// whose snapshots are `states/bpmn`. Until then it was
+// `example/resources/example.bpmn`, which the Simulator does not parse whole,
+// and which was removed with its snapshots `states/example` (Daniel's choice).
+import exampleXML from '../../new_example/bpmn.bpmn';
 
 const url = new URL(window.location.href);
 
@@ -61,7 +65,7 @@ function debugTrace(...values) {
   }
 }
 
-let fileName = 'example.bpmn';
+let fileName = 'bpmn.bpmn';
 
 const initialDiagram = (() => {
   try {
@@ -718,7 +722,7 @@ function loadStateSequenceForCurrentDiagram() {
   debugTrace('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
 
   // EVERY FILE OF THE FOLDER IS A SNAPSHOT t<N>.json, N its place in the
-  // sequence -- the 39 files of the 6 folders under states/ all are. A file
+  // sequence -- the 26 files of the 5 folders under states/ all are. A file
   // that is not one has no place to read from its name: it raises, where it
   // used to sort as t0 and be loaded as a snapshot.
   const snapshotFiles = diagramKeys.map(key => {

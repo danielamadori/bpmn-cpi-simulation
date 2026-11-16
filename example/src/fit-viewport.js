@@ -9,7 +9,8 @@
  * at the canvas's x = 0. The palette is an absolutely positioned overlay
  * INSIDE the canvas -- `left: 20px`, 48px wide, 94px in two columns -- so
  * whatever lies in the canvas's first 68 to 114 pixels is drawn under it.
- * Measured on `example/resources/all.bpmn` in edit mode: four shapes under the
+ * Measured on `all.bpmn` (`test/spec/all.bpmn`, under `example/resources/` until
+ * 2026-11-16) in edit mode: four shapes under the
  * palette at 1600x900 (the start event `ALL_START` among them), eight at
  * 1280x700.
  *

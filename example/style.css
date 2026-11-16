@@ -1950,7 +1950,8 @@ body.dark-mode {
  *    copies, and `.dark-mode .group`). diagram-js wraps the palette's
  *    entries AND the context pad's entries in `<div class="group">` as well,
  *    so the same rule laid both out like panels. Measured in Chrome on
- *    `example/resources/all.bpmn`, edit mode, before this block:
+ *    `all.bpmn` (`test/spec/all.bpmn`, under `example/resources/` until
+ *    2026-11-16), edit mode, before this block:
  *
  *      1600x900     entries of one group 56px apart instead of 46 (hand 61,
  *                   lasso 117, space 173, connect 229), a 10px gap above the
