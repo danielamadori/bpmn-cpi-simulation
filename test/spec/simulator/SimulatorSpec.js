@@ -583,6 +583,42 @@ describe('simulator', function() {
       expectTrace(fixture());
     });
 
+
+    verify('event-based-gateway', () => {
+
+      // given -- the event waits, as the state-sequence replay configures it
+      const event = element('M_CATCH');
+
+      waitAtElement(event);
+
+      trigger({
+        element: element('START')
+      });
+
+      // when
+      trigger({
+        element: event
+      });
+
+      // then -- the token is held ON the event, not carried past it
+      const held = findScope({
+        element: event
+      });
+
+      expect(held, 'token held on M_CATCH').to.exist;
+      expect(traceActions()).not.to.include('enter:END_A');
+
+      // but when
+      trigger({
+        element: event,
+        scope: held
+      });
+
+      // then -- the next trigger releases it
+      expectDestroyed(held);
+      expect(traceActions()).to.include('enter:END_A');
+    });
+
   });
 
 
@@ -2525,6 +2561,14 @@ function findScope(filter) {
 
 function expectDestroyed(scope) {
   expect(scope.destroyed).to.be.true;
+}
+
+function traceActions() {
+  return getBpmnJS().invoke(function(simulationTrace) {
+    return simulationTrace.map(
+      t => `${t.action}:${t.element && t.element.id || 'null'}`
+    );
+  });
 }
 
 function expectTrace(expectedTrace) {
