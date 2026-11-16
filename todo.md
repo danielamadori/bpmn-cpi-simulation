@@ -25,7 +25,8 @@ Actionable in THIS repo (it ships run.sh + docker-entrypoint.sh + the served fro
   ports and derive the URLs from it.
 - DONE: `example/src/api-client.js` no longer hardcodes `http://localhost:8765`
   — it now requires the page-injected `window._apiBaseUrl` and raises if absent,
-  no silent fallback (commit 374ba47).
+  no silent fallback (commit 374ba47). The file was deleted on 2026-11-16:
+  nothing had ever imported it (docs/bad_habits_verified.md, section 3).
 
 Tracked but NOT in this repo — these live in the Simulator backend repo, so the
 agent here cannot fix them (cross-reference only, do not hunt for these files):
