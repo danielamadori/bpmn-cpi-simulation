@@ -1883,16 +1883,59 @@ function _scheduleDropdownRefresh() {
   });
 }
 
+// THE REPLAY'S OWN TOKENS, WHEREVER THEY ARRIVE.
+//
+// A replay (replayToIndex, a step of navigateForward, a step of playStates)
+// sets its tokens moving while _replayInProgress or isStepping is set. But a
+// token travels a sequence or message flow as an animation, and at the
+// normal speed it reaches the next element after replayToIndex's 500 ms wait,
+// once the flag is cleared: with «replay only» on, a replay recorded nothing.
+//
+// So every scope created while a replay records is marked. When the
+// animation of a MARKED flow ends, the simulator carries the token on in a
+// job chain of its own -- the flow's `exit`, the next element's `enter`, and
+// whatever follows synchronously -- which belongs to the replay too, until
+// the `tick` the simulator emits when that chain is done. A click of the user
+// starts a chain outside every replay: it is not recorded, and the flows it
+// sets moving are not marked, so their arrivals are not recorded either.
+const _replayScopes = new WeakSet();
+
+// true from the `exit` of a marked flow to the `tick` that ends its chain
+let _replayTokenArriving = false;
+
+function _recordingReplay() {
+  return _replayInProgress || isStepping || _replayTokenArriving;
+}
+
+modeler.get('eventBus').on('tokenSimulation.simulator.createScope', event => {
+  if (_recordingReplay()) {
+    _replayScopes.add(event.scope);
+  }
+});
+
+modeler.get('eventBus').on('tokenSimulation.simulator.trace', 1500, event => {
+  const flow = event.element.type === 'bpmn:SequenceFlow' || event.element.type === 'bpmn:MessageFlow';
+
+  if (event.action === 'exit' && flow && _replayScopes.has(event.scope)) {
+    _replayTokenArriving = true;
+  }
+});
+
+modeler.get('eventBus').on('tokenSimulation.simulator.tick', () => {
+  _replayTokenArriving = false;
+});
+
 function _recordMetricsForElement(element) {
   // When ``replay only`` is on (default), only snapshot-driven playback
   // feeds the accumulator: ``replayToIndex`` (jump-to-snapshot, sets
   // ``_replayInProgress``), step-by-step nav forward/back (also sets
-  // ``_replayInProgress``), and ``playStates`` (auto-walks the whole
-  // sequence, sets ``isStepping``). Free-form manual simulation —
-  // clicking tokens directly in the canvas, signalling tasks ad-hoc —
-  // is *not* a snapshot replay and therefore doesn't pollute the
+  // ``_replayInProgress``), ``playStates`` (auto-walks the whole
+  // sequence, sets ``isStepping``), and the tokens they set moving,
+  // wherever those arrive (_recordingReplay, above). Free-form manual
+  // simulation — clicking tokens directly in the canvas, signalling tasks
+  // ad-hoc — is *not* a snapshot replay and therefore doesn't pollute the
   // heatmap unless the user opts in by unchecking the box.
-  if (heatmapReplayOnly && !_replayInProgress && !isStepping) return;
+  if (heatmapReplayOnly && !_recordingReplay()) return;
   const elementId = element.id || element;
   const m = elementMetrics.get(elementId) || { count: 0, cumDuration: 0, cumImpact: {} };
   m.count += 1;
@@ -2003,9 +2046,9 @@ modeler.get('eventBus').on('import.done', () => {
 //   'impact:<name>'   → cumulative sese:impact value for that named impact
 let heatmapMetric = 'count';
 
-// When true (default), only snapshot replays — i.e. ``replayToIndex``
-// invocations, identified by ``_replayInProgress`` — feed the heatmap
-// accumulator. Manual user-driven simulation steps are ignored. The
+// When true (default), only snapshot replays — ``replayToIndex``,
+// the arrows and ``playStates``, and the tokens they set moving
+// (``_recordingReplay``) — feed the heatmap accumulator. Manual user-driven simulation steps are ignored. The
 // ``#heatmap-replay-only`` checkbox flips this; defaulting ON matches
 // the snapshot-driven UX where each click of a snapshot resets the
 // accumulator and replays cumulative cost up to that point.
