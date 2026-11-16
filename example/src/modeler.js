@@ -21,6 +21,14 @@ import fileOpen from 'file-open';
 import download from 'downloadjs';
 import { svgToPng } from './utils';
 import { fitViewportClearOfPalette } from './fit-viewport';
+import {
+  ACTIVITY_STATE_NAME,
+  STATE_ACTIVE,
+  STATE_COMPLETED,
+  STATE_UNKNOWN,
+  STATE_WAITING,
+  aggregateStatusesByElement
+} from './element-states';
 import gridModule from 'diagram-js-grid';
 import ColorPickerModule from 'bpmn-js-color-picker';
 import minimapModule from 'diagram-js-minimap';
@@ -1040,22 +1048,15 @@ function getOverallStatus(status) {
 
 /**
  * Aggregate state by registryId — combines all #token_id keys for the
- * same element into a single overall status (ActivityState int code).
+ * same element into a single overall status: an ActivityState int code,
+ * or NONE_OF_THE_THREE (see `aggregateTokenStatuses` in
+ * ./element-states.js for the precedence, which does not depend on the
+ * order of the keys).
  */
 function aggregateByElement(state) {
-  const result = {};  // registryId → overall status (int)
-  for (const [key, status] of Object.entries(state)) {
-    const { registryId } = parseStateKey(key);
-    const prev = result[registryId];
-    if (prev === undefined) {
-      result[registryId] = status;
-    } else {
-      // active > completed > waiting (keep the most "progressed" status)
-      if (status === STATE_ACTIVE || prev === STATE_ACTIVE) result[registryId] = STATE_ACTIVE;
-      else if (status === STATE_COMPLETED && prev !== STATE_ACTIVE) result[registryId] = STATE_COMPLETED;
-    }
-  }
-  return result;
+  return aggregateStatusesByElement(
+    Object.entries(state).map(([ key, status ]) => [ parseStateKey(key).registryId, status ])
+  );
 }
 
 function diffCompletions(prev, next) {
@@ -1878,40 +1879,7 @@ modeler.get('eventBus').on('tokenSimulation.simulator.elementChanged', _origPlay
 window.bpmnjs = modeler;
 
 // --- postMessage API for external state injection ---
-// ActivityState wire format (PACO convention): backend sends integer
-// codes — no string transcription. The frontend uses the integers
-// natively for all comparisons; the only translation happens at the
-// CSS-class boundary (`state-status-<name>`), because CSS selectors
-// require a textual identifier.
-//
-// Keep the constants in sync with ``src/parser/activity_state.py``.
-const STATE_UNKNOWN = -2;
-const STATE_SKIPPED = -1; // branch not taken; the states/ files' "will not be executed"
-const STATE_WAITING = 0;
-const STATE_ACTIVE = 1;
-const STATE_COMPLETED = 2;
-const STATE_COMPLETING = 3;
-const STATE_FAILING = 4;
-const STATE_FAILED = 5;
-const STATE_TERMINATING = 6;
-const STATE_TERMINATED = 7;
-
-// Used only for ``normalizeStatusClass`` (CSS class derivation). A Map
-// keeps native integer keys — object literal keys are coerced to strings
-// (a misleading asymmetry between the negative sentinel and positive
-// codes).
-const ACTIVITY_STATE_NAME = new Map([
-  [STATE_UNKNOWN, 'unknown'],
-  [ STATE_SKIPPED, 'will not be executed' ],
-  [STATE_WAITING, 'waiting'],
-  [STATE_ACTIVE, 'active'],
-  [STATE_COMPLETED, 'completed'],
-  [STATE_COMPLETING, 'completing'],
-  [STATE_FAILING, 'failing'],
-  [STATE_FAILED, 'failed'],
-  [STATE_TERMINATING, 'terminating'],
-  [STATE_TERMINATED, 'terminated'],
-]);
+// The ActivityState codes the states carry are in ./element-states.js.
 
 // Parent frame (combined.html) sends {type: 'loadStates', states: [...]}
 // when user selects a node in the execution tree. We reset the simulation
