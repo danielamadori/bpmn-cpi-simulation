@@ -93,6 +93,25 @@ The `configureExclusiveGateways` function in `modeler.js`:
 *   **Tasks**: Simply advance when they receive the "complete" signal from the simulation driver.
 *   **Start Event**: Is manually triggered at the beginning of the sequence (transition from `t0` to `t1`).
 
+### Paths a host sends, and the laps of a loop (`loop_moves`)
+A host (the Simulator's combined report) does not use the `states/` files: it posts a `loadStates` message whose `states` is the path to one node of the execution tree, t0 then one step per node, and every step of it -- and of every path in `allPaths`, and the step an advance appends -- is
+
+```json
+{ "name": "t=0.000", "state": { "T2@P_ciclo.ciclo_condizionale#tok_0": 2 }, "loop_moves": [ "f_body" ] }
+```
+
+`loop_moves` is required, `[]` when the step crossed no loop decision, and `_readLoadStatesMessage` refuses a message with a step that lacks it. It lists the BPMN sequence flows the step's loop decisions took, in firing order (the Simulator's `_loop_moves_of`, `src/sese_tooling/_api/_snapshot_views.py`).
+
+It exists because a snapshot cannot say it. A loop's decision gateway has no key in a snapshot, and a step's `state` is cumulative, so it says that a task completed and never how many times. Measured 2026-11-16 on the Simulator's `ciclo_condizionale.bpmn`: the replay sent the token round `f_body -> T2 -> f_back` forever, 297 laps in 10 s.
+
+`example/src/loop-moves.js` is how the replay uses it:
+
+*   an exclusive gateway no key names, with two outgoing flows or more, is a decision only the moves can resolve. The replay (`_replayFromStart`) queues the moves of steps 1..target under the gateway each flow leaves; every time a token enters such a gateway it takes the next queued flow, and with none queued it holds there, which is a decision still to be taken. A step forward (`navigateForward`) queues the moves of that one step, and a token already holding at a decision moves only if the step took it;
+*   an exclusive gateway no key names, with one outgoing flow (a loop's exit gateway, a do-while's merge), lets the token through;
+*   a move whose id carries a call scope (`CALL::f_body`) belongs to a called process, which this canvas does not draw, and steers nothing.
+
+The token going round is what shows a lap: no element is coloured for it.
+
 ## Data Flow Summary
 
 1.  **JSON Files** (`states/`) -> Define *what* must happen.
