@@ -38,16 +38,24 @@
 
     <div id="simulation-control-stack">
         <div class="group" id="io-group">
-            <h3>I/O Operations</h3>
-            <button class="link" id="open-button">Open Diagram</button>
-            <button class="link" id="download-button">Download BPMN</button>
-            <button class="link" id="export-png">Export as PNG</button>
-            <button class="link" id="export-svg">Export as SVG</button>
-            <button class="link" id="theme-toggle">Toggle Theme</button>
-            <button class="link" id="toggle-heatmap">Toggle Heatmap</button>
-            <select id="heatmap-metric" class="link" title="Heatmap value (count of token entries / cumulative sese:duration / cumulative sese:impact:&lt;name&gt;)">
-                <option value="count" selected>count</option>
-                <option value="duration">duration</option>
+            <div class="group-header">
+                <h3>I/O Operations</h3>
+                <button class="link theme-toggle-btn" id="theme-toggle">Toggle Theme</button>
+            </div>
+            <div class="io-row">
+                <button class="link" id="open-button">Open</button>
+                <select id="export-select" class="link" aria-label="Export diagram">
+                    <option value="" selected disabled>Export</option>
+                    <option value="bpmn">Download BPMN</option>
+                    <option value="png">Export as PNG</option>
+                    <option value="svg">Export as SVG</option>
+                </select>
+            </div>
+            <h4 class="submenu-title">Heatmap</h4>
+            <select id="heatmap-metric" class="link" title="Heatmap value (Hide / count of token entries / cumulative sese:duration / cumulative sese:impact:&lt;name&gt;)">
+                <option value="hide" selected>Hide</option>
+                <option value="count">Count</option>
+                <option value="duration">Duration</option>
             </select>
             <label for="heatmap-replay-only" style="display:block; margin-top:4px; font-size:11px; color:#666;" title="When checked, the heatmap accumulates only during a snapshot replay. When unchecked, manual simulation actions also feed the heatmap.">
                 <input type="checkbox" id="heatmap-replay-only" checked style="vertical-align:middle; margin-right:4px;">
@@ -57,8 +65,6 @@
 
         <div class="group" id="control-group">
             <h3>Control</h3>
-            <button class="link" id="validate-sese">Validate SESE</button>
-            <button class="link" id="export-paco-json">Export PACO JSON</button>
             <button class="link" id="play-state-sequence">Play state sequence</button>
             <div id="nav-controls" style="display:none; margin-top:8px;">
                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
@@ -150,6 +156,9 @@
         </div>
     </div>
 
+    <div id="sidebar-resizer" title="Drag to resize sidebar"></div>
+    <button id="sidebar-toggle" type="button" aria-label="Hide sidebar" aria-expanded="true" title="Hide sidebar">&#x2039;</button>
+
     <div class="canvas-parent">
         <div class="canvas" id="canvas">
             <div class="djs-minimap"></div>
@@ -170,6 +179,7 @@
 
     <script src="./dist/modeler.js"></script>
     <script src="./theme-toggle.js"></script>
+    <script src="./sidebar-controls.js"></script>
 </body>
 
 </html>

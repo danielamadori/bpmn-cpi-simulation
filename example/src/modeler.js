@@ -408,16 +408,18 @@ document.body.addEventListener('keydown', function (event) {
   }
 });
 
-document.querySelector('#download-button').addEventListener('click', function (event) {
-  downloadDiagram();
-});
+document.querySelector('#export-select').addEventListener('change', function (event) {
+  const format = event.target.value;
 
-document.querySelector('#export-png').addEventListener('click', function (event) {
-  exportPNG();
-});
+  if (format === 'bpmn') {
+    downloadDiagram();
+  } else if (format === 'png') {
+    exportPNG();
+  } else if (format === 'svg') {
+    exportSVG();
+  }
 
-document.querySelector('#export-svg').addEventListener('click', function (event) {
-  exportSVG();
+  event.target.value = '';
 });
 
 document.querySelector('#open-button').addEventListener('click', () => {
@@ -447,10 +449,10 @@ function moveSimulationControls() {
     controlGroup.appendChild(paletteEntries);
   }
 
-  // Move animation speed control to I/O group (under theme toggle)
+  // Move animation speed control to control group (under palette)
   const speedControl = document.querySelector('.bts-set-animation-speed');
-  if (speedControl && ioGroup && speedControl.parentNode !== ioGroup) {
-    ioGroup.appendChild(speedControl);
+  if (speedControl && controlGroup && speedControl.parentNode !== controlGroup) {
+    controlGroup.appendChild(speedControl);
   }
 
   // Move linting messages to monitor group
@@ -1788,16 +1790,12 @@ function updateHeatmapData() {
   heatmapInstance.setData({ max, data });
 }
 
-function toggleHeatmap(event) {
-  if (event) { event.preventDefault(); event.stopPropagation(); }
-  heatmapVisible = !heatmapVisible;
-  const btn = document.getElementById('toggle-heatmap');
+function setHeatmapVisible(visible) {
+  if (heatmapVisible === visible) return;
+  heatmapVisible = visible;
   if (heatmapVisible) {
     createHeatmapOverlay();
     updateHeatmapData();
-    btn.textContent = 'Hide Heatmap';
-    btn.style.background = '#e3f2fd';
-    btn.style.borderColor = '#2196F3';
   } else {
     controlsObserver.disconnect();
     if (heatmapContainer && heatmapContainer.parentNode) {
@@ -1805,9 +1803,6 @@ function toggleHeatmap(event) {
     }
     heatmapInstance = null;
     heatmapContainer = null;
-    btn.textContent = 'Toggle Heatmap';
-    btn.style.background = '';
-    btn.style.borderColor = '';
     requestAnimationFrame(() => {
       controlsObserver.observe(document.body, { childList: true, subtree: true });
     });
@@ -1818,16 +1813,21 @@ modeler.get('eventBus').on('canvas.viewbox.changed', () => {
   if (heatmapVisible && heatmapInstance) updateHeatmapData();
 });
 
-document.getElementById('toggle-heatmap').addEventListener('click', toggleHeatmap);
-
-// React to metric selector changes — re-render with the new value source
-// without re-creating the overlay or re-walking the simulator trace.
+// React to metric selector changes — show/hide or re-render with the new value
+// source without re-creating the overlay when already visible.
 const _heatmapMetricSel = document.getElementById('heatmap-metric');
 if (_heatmapMetricSel) {
   _heatmapMetricSel.addEventListener('change', () => {
-    heatmapMetric = _heatmapMetricSel.value || 'count';
-    if (heatmapVisible && heatmapInstance) {
-      updateHeatmapData();
+    const val = _heatmapMetricSel.value || 'hide';
+    if (val === 'hide') {
+      setHeatmapVisible(false);
+    } else {
+      heatmapMetric = val;
+      if (!heatmapVisible) {
+        setHeatmapVisible(true);
+      } else if (heatmapInstance) {
+        updateHeatmapData();
+      }
     }
   });
 }

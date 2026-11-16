@@ -7,6 +7,7 @@
       <bpmn:task id="Task_1upmjgh" name="Prepare Cash">
         <bpmn:extensionElements>
           <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.8" />
         </bpmn:extensionElements>
         <bpmn:incoming>SequenceFlow_10d6h3a</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_1dzm18n</bpmn:outgoing>
@@ -19,6 +20,7 @@
       <bpmn:task id="Task_128fg2b" name="Charge Account">
         <bpmn:extensionElements>
           <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.5" />
         </bpmn:extensionElements>
         <bpmn:incoming>SequenceFlow_0rz4mzx</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_1pol4sw</bpmn:outgoing>
@@ -26,6 +28,7 @@
       <bpmn:task id="Task_16oagb5" name="Issue Money">
         <bpmn:extensionElements>
           <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="1.0" />
         </bpmn:extensionElements>
         <bpmn:incoming>SequenceFlow_0cx35wm</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_05m0kip</bpmn:outgoing>
@@ -64,6 +67,7 @@
     <bpmn:task id="Task_1xu25p5" name="Check For Further Interactions">
       <bpmn:extensionElements>
         <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.1" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_FromMergeToTask</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_ToReturnCard</bpmn:outgoing>
@@ -72,6 +76,7 @@
     <bpmn:task id="Task_0e0mu6c" name="Return Card">
       <bpmn:extensionElements>
         <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.1" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_ToReturnCard</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1p7rbgq</bpmn:outgoing>
@@ -84,6 +89,7 @@
     <bpmn:userTask id="Task_026c0id" name="Insert Card">
       <bpmn:extensionElements>
         <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.1" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1xib75z</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_130hgg8</bpmn:outgoing>
@@ -91,6 +97,7 @@
     <bpmn:userTask id="Task_0p47z7h" name="Select Amount">
       <bpmn:extensionElements>
         <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.1" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1qdqk69</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0t9dyy4</bpmn:outgoing>
@@ -108,6 +115,7 @@
       <bpmn:task id="Task_180wh31" name="Display Balance">
         <bpmn:extensionElements>
           <sese:duration min="0.0" max="1.0" />
+          <sese:impact name="cost" value="0.2" />
         </bpmn:extensionElements>
         <bpmn:incoming>SequenceFlow_17nxcr4</bpmn:incoming>
         <bpmn:outgoing>Flow_003gu9c</bpmn:outgoing>
@@ -126,13 +134,12 @@
     <bpmn:userTask id="Task_0po6mda" name="Select Interaction">
       <bpmn:extensionElements>
         <sese:duration min="0.0" max="1.0" />
+        <sese:impact name="cost" value="0.1" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_130hgg8</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1364l2a</bpmn:outgoing>
     </bpmn:userTask>
   </bpmn:process>
-  <bpmn:message id="Message_1dyo6g5" name="Message_message" />
-  <bpmn:error id="Error_0k93fd1" name="Error_1405ero" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
       <bpmndi:BPMNShape id="Task_0e0mu6c_di" bpmnElement="Task_0e0mu6c">

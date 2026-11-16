@@ -84,6 +84,30 @@ body.dark-mode {
   stroke: var(--diagram-js-primary-color) !important;
 }
 
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: rgb(33, 33, 33)"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: rgb(34, 36, 42)"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: rgb(0, 0, 0)"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: black"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: #000"] {
+  fill: var(--diagram-js-primary-color) !important;
+}
+
+/* Throwing/black envelopes: keep black fill with light outer and inner contours */
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="stroke: rgb(255, 255, 255)"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="stroke: white"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="stroke: #fff"] {
+  fill: #1f1f1f !important;
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
+/* Catching/white envelopes: dark grey fill with light outer and inner contours */
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: rgb(255, 255, 255)"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: white"],
+.dark-mode .djs-container .djs-visual > :nth-child(n + 2)[style*="fill: #fff"] {
+  fill: #3d3d3d !important;
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
 .dark-mode .djs-container .djs-visual text,
 .dark-mode .djs-container .djs-visual tspan {
   fill: var(--diagram-js-primary-color) !important;
@@ -104,6 +128,47 @@ body.dark-mode {
 .dark-mode .djs-container .djs-visual > .djs-hit {
   fill: none !important;
   stroke: none !important;
+}
+
+.dark-mode .djs-container defs marker path,
+.dark-mode .djs-container defs marker circle,
+.dark-mode .djs-container defs marker polygon {
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
+.dark-mode .djs-container defs marker path[style*="fill: rgb(33, 33, 33)"],
+.dark-mode .djs-container defs marker path[style*="fill: rgb(34, 36, 42)"],
+.dark-mode .djs-container defs marker path[style*="fill: rgb(0, 0, 0)"],
+.dark-mode .djs-container defs marker path[style*="fill: black"],
+.dark-mode .djs-container defs marker path[style*="fill: #000"] {
+  fill: var(--diagram-js-primary-color) !important;
+}
+
+.dark-mode .djs-container defs marker circle[style*="fill: white"],
+.dark-mode .djs-container defs marker circle[style*="fill: rgb(255, 255, 255)"],
+.dark-mode .djs-container defs marker circle[style*="fill: #fff"],
+.dark-mode .djs-container defs marker path[style*="fill: white"],
+.dark-mode .djs-container defs marker path[style*="fill: rgb(255, 255, 255)"],
+.dark-mode .djs-container defs marker path[style*="fill: #fff"] {
+  fill: var(--diagram-js-background-color) !important;
+}
+
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[style*="241, 241, 241"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[style*="241,241,241"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[style*="#f1f1f1"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[style*="255, 255, 255"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[style*="#fff"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[style*="white"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[stroke="#f1f1f1"],
+html:not(.dark-mode) .djs-container .djs-connection .djs-visual path[stroke="rgb(241, 241, 241)"] {
+  stroke: var(--diagram-js-primary-color) !important;
+}
+
+html:not(.dark-mode) .djs-container defs marker path[style*="241, 241, 241"],
+html:not(.dark-mode) .djs-container defs marker path[style*="241,241,241"],
+html:not(.dark-mode) .djs-container defs marker path[style*="#f1f1f1"] {
+  stroke: var(--diagram-js-primary-color) !important;
+  fill: var(--diagram-js-primary-color) !important;
 }
 
 
@@ -1779,6 +1844,74 @@ body.dark-mode {
   background: var(--sim-panel-surface-hover);
 }
 
+.submenu-title {
+  margin: 6px 0 0 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #666;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.dark-mode .submenu-title {
+  color: var(--sim-panel-muted);
+  border-bottom: 1px solid var(--sim-panel-rule);
+}
+
+.io-row {
+  display: flex;
+  gap: 10px;
+}
+
+.io-row > .link {
+  flex: 1;
+  min-width: 0;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.group-header h3 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dark-mode .group-header {
+  border-bottom: 1px solid var(--sim-panel-rule);
+}
+
+.dark-mode .group-header h3 {
+  border-bottom: none;
+}
+
+.link.theme-toggle-btn {
+  width: auto;
+  padding: 3px 8px;
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.dark-mode .djs-minimap {
+  background-color: rgba(58, 58, 58, 0.92);
+  border-color: var(--sim-panel-border);
+  color: var(--token-simulation-grey-darken-30);
+}
+
+.dark-mode .djs-minimap.open .overlay {
+  background: rgba(0, 0, 0, 0.25);
+}
+
 /* Form controls inherit the OS light palette unless told otherwise; one
  * declaration does what a dozen background/color pairs would. */
 .dark-mode {
@@ -1866,4 +1999,131 @@ body.dark-mode {
   --palette-separator-color: var(--sim-panel-border);
   --palette-entry-color: var(--token-simulation-grey-darken-30);
   --palette-toggle-hover-background-color: var(--sim-panel-surface-hover);
+}
+
+.bts-palette {
+  flex-direction: row;
+  align-items: center;
+}
+
+.bts-palette .bts-entry {
+  margin-bottom: 0;
+}
+
+.dark-mode .bts-set-animation-speed .bts-animation-speed-button.active {
+  background: rgba(24, 144, 255, 0.22);
+  border-color: #40a9ff;
+  color: #69c0ff;
+}
+
+/* Resizable & collapsible sidebar */
+:root {
+  --sidebar-width: 300px;
+}
+
+#simulation-control-stack {
+  width: var(--sidebar-width, 300px);
+}
+
+.canvas-parent {
+  left: calc(var(--sidebar-width, 300px) + 50px);
+}
+
+#sidebar-resizer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--sidebar-width, 300px) + 36px);
+  width: 10px;
+  cursor: ew-resize;
+  z-index: 150;
+}
+
+#sidebar-resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 2px;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+#sidebar-resizer:hover::after,
+body.sidebar-resizing #sidebar-resizer::after {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.dark-mode #sidebar-resizer:hover::after,
+.dark-mode body.sidebar-resizing #sidebar-resizer::after {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+body.sidebar-resizing {
+  user-select: none;
+  cursor: ew-resize;
+}
+
+#sidebar-toggle {
+  position: fixed;
+  top: 12px;
+  left: calc(var(--sidebar-width, 300px) + 60px);
+  width: 30px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #444;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  outline: none;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, color 0.15s;
+  z-index: 200;
+}
+
+#sidebar-toggle:hover {
+  background: #f5f5f5;
+  border-color: #999;
+  color: #111;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+}
+
+#sidebar-toggle:focus-visible {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode #sidebar-toggle {
+  background: var(--sim-panel-surface);
+  color: var(--token-simulation-grey-darken-30);
+  border-color: var(--sim-panel-border);
+}
+
+.dark-mode #sidebar-toggle:hover {
+  background: var(--sim-panel-surface-hover);
+  border-color: var(--sim-panel-border-strong);
+}
+
+.dark-mode #sidebar-toggle:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+body.sidebar-collapsed #simulation-control-stack,
+body.sidebar-collapsed #sidebar-resizer {
+  display: none;
+}
+
+body.sidebar-collapsed .canvas-parent {
+  left: 0;
+}
+
+body.sidebar-collapsed #sidebar-toggle {
+  left: 12px;
 }
