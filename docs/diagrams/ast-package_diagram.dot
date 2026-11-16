@@ -1,10 +1,10 @@
 digraph package_diagram {
-  // 141 internal module(s), 52 external root(s), 306 edge(s) drawn
-  // 396 import reference(s) considered = 309 drawn + 0 with no module name + 87 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
-  // nodes: 141 of 141 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 141 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 52 external node(s) are not files of this tree
-  // edges: 306 of 306 state an import site = 0 fully checked + 306 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
+  // 141 internal module(s), 53 external root(s), 314 edge(s) drawn
+  // 405 import reference(s) considered = 317 drawn + 0 with no module name + 88 path-relative JS/TS this resolver declined + 0 path-relative in a language with no resolver here + 0 whose target is not a node of this graph + 0 naming their own module + 0 with no file
+  // nodes: 141 of 141 internal state the file they stand for = 0 in tooltip (a .py this diagram's oracle re-parses) + 141 whose file the oracle confirms EXISTS but whose name it cannot re-derive (nothing here parses that language) + 0 that name more than one file and declare none; the 53 external node(s) are not files of this tree
+  // edges: 314 of 314 state an import site = 0 fully checked + 314 whose site the oracle confirms exists and belongs to its node, with the statement itself unread (no parser here) + 0 whose sites span more than one file + 0 with no site recorded
   // languages this checker does not read are checked separately by: scripts/dev/js_package_edge_oracle.py
-  // path-relative JS/TS: 260 reference(s) = 173 resolved against the 141 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 87 declined: 70 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
+  // path-relative JS/TS: 264 reference(s) = 176 resolved against the 141 file(s) this graph knows, over 10 extension candidate(s), 4 emitted-extension rewrite(s) and 6 index name(s) + 88 declined: 71 names a non-JS/TS file (asset or data), which a corpus of parseable sources does not carry, 13 no file, extension candidate or index under that path, 4 climbs above the analysed tree, 0 absolute, which needs a web root this graph does not have
   // of those resolved, 0 matched more than one candidate and took the documented order's first; NOT IMPLEMENTED here: tsconfig/jsconfig path aliases; node_modules resolution; package.json main/exports/imports
   // the whole graph: no render budget applies here, unlike the .mmd
   rankdir=LR;
@@ -18,14 +18,11 @@ digraph package_diagram {
     "bpmnlint-plugin-sese/rules/task-has-impact.js" [tooltip="bpmnlint-plugin-sese/rules/task-has-impact.js",URL="bpmnlint-plugin-sese/rules/task-has-impact.js",comment="bpmnlint-plugin-sese/rules/task-has-impact.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "docker-entrypoint.sh" [tooltip="docker-entrypoint.sh",URL="docker-entrypoint.sh",comment="docker-entrypoint.sh -- bash, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "eslint.config.mjs" [tooltip="eslint.config.mjs",URL="eslint.config.mjs",comment="eslint.config.mjs -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
-    "example/basic/src/app.js" [tooltip="example/basic/src/app.js",URL="example/basic/src/app.js",comment="example/basic/src/app.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/sidebar-controls.js" [tooltip="example/sidebar-controls.js",URL="example/sidebar-controls.js",comment="example/sidebar-controls.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
-    "example/src/api-client.js" [tooltip="example/src/api-client.js",URL="example/src/api-client.js",comment="example/src/api-client.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
-    "example/src/bpmn-to-json.js" [tooltip="example/src/bpmn-to-json.js",URL="example/src/bpmn-to-json.js",comment="example/src/bpmn-to-json.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "example/src/element-states.js" [tooltip="example/src/element-states.js",URL="example/src/element-states.js",comment="example/src/element-states.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/src/fit-viewport.js" [tooltip="example/src/fit-viewport.js",URL="example/src/fit-viewport.js",comment="example/src/fit-viewport.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "example/src/loop-moves.js" [tooltip="example/src/loop-moves.js",URL="example/src/loop-moves.js",comment="example/src/loop-moves.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/src/modeler.js" [tooltip="example/src/modeler.js",URL="example/src/modeler.js",comment="example/src/modeler.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
-    "example/src/sese-properties-provider.js" [tooltip="example/src/sese-properties-provider.js",URL="example/src/sese-properties-provider.js",comment="example/src/sese-properties-provider.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
-    "example/src/sese-validator.js" [tooltip="example/src/sese-validator.js",URL="example/src/sese-validator.js",comment="example/src/sese-validator.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/src/utils.js" [tooltip="example/src/utils.js",URL="example/src/utils.js",comment="example/src/utils.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "example/theme-toggle.js" [tooltip="example/theme-toggle.js",URL="example/theme-toggle.js",comment="example/theme-toggle.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "karma.conf.js" [tooltip="karma.conf.js",URL="karma.conf.js",comment="karma.conf.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
@@ -142,9 +139,12 @@ digraph package_diagram {
     "test/spec/SimulationSpec.js" [tooltip="test/spec/SimulationSpec.js",URL="test/spec/SimulationSpec.js",comment="test/spec/SimulationSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/ViewerSpec.js" [tooltip="test/spec/ViewerSpec.js",URL="test/spec/ViewerSpec.js",comment="test/spec/ViewerSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/animation/AnimationSpec.js" [tooltip="test/spec/animation/AnimationSpec.js",URL="test/spec/animation/AnimationSpec.js",comment="test/spec/animation/AnimationSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "test/spec/example/ElementStatesSpec.js" [tooltip="test/spec/example/ElementStatesSpec.js",URL="test/spec/example/ElementStatesSpec.js",comment="test/spec/example/ElementStatesSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "test/spec/example/LoopMovesSpec.js" [tooltip="test/spec/example/LoopMovesSpec.js",URL="test/spec/example/LoopMovesSpec.js",comment="test/spec/example/LoopMovesSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/features/context-pads/ContextPadsSpec.js" [tooltip="test/spec/features/context-pads/ContextPadsSpec.js",URL="test/spec/features/context-pads/ContextPadsSpec.js",comment="test/spec/features/context-pads/ContextPadsSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/features/gateway-settings/GatewaySettingsSpec.js" [tooltip="test/spec/features/gateway-settings/GatewaySettingsSpec.js",URL="test/spec/features/gateway-settings/GatewaySettingsSpec.js",comment="test/spec/features/gateway-settings/GatewaySettingsSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/features/log/LogSpec.js" [tooltip="test/spec/features/log/LogSpec.js",URL="test/spec/features/log/LogSpec.js",comment="test/spec/features/log/LogSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
+    "test/spec/features/selection-api/SelectionAPISpec.js" [tooltip="test/spec/features/selection-api/SelectionAPISpec.js",URL="test/spec/features/selection-api/SelectionAPISpec.js",comment="test/spec/features/selection-api/SelectionAPISpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/features/show-scopes/ShowScopesSpec.js" [tooltip="test/spec/features/show-scopes/ShowScopesSpec.js",URL="test/spec/features/show-scopes/ShowScopesSpec.js",comment="test/spec/features/show-scopes/ShowScopesSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/i18n/I18nSpec.js" [tooltip="test/spec/i18n/I18nSpec.js",URL="test/spec/i18n/I18nSpec.js",comment="test/spec/i18n/I18nSpec.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
     "test/spec/i18n/custom-translate.js" [tooltip="test/spec/i18n/custom-translate.js",URL="test/spec/i18n/custom-translate.js",comment="test/spec/i18n/custom-translate.js -- javascript, which this diagram's own checker does not parse (package_edge_oracle's oracle is CPython's ast)"];
@@ -158,7 +158,6 @@ digraph package_diagram {
     "@bpmn-io/add-exporter" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "@bpmn-io/diagram-js-canvas-lock" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "@bpmn-io/diagram-js-canvas-lock/assets/canvas-lock" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
-    "@bpmn-io/properties-panel" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "@rollup/plugin-commonjs" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "@rollup/plugin-node-resolve" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "bpmn-js-bpmnlint" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
@@ -180,6 +179,7 @@ digraph package_diagram {
     "copy-webpack-plugin" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "diagram-js-grid" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "diagram-js-minimap" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
+    "diagram-js/lib/core/EventBus" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "downloadjs" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "eslint-plugin-bpmn-io" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "file-drops" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
@@ -189,6 +189,7 @@ digraph package_diagram {
     "ids" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "inherits-browser" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "lib/features/log/Log" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
+    "lib/features/selection-api/SelectionAPI" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "lib/icons" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "lib/modeler" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
     "lib/simulation-support" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
@@ -209,24 +210,22 @@ digraph package_diagram {
     "webpack" [style="rounded,filled", fillcolor=grey92,tooltip="external to this diagram: a third-party package, or a file this AST does not hold (excluded, unparsed, or outside the analysed tree) -- not distinguishable here"];
   }
   "eslint.config.mjs" -> "eslint-plugin-bpmn-io" [tooltip="import at eslint.config.mjs:1"];
-  "example/basic/src/app.js" -> "bpmn-js/lib/NavigatedViewer" [tooltip="import at example/basic/src/app.js:3"];
-  "example/basic/src/app.js" -> "lib/viewer.js" [tooltip="import at example/basic/src/app.js:1"];
   "example/src/modeler.js" -> "@bpmn-io/add-exporter" [tooltip="import at example/src/modeler.js:8"];
-  "example/src/modeler.js" -> "bpmn-js-bpmnlint" [tooltip="import at example/src/modeler.js:27"];
-  "example/src/modeler.js" -> "bpmn-js-color-picker" [tooltip="import at example/src/modeler.js:25"];
+  "example/src/modeler.js" -> "bpmn-js-bpmnlint" [tooltip="import at example/src/modeler.js:43"];
+  "example/src/modeler.js" -> "bpmn-js-color-picker" [tooltip="import at example/src/modeler.js:41"];
   "example/src/modeler.js" -> "bpmn-js-properties-panel" [tooltip="import at example/src/modeler.js:10"];
   "example/src/modeler.js" -> "bpmn-js/lib/Modeler" [tooltip="import at example/src/modeler.js:6"];
-  "example/src/modeler.js" -> "diagram-js-grid" [tooltip="import at example/src/modeler.js:24"];
-  "example/src/modeler.js" -> "diagram-js-minimap" [tooltip="import at example/src/modeler.js:26"];
+  "example/src/modeler.js" -> "diagram-js-grid" [tooltip="import at example/src/modeler.js:40"];
+  "example/src/modeler.js" -> "diagram-js-minimap" [tooltip="import at example/src/modeler.js:42"];
   "example/src/modeler.js" -> "downloadjs" [tooltip="import at example/src/modeler.js:21"];
+  "example/src/modeler.js" -> "example/src/element-states.js" [tooltip="import at example/src/modeler.js:24"];
   "example/src/modeler.js" -> "example/src/fit-viewport.js" [tooltip="import at example/src/modeler.js:23"];
+  "example/src/modeler.js" -> "example/src/loop-moves.js" [tooltip="import at example/src/modeler.js:33"];
   "example/src/modeler.js" -> "example/src/utils.js" [tooltip="import at example/src/modeler.js:22"];
   "example/src/modeler.js" -> "file-drops" [tooltip="import at example/src/modeler.js:17"];
   "example/src/modeler.js" -> "file-open" [tooltip="import at example/src/modeler.js:19"];
-  "example/src/modeler.js" -> "heatmap" [tooltip="import at example/src/modeler.js:29"];
+  "example/src/modeler.js" -> "heatmap" [tooltip="import at example/src/modeler.js:45"];
   "example/src/modeler.js" -> "lib/simulation-support/index.js" [tooltip="import at example/src/modeler.js:15"];
-  "example/src/sese-properties-provider.js" -> "@bpmn-io/properties-panel" [tooltip="import at example/src/sese-properties-provider.js:1"];
-  "example/src/sese-properties-provider.js" -> "bpmn-js-properties-panel" [tooltip="import at example/src/sese-properties-provider.js:2"];
   "karma.conf.js" -> "fs" [tooltip="import at karma.conf.js:4"];
   "karma.conf.js" -> "path" [tooltip="import at karma.conf.js:3"];
   "karma.conf.js" -> "test/reporters/fixture-reporter.js" [tooltip="import at karma.conf.js:10"];
@@ -434,9 +433,9 @@ digraph package_diagram {
   "rollup.config.js" -> "@rollup/plugin-commonjs" [tooltip="import at rollup.config.js:2"];
   "rollup.config.js" -> "@rollup/plugin-node-resolve" [tooltip="import at rollup.config.js:3"];
   "rollup.config.js" -> "rollup-plugin-string" [tooltip="import at rollup.config.js:1"];
-  "tasks/ensure-rollup-binary.js" -> "child_process" [tooltip="import at tasks/ensure-rollup-binary.js:12"];
-  "tasks/ensure-rollup-binary.js" -> "fs" [tooltip="import at tasks/ensure-rollup-binary.js:13"];
-  "tasks/ensure-rollup-binary.js" -> "path" [tooltip="import at tasks/ensure-rollup-binary.js:14"];
+  "tasks/ensure-rollup-binary.js" -> "child_process" [tooltip="import at tasks/ensure-rollup-binary.js:17"];
+  "tasks/ensure-rollup-binary.js" -> "fs" [tooltip="import at tasks/ensure-rollup-binary.js:18"];
+  "tasks/ensure-rollup-binary.js" -> "path" [tooltip="import at tasks/ensure-rollup-binary.js:19"];
   "tasks/sync-state-identifiers.js" -> "fs" [tooltip="import at tasks/sync-state-identifiers.js:1"];
   "tasks/sync-state-identifiers.js" -> "path" [tooltip="import at tasks/sync-state-identifiers.js:2"];
   "test/TestHelper.js" -> "@bpmn-io/diagram-js-canvas-lock/assets/canvas-lock" [tooltip="import at test/TestHelper.js:18"];
@@ -478,6 +477,12 @@ digraph package_diagram {
   "test/spec/animation/AnimationSpec.js" -> "lib/modeler" [tooltip="import at test/spec/animation/AnimationSpec.js:8"];
   "test/spec/animation/AnimationSpec.js" -> "lib/simulation-support" [tooltip="import at test/spec/animation/AnimationSpec.js:6"];
   "test/spec/animation/AnimationSpec.js" -> "test/TestHelper" [tooltip="import at test/spec/animation/AnimationSpec.js:1,10"];
+  "test/spec/example/ElementStatesSpec.js" -> "chai" [tooltip="import at test/spec/example/ElementStatesSpec.js:1"];
+  "test/spec/example/ElementStatesSpec.js" -> "example/src/element-states.js" [tooltip="import at test/spec/example/ElementStatesSpec.js:3"];
+  "test/spec/example/LoopMovesSpec.js" -> "chai" [tooltip="import at test/spec/example/LoopMovesSpec.js:1"];
+  "test/spec/example/LoopMovesSpec.js" -> "example/src/loop-moves.js" [tooltip="import at test/spec/example/LoopMovesSpec.js:10"];
+  "test/spec/example/LoopMovesSpec.js" -> "lib/simulator" [tooltip="import at test/spec/example/LoopMovesSpec.js:3"];
+  "test/spec/example/LoopMovesSpec.js" -> "test/TestHelper" [tooltip="import at test/spec/example/LoopMovesSpec.js:5"];
   "test/spec/features/context-pads/ContextPadsSpec.js" -> "chai" [tooltip="import at test/spec/features/context-pads/ContextPadsSpec.js:12"];
   "test/spec/features/context-pads/ContextPadsSpec.js" -> "lib/modeler" [tooltip="import at test/spec/features/context-pads/ContextPadsSpec.js:1"];
   "test/spec/features/context-pads/ContextPadsSpec.js" -> "lib/simulation-support" [tooltip="import at test/spec/features/context-pads/ContextPadsSpec.js:3"];
@@ -492,6 +497,10 @@ digraph package_diagram {
   "test/spec/features/log/LogSpec.js" -> "lib/modeler" [tooltip="import at test/spec/features/log/LogSpec.js:1"];
   "test/spec/features/log/LogSpec.js" -> "lib/simulation-support" [tooltip="import at test/spec/features/log/LogSpec.js:3"];
   "test/spec/features/log/LogSpec.js" -> "test/TestHelper" [tooltip="import at test/spec/features/log/LogSpec.js:5"];
+  "test/spec/features/selection-api/SelectionAPISpec.js" -> "chai" [tooltip="import at test/spec/features/selection-api/SelectionAPISpec.js:1"];
+  "test/spec/features/selection-api/SelectionAPISpec.js" -> "diagram-js/lib/core/EventBus" [tooltip="import at test/spec/features/selection-api/SelectionAPISpec.js:5"];
+  "test/spec/features/selection-api/SelectionAPISpec.js" -> "lib/features/selection-api/SelectionAPI" [tooltip="import at test/spec/features/selection-api/SelectionAPISpec.js:7"];
+  "test/spec/features/selection-api/SelectionAPISpec.js" -> "sinon" [tooltip="import at test/spec/features/selection-api/SelectionAPISpec.js:3"];
   "test/spec/features/show-scopes/ShowScopesSpec.js" -> "chai" [tooltip="import at test/spec/features/show-scopes/ShowScopesSpec.js:13"];
   "test/spec/features/show-scopes/ShowScopesSpec.js" -> "lib/modeler" [tooltip="import at test/spec/features/show-scopes/ShowScopesSpec.js:1"];
   "test/spec/features/show-scopes/ShowScopesSpec.js" -> "lib/simulation-support" [tooltip="import at test/spec/features/show-scopes/ShowScopesSpec.js:3"];

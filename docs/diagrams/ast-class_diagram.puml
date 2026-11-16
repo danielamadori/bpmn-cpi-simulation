@@ -1,10 +1,16 @@
 @startuml
 ' INHERITANCE: 0 edge(s) drawn, 0 declined -- every base name that resolves here resolves to exactly one class. The check ran; it is not absent.
-' example/src/sese-properties-provider.js:6
-class "SesePropertiesProvider" as example_src_sese_properties_provider_js_SesePropertiesProvider {
+' example/src/loop-moves.js:211
+class "LoopSteering" as example_src_loop_moves_js_LoopSteering {
   <<javascript>>
   +constructor()
-  +getGroups()
+  +steer()
+  +isSteering()
+  +steers()
+  +takeNext()
+  +untaken()
+  +release()
+  +_onTrace()
 }
 ' test/spec/ModelerSpec.js:247
 class "FoobarOverlays" as test_spec_ModelerSpec_js_FoobarOverlays {
@@ -58,6 +64,7 @@ class "run" as run_Functions {
 }
 class "tasks.ensure-rollup-binary" as tasks_ensure_rollup_binary_Functions {
   <<javascript module>>
+  +readJson()
   +readRollupVersion()
 }
 class "test.TestHelper" as test_TestHelper_Functions {
@@ -85,6 +92,7 @@ class "icons.index" as icons_index_Functions {
 }
 class "example.modeler" as example_modeler_Functions {
   <<javascript module>>
+  +debugTrace()
   +showMessage()
   +hideMessage()
   +parseStateKey()
@@ -112,8 +120,15 @@ class "example.modeler" as example_modeler_Functions {
   +showStatePanelMessage()
   +normalizeStatusClass()
   +renderStateSnapshot()
+  +_showRootTokenStatus()
+  +keyedIdsOf()
+  +requestReplay()
+  +_runReplayRequest()
+  +_beginReplay()
+  +_endReplay()
+  +_runPendingReplayRequest()
   +replayToIndex()
-  +getOverallStatus()
+  +_replayFromStart()
   +aggregateByElement()
   +diffCompletions()
   +diffActivations()
@@ -121,10 +136,17 @@ class "example.modeler" as example_modeler_Functions {
   +waitForTokenDrain()
   +drainSimulationQueues()
   +configureExclusiveGateways()
+  +_readLoadStatesMessage()
+  +_targetIndexOf()
+  +_statesMatchDiagram()
+  +_pathNodeIdsFor()
+  +_applyNavigationData()
   +initializeSimulationToStart()
   +playStates()
   +_scheduleDropdownRefresh()
+  +_recordingReplay()
   +_recordMetricsForElement()
+  +_addEntryDuration()
   +_resetHeatmapAccumulators()
   +_resetHeatmapImpactDiscovery()
   +_readMetric()
@@ -150,27 +172,26 @@ class "example.fit-viewport" as example_fit_viewport_Functions {
   +viewboxClearOfReserve()
   +fitViewportClearOfPalette()
 }
-class "example.api-client" as example_api_client_Functions {
+class "example.loop-moves" as example_loop_moves_Functions {
   <<javascript module>>
-  +executeStep()
-}
-class "example.sese-validator" as example_sese_validator_Functions {
-  <<javascript module>>
-  +validateSESE()
+  +loopMovesOf()
+  +requireLoopMoves()
+  +isExclusiveGateway()
+  +sequenceFlows()
+  +isUnkeyedDecision()
+  +isUnkeyedPassThrough()
+  +queueLoopMoves()
 }
 class "example.utils" as example_utils_Functions {
   <<javascript module>>
   +svgToPng()
 }
-class "example.bpmn-to-json" as example_bpmn_to_json_Functions {
+class "example.element-states" as example_element_states_Functions {
   <<javascript module>>
-  +getType()
-  +parseBPMN()
-}
-class "example.sese-properties-provider" as example_sese_properties_provider_Functions {
-  <<javascript module>>
-  +createDurationGroup()
-  +DurationProps()
+  +aggregateTokenStatuses()
+  +rootTokenOf()
+  +aggregateByRootToken()
+  +aggregateStatusesByElement()
 }
 class "test.mocks.Animation" as test_mocks_Animation_Functions {
   <<javascript module>>
@@ -249,6 +270,20 @@ class "spec.i18n.I18nSpec" as spec_i18n_I18nSpec_Functions {
   +elementEnter()
   +scopeDestroyed()
 }
+class "spec.example.LoopMovesSpec" as spec_example_LoopMovesSpec_Functions {
+  <<javascript module>>
+  +path()
+  +get()
+  +element()
+  +bootstrap()
+  +replay()
+  +count()
+  +holdingAt()
+}
+class "spec.example.ElementStatesSpec" as spec_example_ElementStatesSpec_Functions {
+  <<javascript module>>
+  +permutations()
+}
 class "features.context-pads.ContextPadsSpec" as features_context_pads_ContextPadsSpec_Functions {
   <<javascript module>>
   +bootstrapModeler()
@@ -265,6 +300,11 @@ class "features.log.LogSpec" as features_log_LogSpec_Functions {
   +triggerElement()
   +scopeDestroyed()
   +elementEnter()
+}
+class "features.selection-api.SelectionAPISpec" as features_selection_api_SelectionAPISpec_Functions {
+  <<javascript module>>
+  +createSelectionAPI()
+  +brokenListener()
 }
 class "features.show-scopes.ShowScopesSpec" as features_show_scopes_ShowScopesSpec_Functions {
   <<javascript module>>
