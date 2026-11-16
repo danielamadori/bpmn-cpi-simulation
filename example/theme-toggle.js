@@ -8,12 +8,16 @@
     var bpmnjs = window.bpmnjs;
 
     if (bpmnjs) {
-      try {
-        var themeService = bpmnjs.get('theme');
-        themeService.setTheme(newTheme);
-      } catch (err) {
 
-        // theming module not available
+      // No module of this modeller registers a 'theme' service today, so its
+      // absence is the expected case: get(name, false) answers undefined for
+      // a service nobody registered (diagram-js's injector, didi), and the
+      // absence is asked for that way. The catch this replaces read every
+      // error as «theming module not available», setTheme's own included.
+      var themeService = bpmnjs.get('theme', false);
+
+      if (themeService !== undefined) {
+        themeService.setTheme(newTheme);
       }
     }
 

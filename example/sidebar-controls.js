@@ -23,12 +23,16 @@
   }
 
   function notifyCanvasResize() {
+
+    // window.bpmnjs is the modeller that dist/modeler.js builds
+    // (example/src/modeler.js, `window.bpmnjs = modeler`), and index.html
+    // loads that script before this one: the test below is for the modeller,
+    // whose canvas is a core diagram-js service present from its
+    // construction. So it is asked for strictly, and a call that fails --
+    // one of the `canvas.resized` listeners throwing -- surfaces, where a
+    // catch read every error as "canvas service not ready".
     if (window.bpmnjs) {
-      try {
-        window.bpmnjs.get('canvas').resized();
-      } catch (err) {
-        // canvas service not ready
-      }
+      window.bpmnjs.get('canvas').resized();
     }
     window.dispatchEvent(new Event('resize'));
   }
