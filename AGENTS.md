@@ -47,3 +47,28 @@ cumulative metrics -- token entries, the declared `sese:duration`, the declared
 `sese:impact` values -- and never where a run is. It is an exception the owner
 decided, not a precedent: no agent may extend it, copy it into another page or
 module, or use it to show run state.
+
+THE BRANCH COLOURING STAYS TOO, BY DANIEL'S DECISION OF 2026-11-16
+(«Restano entrambi»). Two pieces of code recolour the outgoing sequence flows
+of a gateway, and both stay:
+
+1. upstream's `lib/features/exclusive-gateway-settings/ExclusiveGatewaySettings.js`,
+   `setSequenceFlow`, whose `elementColors.add` at :112-120 runs when
+   simulation mode turns on (`TOGGLE_MODE_EVENT` with `active: true`; the
+   replay asks for the mode at every replay, and the event fires only when
+   the mode was off). It colours each unlocked exclusive gateway's first
+   outgoing flow `--token-simulation-active-outgoing-flow-stroke-color`
+   (#212121) and the others `--token-simulation-inactive-outgoing-flow-stroke-color`
+   (#909090). `lib/features/inclusive-gateway-settings/InclusiveGatewaySettings.js`
+   does the same for inclusive gateways in `_setActiveOutgoing`: the
+   non-default flows dark, the default flow grey;
+2. this fork's replay, `example/src/modeler.js` `_replayFromStart`
+   (:1112-1124 at c612f9d): after a snapshot, the branch an exclusive gateway
+   took is drawn `--token-simulation-grey-darken-30` (#212121, #f1f1f1 in the
+   dark theme) and its other outgoing flows #909090.
+
+They recolour sequence-flow strokes only, never a shape. Like the heatmap they
+are an exception the owner decided, not a precedent: no agent may extend them,
+copy them to another element, page or module, or add colour anywhere else to
+show where a run is. A loop's laps are shown by its token going round, not by
+a colour.
