@@ -213,7 +213,14 @@ function logError(message) {
 
 const lintingMessagesEl = document.querySelector('#linting-messages');
 
-function sanitizeDiagram(modeler, { persist = false } = {}) {
+function sanitizeDiagram(modeler, { persist }) {
+
+  // Required: its one caller, openDiagram, always says whether the page
+  // persists its diagram (`?p`).
+  if (typeof persist !== 'boolean') {
+    throw new TypeError(`sanitizeDiagram: persist must be true or false, not ${persist}`);
+  }
+
   const elementRegistry = modeler.get('elementRegistry');
   const seenNames = new Map();
 
@@ -351,7 +358,7 @@ function openDiagram(diagram) {
             const target = _pendingApiTargetIndex;
             _pendingApiTargetIndex = null;
             requestReplay(`the deferred states, to snapshot ${target}`, async () => {
-              await replayToIndex(target);
+              await replayToIndex(target, { instant: false });
               updateNavigationUI();
             });
           }
@@ -992,7 +999,14 @@ function _runPendingReplayRequest() {
   _runReplayRequest(request);
 }
 
-async function replayToIndex(targetIndex, { instant = false } = {}) {
+async function replayToIndex(targetIndex, { instant }) {
+
+  // Required, so each caller says how the replay waits for its tokens:
+  // until their animations drain (`instant`, navigateBackward, which speeds
+  // the animation up first) or a fixed 500 ms (every other caller).
+  if (typeof instant !== 'boolean') {
+    throw new TypeError(`replayToIndex: instant must be true or false, not ${instant}`);
+  }
 
   // AN INDEX OUTSIDE THE SEQUENCE IS REFUSED, NOT CLAMPED. The
   // Math.min(targetIndex, length - 1) this replaces made an index past the
@@ -1193,11 +1207,21 @@ function diffActivations(prev, next) {
 
 function getSortedTriggers(ids) {
   const registry = elementRegistry();
-  return ids.sort((a, b) => {
-    const elA = registry.get(a);
-    const elB = registry.get(b);
-    return (elA ? elA.x : 0) - (elB ? elB.x : 0);
+
+  // An id the registry does not hold has no position to sort by: it is
+  // reported and dropped here, where it used to sort first, at x = 0, and
+  // fail three times in waitForTokenDrain. (playStates, the one caller,
+  // passes only ids it found in the registry.)
+  const present = ids.filter(id => {
+    if (registry.get(id) === undefined) {
+      console.error(`[playStates] ${id} is not in the diagram's element registry, so it is not triggered`);
+      return false;
+    }
+
+    return true;
   });
+
+  return present.sort((a, b) => registry.get(a).x - registry.get(b).x);
 }
 
 async function waitForTokenDrain(simulationSupport, ids) {
@@ -1616,7 +1640,7 @@ function initializeSimulationToStart() {
     const target = _pendingApiTargetIndex;
     _pendingApiTargetIndex = null;
     requestReplay(`the deferred states, to snapshot ${target}`, async () => {
-      await replayToIndex(target);
+      await replayToIndex(target, { instant: false });
       updateNavigationUI();
     });
   }
@@ -1994,10 +2018,19 @@ let heatmapReplayOnly = true;
 function _readMetric(elementId) {
   const m = elementMetrics.get(elementId);
   if (!m) return 0;
-  if (heatmapMetric === 'count') return m.count || 0;
-  if (heatmapMetric === 'duration') return m.cumDuration || 0;
+  if (heatmapMetric === 'count') return m.count;
+  if (heatmapMetric === 'duration') return m.cumDuration;
   if (heatmapMetric.startsWith('impact:')) {
-    return m.cumImpact[heatmapMetric.slice(7)] || 0;
+    const impactName = heatmapMetric.slice(7);
+
+    // undefined: the element declares no impact of this name. A declared
+    // impact that sums to 0 is a value; this is the absence of one, which
+    // the `|| 0` this replaces made look the same.
+    if (!Object.prototype.hasOwnProperty.call(m.cumImpact, impactName)) {
+      return undefined;
+    }
+
+    return m.cumImpact[impactName];
   }
 
   // The «Heatmap» select offers `count`, `duration` and one `impact:<name>`
@@ -2083,6 +2116,11 @@ function getHeatmapFrequencyData() {
   }
   elementMetrics.forEach((_m, elementId) => {
     const v = _readMetric(elementId);
+
+    // undefined: the element declares no impact of the chosen name, so it
+    // has no value to draw. (A value of 0 is not drawn either: the heatmap
+    // draws only positive weights.)
+    if (v === undefined) return;
     if (v > 0) out.set(elementId, v);
   });
   return out;
@@ -2223,7 +2261,7 @@ window.addEventListener('message', async (event) => {
       // Navigation mode: store tree topology and all paths
       _applyNavigationData(nav);
 
-      await replayToIndex(targetIndex);
+      await replayToIndex(targetIndex, { instant: false });
       updateNavigationUI();
     });
   }
@@ -2261,7 +2299,7 @@ window.addEventListener('message', async (event) => {
         executionOrderMap = null;
         buildProcessToTokenMap();
         const targetIdx = stateSequence.length - 1;
-        await replayToIndex(targetIdx);
+        await replayToIndex(targetIdx, { instant: false });
         updateNavigationUI();
       });
     }
