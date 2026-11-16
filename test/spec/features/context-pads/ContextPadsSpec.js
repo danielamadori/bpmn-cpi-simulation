@@ -95,6 +95,30 @@ describe('features/context-pads', function() {
   ));
 
 
+  it('should start a process imported again while simulating', inject(
+    async function(bpmnjs) {
+
+      // given
+      // the same diagram, so the same element ids, imported while the
+      // simulation is on: ToggleMode turns it off and on again around the
+      // import, and the second Simulator#reset destroys the scopes of the
+      // elements the import removed
+      await bpmnjs.importXML(diagram);
+
+      // when
+      const entered = elementEnter('NESTED_TASK');
+
+      triggerElement('START');
+
+      // then
+      // the pad clicked is the live START's, which has a subscription to
+      // trigger (a pad left from the removed START had none, and its click
+      // threw in TriggerHandler)
+      await entered;
+    }
+  ));
+
+
   it('should allow trigger in simulation mode only', inject(
     async function(simulationSupport) {
 
