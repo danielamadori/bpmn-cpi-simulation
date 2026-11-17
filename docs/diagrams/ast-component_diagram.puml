@@ -20,29 +20,21 @@ package "docker-entrypoint.sh (bash)" {
 }
 package "eslint.config.mjs (javascript)" {
 }
-package "example/basic/src/app.js (javascript)" {
-}
 package "example/sidebar-controls.js (javascript)" {
 object "5 functions" as example_sidebar_controls_js_funcs
 }
-package "example/src/api-client.js (javascript)" {
-object "1 functions" as example_src_api_client_js_funcs
-}
-package "example/src/bpmn-to-json.js (javascript)" {
-object "2 functions" as example_src_bpmn_to_json_js_funcs
+package "example/src/element-states.js (javascript)" {
+object "4 functions" as example_src_element_states_js_funcs
 }
 package "example/src/fit-viewport.js (javascript)" {
 object "3 functions" as example_src_fit_viewport_js_funcs
 }
+package "example/src/loop-moves.js (javascript)" {
+' example_src_loop_moves_js_LoopSteering(("LoopSteering"))
+object "7 functions" as example_src_loop_moves_js_funcs
+}
 package "example/src/modeler.js (javascript)" {
-object "58 functions" as example_src_modeler_js_funcs
-}
-package "example/src/sese-properties-provider.js (javascript)" {
-' example_src_sese_properties_provider_js_SesePropertiesProvider(("SesePropertiesProvider"))
-object "2 functions" as example_src_sese_properties_provider_js_funcs
-}
-package "example/src/sese-validator.js (javascript)" {
-object "1 functions" as example_src_sese_validator_js_funcs
+object "73 functions" as example_src_modeler_js_funcs
 }
 package "example/src/utils.js (javascript)" {
 object "1 functions" as example_src_utils_js_funcs
@@ -313,7 +305,7 @@ package "src/icons/index.js (javascript)" {
 object "1 functions" as src_icons_index_js_funcs
 }
 package "tasks/ensure-rollup-binary.js (javascript)" {
-object "1 functions" as tasks_ensure_rollup_binary_js_funcs
+object "2 functions" as tasks_ensure_rollup_binary_js_funcs
 }
 package "tasks/sync-state-identifiers.js (javascript)" {
 }
@@ -350,6 +342,12 @@ package "test/spec/ViewerSpec.js (javascript)" {
 package "test/spec/animation/AnimationSpec.js (javascript)" {
 object "3 functions" as test_spec_animation_AnimationSpec_js_funcs
 }
+package "test/spec/example/ElementStatesSpec.js (javascript)" {
+object "1 functions" as test_spec_example_ElementStatesSpec_js_funcs
+}
+package "test/spec/example/LoopMovesSpec.js (javascript)" {
+object "7 functions" as test_spec_example_LoopMovesSpec_js_funcs
+}
 package "test/spec/features/context-pads/ContextPadsSpec.js (javascript)" {
 object "5 functions" as test_spec_features_context_pads_ContextPadsSpec_js_funcs
 }
@@ -358,6 +356,9 @@ package "test/spec/features/gateway-settings/GatewaySettingsSpec.js (javascript)
 package "test/spec/features/log/LogSpec.js (javascript)" {
 ' test_spec_features_log_LogSpec_js_LogCollector(("LogCollector"))
 object "6 functions" as test_spec_features_log_LogSpec_js_funcs
+}
+package "test/spec/features/selection-api/SelectionAPISpec.js (javascript)" {
+object "2 functions" as test_spec_features_selection_api_SelectionAPISpec_js_funcs
 }
 package "test/spec/features/show-scopes/ShowScopesSpec.js (javascript)" {
 object "5 functions" as test_spec_features_show_scopes_ShowScopesSpec_js_funcs

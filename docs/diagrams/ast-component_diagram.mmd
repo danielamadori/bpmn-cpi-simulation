@@ -20,29 +20,21 @@ flowchart TB
     end
     subgraph eslint_config_mjs["eslint.config.mjs (javascript)"]
     end
-    subgraph example_basic_src_app_js["example/basic/src/app.js (javascript)"]
-    end
     subgraph example_sidebar_controls_js["example/sidebar-controls.js (javascript)"]
         example_sidebar_controls_js_funcs["5 functions"]
     end
-    subgraph example_src_api_client_js["example/src/api-client.js (javascript)"]
-        example_src_api_client_js_funcs["1 functions"]
-    end
-    subgraph example_src_bpmn_to_json_js["example/src/bpmn-to-json.js (javascript)"]
-        example_src_bpmn_to_json_js_funcs["2 functions"]
+    subgraph example_src_element_states_js["example/src/element-states.js (javascript)"]
+        example_src_element_states_js_funcs["4 functions"]
     end
     subgraph example_src_fit_viewport_js["example/src/fit-viewport.js (javascript)"]
         example_src_fit_viewport_js_funcs["3 functions"]
     end
+    subgraph example_src_loop_moves_js["example/src/loop-moves.js (javascript)"]
+        example_src_loop_moves_js_LoopSteering(("LoopSteering"))
+        example_src_loop_moves_js_funcs["7 functions"]
+    end
     subgraph example_src_modeler_js["example/src/modeler.js (javascript)"]
-        example_src_modeler_js_funcs["58 functions"]
-    end
-    subgraph example_src_sese_properties_provider_js["example/src/sese-properties-provider.js (javascript)"]
-        example_src_sese_properties_provider_js_SesePropertiesProvider(("SesePropertiesProvider"))
-        example_src_sese_properties_provider_js_funcs["2 functions"]
-    end
-    subgraph example_src_sese_validator_js["example/src/sese-validator.js (javascript)"]
-        example_src_sese_validator_js_funcs["1 functions"]
+        example_src_modeler_js_funcs["73 functions"]
     end
     subgraph example_src_utils_js["example/src/utils.js (javascript)"]
         example_src_utils_js_funcs["1 functions"]
@@ -313,7 +305,7 @@ flowchart TB
         src_icons_index_js_funcs["1 functions"]
     end
     subgraph tasks_ensure_rollup_binary_js["tasks/ensure-rollup-binary.js (javascript)"]
-        tasks_ensure_rollup_binary_js_funcs["1 functions"]
+        tasks_ensure_rollup_binary_js_funcs["2 functions"]
     end
     subgraph tasks_sync_state_identifiers_js["tasks/sync-state-identifiers.js (javascript)"]
     end
@@ -350,6 +342,12 @@ flowchart TB
     subgraph test_spec_animation_AnimationSpec_js["test/spec/animation/AnimationSpec.js (javascript)"]
         test_spec_animation_AnimationSpec_js_funcs["3 functions"]
     end
+    subgraph test_spec_example_ElementStatesSpec_js["test/spec/example/ElementStatesSpec.js (javascript)"]
+        test_spec_example_ElementStatesSpec_js_funcs["1 functions"]
+    end
+    subgraph test_spec_example_LoopMovesSpec_js["test/spec/example/LoopMovesSpec.js (javascript)"]
+        test_spec_example_LoopMovesSpec_js_funcs["7 functions"]
+    end
     subgraph test_spec_features_context_pads_ContextPadsSpec_js["test/spec/features/context-pads/ContextPadsSpec.js (javascript)"]
         test_spec_features_context_pads_ContextPadsSpec_js_funcs["5 functions"]
     end
@@ -358,6 +356,9 @@ flowchart TB
     subgraph test_spec_features_log_LogSpec_js["test/spec/features/log/LogSpec.js (javascript)"]
         test_spec_features_log_LogSpec_js_LogCollector(("LogCollector"))
         test_spec_features_log_LogSpec_js_funcs["6 functions"]
+    end
+    subgraph test_spec_features_selection_api_SelectionAPISpec_js["test/spec/features/selection-api/SelectionAPISpec.js (javascript)"]
+        test_spec_features_selection_api_SelectionAPISpec_js_funcs["2 functions"]
     end
     subgraph test_spec_features_show_scopes_ShowScopesSpec_js["test/spec/features/show-scopes/ShowScopesSpec.js (javascript)"]
         test_spec_features_show_scopes_ShowScopesSpec_js_funcs["5 functions"]

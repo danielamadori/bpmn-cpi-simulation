@@ -1,10 +1,16 @@
 classDiagram
 %% INHERITANCE: 0 edge(s) drawn, 0 declined -- every base name that resolves here resolves to exactly one class. The check ran; it is not absent.
-    %% example/src/sese-properties-provider.js:6
-    class example_src_sese_properties_provider_js_SesePropertiesProvider["SesePropertiesProvider"] {
+    %% example/src/loop-moves.js:211
+    class example_src_loop_moves_js_LoopSteering["LoopSteering"] {
         <<javascript>>
         +constructor()
-        +getGroups()
+        +steer()
+        +isSteering()
+        +steers()
+        +takeNext()
+        +untaken()
+        +release()
+        +_onTrace()
     }
     %% test/spec/ModelerSpec.js:247
     class test_spec_ModelerSpec_js_FoobarOverlays["FoobarOverlays"] {
@@ -58,6 +64,7 @@ classDiagram
     }
     class tasks_ensure_rollup_binary_Functions["tasks.ensure-rollup-binary"] {
         <<javascript module>>
+        +readJson()
         +readRollupVersion()
     }
     class test_TestHelper_Functions["test.TestHelper"] {
@@ -85,6 +92,7 @@ classDiagram
     }
     class example_modeler_Functions["example.modeler"] {
         <<javascript module>>
+        +debugTrace()
         +showMessage()
         +hideMessage()
         +parseStateKey()
@@ -112,8 +120,15 @@ classDiagram
         +showStatePanelMessage()
         +normalizeStatusClass()
         +renderStateSnapshot()
+        +_showRootTokenStatus()
+        +keyedIdsOf()
+        +requestReplay()
+        +_runReplayRequest()
+        +_beginReplay()
+        +_endReplay()
+        +_runPendingReplayRequest()
         +replayToIndex()
-        +getOverallStatus()
+        +_replayFromStart()
         +aggregateByElement()
         +diffCompletions()
         +diffActivations()
@@ -121,10 +136,17 @@ classDiagram
         +waitForTokenDrain()
         +drainSimulationQueues()
         +configureExclusiveGateways()
+        +_readLoadStatesMessage()
+        +_targetIndexOf()
+        +_statesMatchDiagram()
+        +_pathNodeIdsFor()
+        +_applyNavigationData()
         +initializeSimulationToStart()
         +playStates()
         +_scheduleDropdownRefresh()
+        +_recordingReplay()
         +_recordMetricsForElement()
+        +_addEntryDuration()
         +_resetHeatmapAccumulators()
         +_resetHeatmapImpactDiscovery()
         +_readMetric()
@@ -150,27 +172,26 @@ classDiagram
         +viewboxClearOfReserve()
         +fitViewportClearOfPalette()
     }
-    class example_api_client_Functions["example.api-client"] {
+    class example_loop_moves_Functions["example.loop-moves"] {
         <<javascript module>>
-        +executeStep()
-    }
-    class example_sese_validator_Functions["example.sese-validator"] {
-        <<javascript module>>
-        +validateSESE()
+        +loopMovesOf()
+        +requireLoopMoves()
+        +isExclusiveGateway()
+        +sequenceFlows()
+        +isUnkeyedDecision()
+        +isUnkeyedPassThrough()
+        +queueLoopMoves()
     }
     class example_utils_Functions["example.utils"] {
         <<javascript module>>
         +svgToPng()
     }
-    class example_bpmn_to_json_Functions["example.bpmn-to-json"] {
+    class example_element_states_Functions["example.element-states"] {
         <<javascript module>>
-        +getType()
-        +parseBPMN()
-    }
-    class example_sese_properties_provider_Functions["example.sese-properties-provider"] {
-        <<javascript module>>
-        +createDurationGroup()
-        +DurationProps()
+        +aggregateTokenStatuses()
+        +rootTokenOf()
+        +aggregateByRootToken()
+        +aggregateStatusesByElement()
     }
     class test_mocks_Animation_Functions["test.mocks.Animation"] {
         <<javascript module>>
@@ -249,6 +270,20 @@ classDiagram
         +elementEnter()
         +scopeDestroyed()
     }
+    class spec_example_LoopMovesSpec_Functions["spec.example.LoopMovesSpec"] {
+        <<javascript module>>
+        +path()
+        +get()
+        +element()
+        +bootstrap()
+        +replay()
+        +count()
+        +holdingAt()
+    }
+    class spec_example_ElementStatesSpec_Functions["spec.example.ElementStatesSpec"] {
+        <<javascript module>>
+        +permutations()
+    }
     class features_context_pads_ContextPadsSpec_Functions["features.context-pads.ContextPadsSpec"] {
         <<javascript module>>
         +bootstrapModeler()
@@ -265,6 +300,11 @@ classDiagram
         +triggerElement()
         +scopeDestroyed()
         +elementEnter()
+    }
+    class features_selection_api_SelectionAPISpec_Functions["features.selection-api.SelectionAPISpec"] {
+        <<javascript module>>
+        +createSelectionAPI()
+        +brokenListener()
     }
     class features_show_scopes_ShowScopesSpec_Functions["features.show-scopes.ShowScopesSpec"] {
         <<javascript module>>
