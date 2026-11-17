@@ -1,11 +1,11 @@
 {
   "End_SignalCompleted@Process_Finisher.signal_end_event_broadcast#tok_0": 0,
-  "Start_Finisher@Process_Finisher.signal_end_event_broadcast#tok_0": 1,
-  "Task_Finalize@Process_Finisher.signal_end_event_broadcast#tok_0": 0,
-  "Catch_CompletedA@Process_ObserverA.signal_end_event_broadcast#tok_1": 0,
+  "Start_Finisher@Process_Finisher.signal_end_event_broadcast#tok_0": 2,
+  "Task_Finalize@Process_Finisher.signal_end_event_broadcast#tok_0": 1,
+  "Catch_CompletedA@Process_ObserverA.signal_end_event_broadcast#tok_1": 1,
   "End_ObserverA@Process_ObserverA.signal_end_event_broadcast#tok_1": 0,
-  "Start_ObserverA@Process_ObserverA.signal_end_event_broadcast#tok_1": 1,
-  "Catch_CompletedB@Process_ObserverB.signal_end_event_broadcast#tok_2": 0,
+  "Start_ObserverA@Process_ObserverA.signal_end_event_broadcast#tok_1": 2,
+  "Catch_CompletedB@Process_ObserverB.signal_end_event_broadcast#tok_2": 1,
   "End_ObserverB@Process_ObserverB.signal_end_event_broadcast#tok_2": 0,
-  "Start_ObserverB@Process_ObserverB.signal_end_event_broadcast#tok_2": 1
+  "Start_ObserverB@Process_ObserverB.signal_end_event_broadcast#tok_2": 2
 }

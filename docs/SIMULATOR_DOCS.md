@@ -55,6 +55,7 @@ When the user clicks "Play state sequence", the system performs the following st
     *   The system calculates the difference (**diff**) between the current state `N` and the next `N+1`.
     *   It identifies which elements have changed from `active` to `completed` or have become `active`.
     *   **Trigger**: Sends a signal (`simulationSupport.triggerElement` or `simulator.signal`) to the elements that need to advance.
+    *   **An element that goes from `0` to `2` in ONE step is never triggered**, and the token stays where it is. A sequence this button can replay gives every task, send task, exclusive split and catch event a step where it is `1`. A start event is `2` in the step its first element becomes `1`. A parallel gateway, a join and an end event go from `0` to `2` in the step the token passes them, because they never hold a token. An exclusive split is steered by the element right after it that becomes `1` in the step the split goes to `2`. Measured 2026-11-17: the Simulator's export of the six `new_example/` diagrams, one step per execution-tree node, left the token on the first task of all six. Rewritten by hand one move per step, five of them play every step with the tokens on the active elements. `two_tasks_one_pool_in_a_loop` cannot be written this way: its decision gateway leads to two gateways that never hold a token.
 
 ## 4. Component Behavior
 

@@ -46,14 +46,22 @@ import h337 from 'heatmap.js';
 
 // THE DIAGRAM THE PAGE OPENS WITH: `new_example/resourced_manufacturing.bpmn`,
 // whose snapshots are `states/resourced_manufacturing`. The six diagrams of
-// `new_example/` are copies of Simulator fixtures, and their snapshots are
-// the states of ONE path of each diagram's execution tree, as the
-// Simulator's `tools/export_modeller_states.py` writes them: one tN per
-// tree node, t0 all waiting (Daniel's choice, 2026-11-16). The path is
-// the tree's only one, except where Daniel picked a leaf:
-// resourced_manufacturing leaf 13 (Rough_Deposition, Light_Polishing,
-// LPLS), nature_two_outcomes leaf 3 (Rework), two_tasks_one_pool_in_a_loop
-// leaf 4 (two laps). Before that day the page opened
+// `new_example/` are copies of Simulator fixtures, and their snapshots follow
+// ONE path of each diagram's execution tree: the tree's only one, except
+// where Daniel picked a leaf -- resourced_manufacturing leaf 13
+// (Rough_Deposition, Light_Polishing, LPLS), nature_two_outcomes leaf 3
+// (Rework), two_tasks_one_pool_in_a_loop leaf 4 (two laps).
+//
+// The Simulator's `tools/export_modeller_states.py` wrote them on 2026-11-16,
+// one tN per tree node. On 2026-11-17 five were rewritten BY HAND (Daniel's
+// choice), one tN per move as Pietro's snapshots are: playStates moves a
+// token out of an element only when the element goes from 1 to 2, and a tree
+// node takes a task from 0 to 2 in one step, so the token stopped on the
+// first task of every diagram. two_tasks_one_pool_in_a_loop is still the
+// Simulator's: its decision gateway, Gw_check, leads to two gateways that
+// never hold a token (Gw_entry, Gw_after), and configureExclusiveGateways
+// steers a gateway only by the element right after it becoming 1. Before
+// 2026-11-16 the page opened
 // `example/resources/example.bpmn`, which the Simulator does not parse whole,
 // and then, for a few hours, `new_example/bpmn.bpmn`.
 import exampleXML from '../../new_example/resourced_manufacturing.bpmn';
@@ -737,7 +745,7 @@ function loadStateSequenceForCurrentDiagram() {
   debugTrace('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
 
   // EVERY FILE OF THE FOLDER IS A SNAPSHOT t<N>.json, N its place in the
-  // sequence -- the 26 files of the 6 folders under states/ all are. A file
+  // sequence -- the 29 files of the 6 folders under states/ all are. A file
   // that is not one has no place to read from its name: it raises, where it
   // used to sort as t0 and be loaded as a snapshot.
   const snapshotFiles = diagramKeys.map(key => {

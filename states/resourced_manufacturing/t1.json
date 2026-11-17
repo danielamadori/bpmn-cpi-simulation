@@ -1,5 +1,5 @@
 {
-  "RootEvent_0@Process_1.resourced_manufacturing#tok_0": 1,
+  "RootEvent_0@Process_1.resourced_manufacturing#tok_0": 2,
   "Task_11@Process_1.resourced_manufacturing#tok_0": 0,
   "ExclusiveSplit_12@Process_1.resourced_manufacturing#tok_0": 0,
   "Task_13@Process_1.resourced_manufacturing#tok_0": 0,
@@ -7,7 +7,7 @@
   "ExclusiveSplit_15@Process_1.resourced_manufacturing#tok_0": 0,
   "Task_16@Process_1.resourced_manufacturing#tok_0": 0,
   "Task_17@Process_1.resourced_manufacturing#tok_0": 0,
-  "Task_3@Process_1.resourced_manufacturing#tok_0": 0,
+  "Task_3@Process_1.resourced_manufacturing#tok_0": 1,
   "ParallelSplit_4@Process_1.resourced_manufacturing#tok_0": 0,
   "Task_6@Process_1.resourced_manufacturing#tok_0": 0,
   "ExclusiveSplit_7@Process_1.resourced_manufacturing#tok_0": 0,

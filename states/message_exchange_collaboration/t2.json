@@ -2,5 +2,9 @@
   "EndEvent_Customer@Process_Customer.message_exchange_collaboration#tok_0": 0,
   "Event_AckReceived@Process_Customer.message_exchange_collaboration#tok_0": 1,
   "StartEvent_Customer@Process_Customer.message_exchange_collaboration#tok_0": 2,
-  "Task_SendOrder@Process_Customer.message_exchange_collaboration#tok_0": 2
+  "Task_SendOrder@Process_Customer.message_exchange_collaboration#tok_0": 2,
+  "StartEvent_OrderReceived@Process_Supplier.message_exchange_collaboration#tok_1": 2,
+  "Task_HandleOrder@Process_Supplier.message_exchange_collaboration#tok_1": 1,
+  "Task_SendAck@Process_Supplier.message_exchange_collaboration#tok_1": 0,
+  "EndEvent_Supplier@Process_Supplier.message_exchange_collaboration#tok_1": 0
 }
