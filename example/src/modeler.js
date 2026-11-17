@@ -30,7 +30,7 @@ import {
   aggregateByRootToken,
   aggregateStatusesByElement
 } from './element-states';
-import { flowTakenBy } from './flow-taken';
+import { flowTakenBy, flowTowardsTargetState } from './flow-taken';
 import {
   LoopSteering,
   isUnkeyedPassThrough,
@@ -1109,9 +1109,11 @@ async function _replayFromStart(targetIndex, instant) {
   // - waiting elements → wait:true (token stops if it arrives)
   const targetState = stateSequence[targetIndex].state;
   const completedInTarget = new Set();
+  const activeInTarget = new Set();
   Object.entries(targetState).forEach(([key, status]) => {
     const { registryId } = parseStateKey(key);
     if (status === STATE_COMPLETED) completedInTarget.add(registryId);
+    if (status === STATE_ACTIVE) activeInTarget.add(registryId);
   });
   const keyedInTarget = keyedIdsOf(targetState);
 
@@ -1158,11 +1160,11 @@ async function _replayFromStart(targetIndex, instant) {
 
     if (!completedInTarget.has(gateway.id)) return;
 
-    const selectedFlow = outgoing.find(flow =>
-      flow.target && completedInTarget.has(flow.target.id)
-    );
+    // Towards a completed target, else towards the active one: the branch
+    // the step has just entered (./flow-taken.js says why).
+    const selectedFlow = flowTowardsTargetState(gateway, completedInTarget, activeInTarget);
 
-    if (selectedFlow) {
+    if (selectedFlow !== null) {
       simulator.setConfig(gateway, { locked: true, activeOutgoing: selectedFlow, wait: false });
 
       // Color: selected branch dark, non-selected light grey.
@@ -2500,9 +2502,11 @@ async function navigateForward() {
       // 1. Configure wait flags: completed → wait:false, active/waiting → wait:true.
       const targetState = stateSequence[nextIndex].state;
       const completedInTarget = new Set();
+      const activeInTarget = new Set();
       Object.entries(targetState).forEach(([key, status]) => {
         const { registryId } = parseStateKey(key);
         if (status === STATE_COMPLETED) completedInTarget.add(registryId);
+        if (status === STATE_ACTIVE) activeInTarget.add(registryId);
       });
       debugTrace('[navFwd] completedInTarget:', [ ...completedInTarget ].join(', '));
       const keyedInTarget = keyedIdsOf(targetState);
@@ -2535,14 +2539,15 @@ async function navigateForward() {
       const loopQueues = queueLoopMoves(stateSequence, nextIndex, nextIndex, registry, keyedInTarget);
       loopSteering.steer(loopQueues);
 
-      // 2. Lock exclusive gateway SPLITS based on completedInTarget.
-      // For each split gateway, find which outgoing flow leads to a completed target.
+      // 2. Lock exclusive gateway SPLITS based on the target snapshot: the
+      // flow towards a completed target, else towards the active one, the
+      // branch the step has just entered (./flow-taken.js says why).
       registry.getAll().filter(el => el.type === 'bpmn:ExclusiveGateway').forEach(gw => {
         const outgoing = (gw.outgoing || []).filter(f => f.type === 'bpmn:SequenceFlow');
         if (outgoing.length < 2) return;
         if (loopSteering.steers(gw.id)) return;
-        const selectedFlow = outgoing.find(f => f.target && completedInTarget.has(f.target.id));
-        if (selectedFlow) {
+        const selectedFlow = flowTowardsTargetState(gw, completedInTarget, activeInTarget);
+        if (selectedFlow !== null) {
           simulator.setConfig(gw, { locked: true, activeOutgoing: selectedFlow });
           debugTrace('[navFwd] lock', gw.id, '->', selectedFlow.target.id);
         } else {

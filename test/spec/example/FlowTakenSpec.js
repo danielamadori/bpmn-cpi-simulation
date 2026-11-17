@@ -11,7 +11,10 @@ import {
   STATE_WAITING
 } from '../../../example/src/element-states';
 
-import { flowTakenBy } from '../../../example/src/flow-taken';
+import {
+  flowTakenBy,
+  flowTowardsTargetState
+} from '../../../example/src/flow-taken';
 
 const loopDiagram = require('../../../new_example/two_tasks_one_pool_in_a_loop.bpmn');
 const natureDiagram = require('../../../new_example/nature_two_outcomes.bpmn');
@@ -138,6 +141,55 @@ describe('example - flow taken by an exclusive gateway', function() {
       expect(flow).to.equal('F3b');
     });
 
+  });
+
+});
+
+
+describe('example - flow a replay sends a completed exclusive gateway down', function() {
+
+  beforeEach(bootstrapModeler(natureDiagram));
+
+  function towards(completed, active) {
+    const flow = flowTowardsTargetState(element('GW_Nature'), new Set(completed), new Set(active));
+
+    return flow === null ? null : flow.id;
+  }
+
+
+  it('should go towards the completed target', function() {
+
+    // then
+    expect(towards([ 'GW_Nature', 'T_Rework' ], [])).to.equal('F3b');
+  });
+
+
+  it('should go towards the active target when none is completed', function() {
+
+    // when
+    // the step has just entered the branch: its task is active, nothing
+    // behind the gateway is completed (ship.bpmn's Gateway_1bd0yk0 at
+    // t=435, whose token went down the other flow before)
+    const flow = towards([ 'GW_Nature' ], [ 'T_Rework' ]);
+
+    // then
+    expect(flow).to.equal('F3b');
+  });
+
+
+  it('should prefer a completed target to an active one', function() {
+
+    // then
+    // as before the active target was looked at: a replay that found a
+    // completed target goes the same way
+    expect(towards([ 'GW_Nature', 'T_Dispatch' ], [ 'T_Rework' ])).to.equal('F3a');
+  });
+
+
+  it('should say nothing when no target is completed or active', function() {
+
+    // then
+    expect(towards([ 'GW_Nature' ], [])).to.be.null;
   });
 
 });

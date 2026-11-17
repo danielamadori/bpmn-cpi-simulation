@@ -1,7 +1,9 @@
 /**
  * Which outgoing flow an exclusive gateway took in one step of a snapshot
- * sequence, as «Play state sequence» reads it (configureExclusiveGateways in
- * ./modeler.js).
+ * sequence, as «Play state sequence» reads it (flowTakenBy, used by
+ * configureExclusiveGateways in ./modeler.js), and which one a replay of a
+ * host's path sends it down (flowTowardsTargetState, used by
+ * _replayFromStart and navigateForward).
  *
  * A module of its own so that a Karma spec can import it: importing
  * `modeler.js` builds the whole page.
@@ -93,4 +95,45 @@ export function flowTakenBy(gateway, prevAgg, nextAgg) {
   }
 
   return taken.length === 1 ? taken[0] : null;
+}
+
+/**
+ * The outgoing flow a replay sends an exclusive gateway's token down, read off
+ * the snapshot it replays to: the one whose target the snapshot has
+ * COMPLETED, and when none is completed, the one whose target it has ACTIVE.
+ * The second case is the branch the token is in right now.
+ *
+ * WHY THE SECOND LOOK. Until 2026-11-17 only a completed target was looked
+ * for (_replayFromStart and navigateForward in ./modeler.js, since b39fb08 on
+ * 2026-04-10). When the step has just entered the branch, the branch's first
+ * task is active and nothing behind the gateway is completed. The gateway was
+ * then left unlocked, and upstream's default sent the token down its other
+ * flow. Measured on the Simulator's combined report of ship.bpmn: at t=435,
+ * Gateway_1bd0yk0 completed and Activity_0szusuq («move trailer on site»)
+ * active, the token stood on Activity_058n5ws («Notify administration»), in
+ * nodes 10, 12 and 14 of its tree. A completed target is still looked for
+ * first, so every replay that found one goes as before.
+ *
+ * @param {Object} gateway the exclusive gateway, a diagram element
+ * @param {Set<string>} completedIds the elements the snapshot has completed
+ * @param {Set<string>} activeIds the elements the snapshot has active
+ *
+ * @return {Object|null} the flow, or null when no target is either
+ */
+export function flowTowardsTargetState(gateway, completedIds, activeIds) {
+  const outgoing = sequenceFlows(gateway.outgoing);
+
+  const towardsCompleted = outgoing.find(flow => completedIds.has(flow.target.id));
+
+  if (towardsCompleted !== undefined) {
+    return towardsCompleted;
+  }
+
+  const towardsActive = outgoing.find(flow => activeIds.has(flow.target.id));
+
+  if (towardsActive !== undefined) {
+    return towardsActive;
+  }
+
+  return null;
 }
