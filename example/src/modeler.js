@@ -30,6 +30,7 @@ import {
   aggregateByRootToken,
   aggregateStatusesByElement
 } from './element-states';
+import { flowTakenBy } from './flow-taken';
 import {
   LoopSteering,
   isUnkeyedPassThrough,
@@ -53,15 +54,13 @@ import h337 from 'heatmap.js';
 // (Rework), two_tasks_one_pool_in_a_loop leaf 4 (two laps).
 //
 // The Simulator's `tools/export_modeller_states.py` wrote them on 2026-11-16,
-// one tN per tree node. On 2026-11-17 five were rewritten BY HAND (Daniel's
-// choice), one tN per move as Pietro's snapshots are: playStates moves a
-// token out of an element only when the element goes from 1 to 2, and a tree
-// node takes a task from 0 to 2 in one step, so the token stopped on the
-// first task of every diagram. two_tasks_one_pool_in_a_loop is still the
-// Simulator's: its decision gateway, Gw_check, leads to two gateways that
-// never hold a token (Gw_entry, Gw_after), and configureExclusiveGateways
-// steers a gateway only by the element right after it becoming 1. Before
-// 2026-11-16 the page opened
+// one tN per tree node. On 2026-11-17 all six were rewritten BY HAND
+// (Daniel's choice), one tN per move as Pietro's snapshots are: playStates
+// moves a token out of an element only when the element goes from 1 to 2,
+// and a tree node takes a task from 0 to 2 in one step, so the token stopped
+// on the first task of every diagram. The loop's two laps can be written
+// since configureExclusiveGateways looks past the gateways that hold no
+// token (./flow-taken.js). Before 2026-11-16 the page opened
 // `example/resources/example.bpmn`, which the Simulator does not parse whole,
 // and then, for a few hours, `new_example/bpmn.bpmn`.
 import exampleXML from '../../new_example/resourced_manufacturing.bpmn';
@@ -745,7 +744,7 @@ function loadStateSequenceForCurrentDiagram() {
   debugTrace('[StateLoader] Matched keys for', baseName, ':', diagramKeys);
 
   // EVERY FILE OF THE FOLDER IS A SNAPSHOT t<N>.json, N its place in the
-  // sequence -- the 29 files of the 6 folders under states/ all are. A file
+  // sequence -- the 30 files of the 6 folders under states/ all are. A file
   // that is not one has no place to read from its name: it raises, where it
   // used to sort as t0 and be loaded as a snapshot.
   const snapshotFiles = diagramKeys.map(key => {
@@ -1432,20 +1431,9 @@ function configureExclusiveGateways(startIndex) {
 
       if (wasActive && !isActive) {
 
-        // Find which outgoing flow matches the activated element
-        const activations = diffActivations(prev, next);
-
-        // Find the child that connects to this gateway
-        // (diffActivations returns registryIds directly)
-        const activeChildId = activations.find(registryId => {
-          const child = registry.get(registryId);
-          return child && child.incoming.some(flow => flow.source === gateway);
-        });
-
-        if (activeChildId) {
-          const child = registry.get(activeChildId);
-          targetFlow = child.incoming.find(flow => flow.source === gateway);
-        }
+        // The flow that leads to what the step moved, past gateways that
+        // hold no token (./flow-taken.js says why it looks that far).
+        targetFlow = flowTakenBy(gateway, prevAggGw, nextAggGw);
 
         // We found the transition point, stop searching
         break;

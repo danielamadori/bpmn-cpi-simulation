@@ -55,7 +55,7 @@ When the user clicks "Play state sequence", the system performs the following st
     *   The system calculates the difference (**diff**) between the current state `N` and the next `N+1`.
     *   It identifies which elements have changed from `active` to `completed` or have become `active`.
     *   **Trigger**: Sends a signal (`simulationSupport.triggerElement` or `simulator.signal`) to the elements that need to advance.
-    *   **An element that goes from `0` to `2` in ONE step is never triggered**, and the token stays where it is. A sequence this button can replay gives every task, send task, exclusive split and catch event a step where it is `1`. A start event is `2` in the step its first element becomes `1`. A parallel gateway, a join and an end event go from `0` to `2` in the step the token passes them, because they never hold a token. An exclusive split is steered by the element right after it that becomes `1` in the step the split goes to `2`. Measured 2026-11-17: the Simulator's export of the six `new_example/` diagrams, one step per execution-tree node, left the token on the first task of all six. Rewritten by hand one move per step, five of them play every step with the tokens on the active elements. `two_tasks_one_pool_in_a_loop` cannot be written this way: its decision gateway leads to two gateways that never hold a token.
+    *   **An element that goes from `0` to `2` in ONE step is never triggered**, and the token stays where it is. A sequence this button can replay gives every task, send task, exclusive split and catch event a step where it is `1`. A start event is `2` in the step its first element becomes `1`. A parallel gateway, a join and an end event go from `0` to `2` in the step the token passes them, because they never hold a token. An exclusive split is steered by the step it goes from `1` to `2` in (see Exclusive Gateways below). Measured 2026-11-17: the Simulator's export of the six `new_example/` diagrams, one step per execution-tree node, left the token on the first task of all six. Rewritten by hand one move per step, all six play every step with the tokens on the active elements, two laps of `two_tasks_one_pool_in_a_loop` included.
 
 ## 4. Component Behavior
 
@@ -79,7 +79,7 @@ This is the most critical component. Normally, a gateway would decide the path b
 
 The `configureExclusiveGateways` function in `modeler.js`:
 1.  Looks ahead in the JSON file sequence (e.g., from `t2` to `t10`).
-2.  Identifies which outgoing branch becomes `active` after the gateway becomes `completed`.
+2.  Identifies the outgoing branch the gateway took in the step it goes from `1` to `2`: the one that leads to an element the step moved (it became `1`, or it became `2`), directly or through exclusive and parallel gateways that hold no token (`flowTakenBy`, `example/src/flow-taken.js`). Until 2026-11-17 only the element right after the gateway was looked at, and only for becoming `1`, so a loop's decision whose ways begin with a gateway could not be steered. If the step moved something behind two flows, the sequence does not say which one was taken, and an error naming the gateway is raised.
 3.  Configures the gateway in the simulator "on the fly":
     ```javascript
     simulator.setConfig(gateway, {

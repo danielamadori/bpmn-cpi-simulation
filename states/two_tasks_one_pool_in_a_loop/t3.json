@@ -2,6 +2,7 @@
   "End_R@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 0,
   "Gw_split@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 2,
   "Start_R@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 2,
-  "T_A@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 2,
-  "T_B@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 2
+  "T_A@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 1,
+  "T_B@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 1,
+  "Gw_check@P_Rework.two_tasks_one_pool_in_a_loop#tok_0": 2
 }
